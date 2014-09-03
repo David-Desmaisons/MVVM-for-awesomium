@@ -40,7 +40,11 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
             var value = _ConvertToJSO.GetValue(sender, pn);
 
             JSOObjectDescriptor desc = _ConvertToJSO.Objects[sender];
-            desc.GetPaths().ForEach(p => _JSObject.Invoke(JSOObjectDescriptor.Concat(p, pn), value));
+            desc.GetPaths().ForEach(p =>
+                {
+                    JSObject js = string.IsNullOrEmpty(p) ? _JSObject : (JSObject)_JSObject[p];
+                    js.Invoke(pn, value);
+                });
             //JSObject res = _JSObject.Invoke(e.PropertyName, value);
         }
 
