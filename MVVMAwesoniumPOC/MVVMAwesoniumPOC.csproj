@@ -100,6 +100,29 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="src\js\bower_components\jquery\.bower.json" />
+    <None Include="src\js\bower_components\jquery\bower.json" />
+    <None Include="src\js\bower_components\knockout\.bower.json" />
+    <None Include="src\js\bower_components\knockout\bower.json" />
+    <None Include="src\js\bower_components\knockout\LICENSE" />
+    <None Include="src\js\bower_components\knockout\package.json" />
+    <None Include="src\js\bower_components\knockout\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="src\js\bower_components\knockout\Gruntfile.js" />
+    <Resource Include="src\js\bower_components\jquery\MIT-LICENSE.txt" />
+    <Content Include="src\js\Ko_Extension.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="src\js\main.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
