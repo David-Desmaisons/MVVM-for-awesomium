@@ -15,6 +15,7 @@
         <StackPanel Grid.Column="1">
             <TextBox Text="{Binding Path=Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
             <TextBlock Text="{Binding Path=LastName}"/>
+            <TextBlock Text="{Binding Path=Local.City}"/>
             <ListBox ItemsSource="{Binding Path=Skills}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -26,6 +27,7 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            <Button Content="Button" Height="23" Click="Button_Click" Width="75" />
         </StackPanel>
     </Grid>
 </Window>

@@ -8,9 +8,11 @@ using System.Collections;
 
 namespace MVVMAwesoniumPOC.AwesomiumBinding
 {
+    
+
     public class ConvertToJSO
     {
-        public IDictionary<object, JSValue> _Cached = new Dictionary<object, JSValue>();
+        public IDictionary<object, JSOObjectDescriptor> _Cached = new Dictionary<object, JSOObjectDescriptor>();
         private IJSOBuilder _IJSOBuilder;
 
         public ConvertToJSO(IJSOBuilder iJSOBuilder)
@@ -18,10 +20,11 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
             _IJSOBuilder = iJSOBuilder;
         }
 
-        public IDictionary<object, JSValue> Objects
+        public IDictionary<object, JSOObjectDescriptor> Objects
         {
             get { return _Cached; }
         }
+
 
         public JSValue GetValue(object root, string iPropertyName)
         {
@@ -29,76 +32,89 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
             return Convert(propertyInfo.GetValue(root, null));
         }
 
-        public JSValue Convert(object ifrom)
+        private JSOObjectDescriptor DoConvert(object ifrom, JSOObjectDescriptorFather father = null)
         {
             if (ifrom == null)
-                return JSValue.Null;
-
-            JSValue res;
+                return new JSOObjectDescriptor(JSValue.Null, father);
 
             dynamic dfr = ifrom;
             JSValue value;
-            if (Convert(dfr, out value))
+            if (Convert(dfr, father, out value))
             {
-                return value;
+                return new JSOObjectDescriptor(value, father);
             }
 
+            JSOObjectDescriptor res=null;
             if (_Cached.TryGetValue(ifrom, out res))
+            {
+                res.Father.Add(father);
                 return res;
+            }
 
             JSObject resobject = _IJSOBuilder.CreateJSO();
-            res = new JSValue(resobject);
+
+            res = new JSOObjectDescriptor(new JSValue(resobject), father);
 
             PropertyInfo[] propertyInfos = ifrom.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (PropertyInfo propertyInfo in propertyInfos)
             {
-                resobject[propertyInfo.Name] = Convert(propertyInfo.GetValue(ifrom, null));
+                resobject[propertyInfo.Name] = DoConvert(propertyInfo.GetValue(ifrom, null), new JSOObjectDescriptorFather(res, propertyInfo.Name)).Value;
             }
 
             _Cached.Add(ifrom, res);
             return res;
         }
 
-        private bool Convert(object source, out JSValue res)
+
+        public JSValue Convert(object ifrom)
+        {
+            return DoConvert(ifrom).Value;
+        }
+
+        private bool Convert(object source, JSOObjectDescriptorFather path, out JSValue res)
         {
             res = new JSValue();
             return false;
         }
 
-        private bool Convert(string source, out JSValue res)
+        private bool Convert(string source, JSOObjectDescriptorFather path, out JSValue res)
         {
             res = new JSValue(source);
             return true;
         }
 
-        private bool Convert(int source, out JSValue res)
+        private bool Convert(int source, JSOObjectDescriptorFather path, out JSValue res)
         {
             res = new JSValue(source);
             return true;
         }
 
-        private bool Convert(double source, out JSValue res)
+        private bool Convert(double source, JSOObjectDescriptorFather path, out JSValue res)
         {
             res = new JSValue(source);
             return true;
         }
 
-        private bool Convert(bool source, out JSValue res)
+        private bool Convert(bool source, JSOObjectDescriptorFather path, out JSValue res)
         {
             res = new JSValue(source);
             return true;
         }
 
-        private bool Convert<T>(IEnumerable<T> source, out JSValue res)
+        private bool Convert<T>(IEnumerable<T> source, JSOObjectDescriptorFather path, out JSValue res)
         {
-            res = new JSValue(source.Select( s=> Convert(s)).ToArray() );
+            var structres = new JSOObjectDescriptor(path);
+            int i=0;
+            var ind = source.Select(s => DoConvert(s, new JSOObjectDescriptorFather(structres, string.Format("[{0}]",i++)))).ToList();
+            res = new JSValue(ind.Select(des => des.Value).ToArray());
+            structres.Value = res;
+            _Cached.Add(source, structres);
             return true;
         }
 
-        private bool Convert(IEnumerable source, out JSValue res)
+        private bool Convert(IEnumerable source, JSOObjectDescriptorFather path, out JSValue res)
         {
-            res = new JSValue(source.Cast<object>().Select(s => Convert(s)).ToArray());
-            return true;
+            return Convert(source.Cast<object>(), path, out  res);
         }
     }
 }

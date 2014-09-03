@@ -15,9 +15,11 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
     {
         private ConvertToJSO _ConvertToJSO;
         private JSObject _JSObject;
+        private IWebView _IWebView;
 
-        public AwesomeBinding(JSObject iJSObject, ConvertToJSO iConvertToJSO)
+        public AwesomeBinding(JSObject iJSObject, ConvertToJSO iConvertToJSO, IWebView iWebView)
         {
+            _IWebView = iWebView;
             _ConvertToJSO = iConvertToJSO;
             _JSObject = iJSObject;
             _ConvertToJSO.Objects.ForEach(
@@ -29,11 +31,17 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
             );
         }
 
+       
+
         private void lis_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            //var java = (JSObject)_ConvertToJSO.Objects[sender];
-            var value = _ConvertToJSO.GetValue(sender, e.PropertyName);
-            JSObject res = _JSObject.Invoke(e.PropertyName, value);
+            string pn =  e.PropertyName;
+
+            var value = _ConvertToJSO.GetValue(sender, pn);
+
+            JSOObjectDescriptor desc = _ConvertToJSO.Objects[sender];
+            desc.GetPaths().ForEach(p => _JSObject.Invoke(JSOObjectDescriptor.Concat(p, pn), value));
+            //JSObject res = _JSObject.Invoke(e.PropertyName, value);
         }
 
         public void Dispose()
@@ -62,11 +70,13 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
                     JSObject js = ctj.Convert(iViewModel);
 
                     JSObject vm = view.ExecuteJavascriptWithResult("ko");
+                    JSObject mapping = view.ExecuteJavascriptWithResult("ko.mapping");
 
-                    JSObject res = vm.Invoke("MapToObservable", js);
+                    JSObject res = mapping.Invoke("fromJS", js);
+                    //JSObject res = vm.Invoke("MapToObservable", js);
                     JSObject res2 = vm.Invoke("applyBindings", res);
-
-                    tcs.SetResult(new AwesomeBinding(res, ctj));
+                    
+                    tcs.SetResult(new AwesomeBinding(res, ctj,view));
                 };
 
 

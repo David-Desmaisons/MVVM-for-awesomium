@@ -28,6 +28,9 @@ namespace MVVMAwesoniumPOC
             InitializeComponent();
         }
 
+        private Skill _FirstSkill;
+        private Person _Person;
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             IWebView f = this.wcBrowser.WebSession.Views.FirstOrDefault();
@@ -36,14 +39,25 @@ namespace MVVMAwesoniumPOC
                     LastName = "Desmaisons",
                     Local = new Local() { City = "Florianopolis", Region = "SC" }
                 };
-            
-            datacontext.Skills.Add(new Skill(){ Name="Langage", Type="French"});
+
+            _FirstSkill = new Skill() { Name = "Langage", Type = "French" };
+
+            datacontext.Skills.Add(_FirstSkill);
             datacontext.Skills.Add(new Skill(){ Name="Info", Type="C++"});
 
             AwesomeBinding.ApplyBinding(f, datacontext);
 
             Window w = sender as Window;
             w.DataContext = datacontext;
+            _Person = datacontext;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //_FirstSkill.Name = "Lingua";
+            //_FirstSkill.Type = "Frances";
+            _Person.Local.City = "ded";
+
         }
 
   //LastName:"Desmaisons",
