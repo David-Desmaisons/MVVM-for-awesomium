@@ -13,7 +13,7 @@
             </awe:WebControl.ContextMenu>
         </awe:WebControl>
         <StackPanel Grid.Column="1">
-            <TextBox Text="{Binding Path=Name,Mode=TwoWay}"/>
+            <TextBox Text="{Binding Path=Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
             <TextBlock Text="{Binding Path=LastName}"/>
             <ListBox ItemsSource="{Binding Path=Skills}">
                 <ListBox.ItemTemplate>

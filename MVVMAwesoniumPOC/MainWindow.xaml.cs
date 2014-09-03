@@ -46,27 +46,20 @@ namespace MVVMAwesoniumPOC
             w.DataContext = datacontext;
         }
 
-      
-
-        //LastName:"Desmaisons",
+  //LastName:"Desmaisons",
  //   Local:{ City:'Florianopolis', Region:'SC'},
  //   Skills: [{Type:'Langage', Name:'French'},{Type:'Info', Name:'C++'}]
 
         //void f_DocumentReady(object sender, UrlEventArgs e)
         //{
         //    IWebView f = this.wcBrowser.WebSession.Views.FirstOrDefault();
-
         //    var res2 = f.ExecuteJavascriptWithResult("viewmodel.Name()");
-
         //    f.ExecuteJavascript("viewmodel.Name('UHU');viewmodel.commit();");
         //    //JSValue v = new JSValue("SuperConquerant");
         //    //JSObject vm = f.ExecuteJavascriptWithResult("viewmodel");
-
         //    //JSValue res = vm.Invoke( "Name", v );
         //    //vm.Invoke("commit", v);
-
         //    var res1 = f.ExecuteJavascriptWithResult("viewmodel.Name()");
-            
         //}
 
     }

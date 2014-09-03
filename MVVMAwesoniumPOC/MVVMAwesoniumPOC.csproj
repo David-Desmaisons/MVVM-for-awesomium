@@ -58,6 +58,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AwesomiumBinding\IJSOBuilder.cs" />
+    <Compile Include="Infra\EnumarableCollection.cs" />
     <Compile Include="ViewModelExample\Local.cs" />
     <Compile Include="ViewModelExample\Person.cs" />
     <Compile Include="AwesomiumBinding\AwesomeBinding.cs" />

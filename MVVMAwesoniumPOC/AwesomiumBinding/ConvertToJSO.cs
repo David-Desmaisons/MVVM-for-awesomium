@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Awesomium.Core;
 using System.Reflection;
+using System.Collections;
 
 namespace MVVMAwesoniumPOC.AwesomiumBinding
 {
@@ -15,6 +16,17 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
         public ConvertToJSO(IJSOBuilder iJSOBuilder)
         {
             _IJSOBuilder = iJSOBuilder;
+        }
+
+        public IDictionary<object, JSValue> Objects
+        {
+            get { return _Cached; }
+        }
+
+        public JSValue GetValue(object root, string iPropertyName)
+        {
+            PropertyInfo propertyInfo = root.GetType().GetProperty(iPropertyName,BindingFlags.Public | BindingFlags.Instance);
+            return Convert(propertyInfo.GetValue(root, null));
         }
 
         public JSValue Convert(object ifrom)
@@ -80,6 +92,12 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
         private bool Convert<T>(IEnumerable<T> source, out JSValue res)
         {
             res = new JSValue(source.Select( s=> Convert(s)).ToArray() );
+            return true;
+        }
+
+        private bool Convert(IEnumerable source, out JSValue res)
+        {
+            res = new JSValue(source.Cast<object>().Select(s => Convert(s)).ToArray());
             return true;
         }
     }
