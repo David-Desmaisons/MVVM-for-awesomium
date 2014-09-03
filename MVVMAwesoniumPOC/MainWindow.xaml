@@ -3,6 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Loaded="Window_Loaded" Height="350" Width="525" xmlns:awe="http://schemas.awesomium.com/winfx">
     <Grid>
-        <awe:WebControl Source="C:\Users\David\Documents\Visual Studio 2010\Projects\MVVMAwesoniumPOC\MVVMAwesoniumPOC\src\index.html"  x:Name="wcBrowser" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" />
+        <awe:WebControl Source="C:\Users\David\Documents\Visual Studio 2010\Projects\MVVMAwesoniumPOC\MVVMAwesoniumPOC\src\index.html"  x:Name="wcBrowser" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch">
+            <awe:WebControl.ContextMenu>
+                <ContextMenu></ContextMenu>
+            </awe:WebControl.ContextMenu>
+        </awe:WebControl>
     </Grid>
 </Window>
