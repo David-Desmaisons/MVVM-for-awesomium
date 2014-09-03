@@ -3,10 +3,29 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Loaded="Window_Loaded" Height="350" Width="525" xmlns:awe="http://schemas.awesomium.com/winfx">
     <Grid>
-        <awe:WebControl Source="C:\Users\David\Documents\Visual Studio 2010\Projects\MVVMAwesoniumPOC\MVVMAwesoniumPOC\src\index.html"  x:Name="wcBrowser" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <awe:WebControl  Source="C:\Users\David\Documents\Visual Studio 2010\Projects\MVVMAwesoniumPOC\MVVMAwesoniumPOC\src\index.html"  x:Name="wcBrowser" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch">
             <awe:WebControl.ContextMenu>
-                <ContextMenu></ContextMenu>
+                <ContextMenu Visibility="Collapsed"/>
             </awe:WebControl.ContextMenu>
         </awe:WebControl>
+        <StackPanel Grid.Column="1">
+            <TextBox Text="{Binding Path=Name,Mode=TwoWay}"/>
+            <TextBlock Text="{Binding Path=LastName}"/>
+            <ListBox ItemsSource="{Binding Path=Skills}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Path=Type}"/>
+                            <TextBlock Text="{Binding Path=Name}"/>
+
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
     </Grid>
 </Window>

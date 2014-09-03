@@ -41,6 +41,9 @@ namespace MVVMAwesoniumPOC
             datacontext.Skills.Add(new Skill(){ Name="Info", Type="C++"});
 
             AwesomeBinding.ApplyBinding(f, datacontext);
+
+            Window w = sender as Window;
+            w.DataContext = datacontext;
         }
 
       
