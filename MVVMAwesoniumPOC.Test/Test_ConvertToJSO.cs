@@ -29,12 +29,16 @@ namespace MVVMAwesoniumPOC.Test
         private ConvertToJSO _ConverTOJSO;
         private IJSOBuilder _IJSOBuilder;
         private Test _Test;
+        private List<Test> _Tests;
 
         public Test_ConvertToJSO()
         {
             _IJSOBuilder = new LocalBuilder();
             _ConverTOJSO = new ConvertToJSO(_IJSOBuilder);
             _Test = new Test { S1 = "string", I1 = 25 };
+            _Tests = new List<Test>();
+            _Tests.Add(new Test() { S1 = "string1", I1 = 1 });
+            _Tests.Add(new Test() { S1 = "string2", I1 = 2 });
         }
 
         [Fact]
@@ -57,6 +61,36 @@ namespace MVVMAwesoniumPOC.Test
             var res2 = res["I1"];
             res2.Should().NotBeNull();
             res2.IsNumber.Should().BeTrue();
+        }
+
+
+        [Fact]
+        public void Test_List()
+        {
+            JSValue[] resv = (JSValue[])_ConverTOJSO.Convert(_Tests);
+
+            resv.Should().NotBeNull();
+            resv.Length.Should().Be(2);
+
+            JSObject res = resv[0];
+            res.Should().NotBeNull();
+            var res1 = res["S1"];    
+            res1.Should().NotBeNull();
+            res1.IsString.Should().BeTrue(); 
+            
+            var jsv = ((JSValue)res["S1"]);
+            jsv.Should().NotBeNull();
+            jsv.IsString.Should().BeTrue();
+            string stv = (string)jsv;
+            stv.Should().NotBeNull();
+            stv.Should().Be("string1");
+
+            var res2 = res["I1"];
+            res2.Should().NotBeNull();
+            res2.IsNumber.Should().BeTrue();
+            int v2 = (int)res2;
+            v2.Should().Be(1);
+          
         }
 
 
