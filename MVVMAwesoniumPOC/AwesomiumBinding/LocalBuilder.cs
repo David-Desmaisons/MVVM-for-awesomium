@@ -6,12 +6,11 @@ using Awesomium.Core;
 
 namespace MVVMAwesoniumPOC.AwesomiumBinding
 {
-    public interface IJSOBuilder
+    public class LocalBuilder : IJSOBuilder
     {
-        JSObject CreateJSO(); 
+        public JSObject CreateJSO()
+        {
+            return new JSObject();
+        }
     }
-
-    
-
-   
 }

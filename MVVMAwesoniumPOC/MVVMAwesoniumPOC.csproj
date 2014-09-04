@@ -57,9 +57,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AwesomiumBinding\GlobalBuilder.cs" />
     <Compile Include="AwesomiumBinding\IJSOBuilder.cs" />
     <Compile Include="AwesomiumBinding\JSOObjectDescriptor.cs" />
     <Compile Include="AwesomiumBinding\JSOObjectDescriptorFather.cs" />
+    <Compile Include="AwesomiumBinding\LocalBuilder.cs" />
     <Compile Include="Infra\EnumarableCollection.cs" />
     <Compile Include="ViewModelExample\Local.cs" />
     <Compile Include="ViewModelExample\Person.cs" />
