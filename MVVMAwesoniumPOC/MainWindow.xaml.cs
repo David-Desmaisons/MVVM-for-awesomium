@@ -34,6 +34,7 @@ namespace MVVMAwesoniumPOC
                 return System.IO.Path.GetDirectoryName(lPath);
             }
         }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -66,8 +67,8 @@ namespace MVVMAwesoniumPOC
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //_FirstSkill.Name = "Lingua";
-            //_FirstSkill.Type = "Frances";
+            _FirstSkill.Name = "Lingua";
+            _FirstSkill.Type = "Frances";
             _Person.Local.City = "ded";
 
         }

@@ -31,7 +31,7 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
             );
         }
 
-       
+   
 
         private void lis_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -42,10 +42,21 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
             JSOObjectDescriptor desc = _ConvertToJSO.Objects[sender];
             desc.GetPaths().ForEach(p =>
                 {
-                    JSObject js = string.IsNullOrEmpty(p) ? _JSObject : (JSObject)_JSObject[p];
+                    JSObject js = _JSObject;
+                    int count = p.Count;
+                    for (int i = 0; i < count; i++)
+                    { 
+                        int index = -1;
+                        if ( (i+1<count) && (int.TryParse(p[i+1], out index)))
+                        {
+                            js = ((JSValue[])js.Invoke(p[i++]))[index];
+                        }
+                        else
+                            js = (JSObject)js[p[i]];
+                    }
+
                     js.Invoke(pn, value);
                 });
-            //JSObject res = _JSObject.Invoke(e.PropertyName, value);
         }
 
         public void Dispose()
@@ -75,7 +86,6 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
 
                     JSObject vm = view.ExecuteJavascriptWithResult("ko");
                     //JSObject mapping = view.ExecuteJavascriptWithResult("ko.mapping");
-
                     //JSObject res = mapping.Invoke("fromJS", js);
                     JSObject res = vm.Invoke("MapToObservable", js);
                     JSObject res2 = vm.Invoke("applyBindings", res);

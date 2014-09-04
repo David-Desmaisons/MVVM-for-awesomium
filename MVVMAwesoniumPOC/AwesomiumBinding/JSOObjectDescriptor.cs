@@ -33,16 +33,17 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
             return string.Format("{0}.{1}",f,s);
         }
 
-        public IEnumerable<string> GetPaths()
+        public IEnumerable<List<string>> GetPaths()
         {
             if (Father.Count == 0)
-                yield return string.Empty;
+                yield return new List<string>();
 
             foreach (JSOObjectDescriptorFather f in Father)
             {
-                foreach (string p in f.Father.GetPaths())
+                foreach (List<string> p in f.Father.GetPaths())
                 {
-                    yield return Concat( p, f.Path);
+                    p.Add(f.Path);
+                    yield return p;
                 }
             }
         }

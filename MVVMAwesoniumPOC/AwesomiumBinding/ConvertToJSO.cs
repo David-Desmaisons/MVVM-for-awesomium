@@ -105,7 +105,7 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
         {
             var structres = new JSOObjectDescriptor(path);
             int i=0;
-            var ind = source.Select(s => DoConvert(s, new JSOObjectDescriptorFather(structres, string.Format("[{0}]",i++)))).ToList();
+            var ind = source.Select(s => DoConvert(s, new JSOObjectDescriptorFather(structres, string.Format("{0}",i++)))).ToList();
             res = new JSValue(ind.Select(des => des.Value).ToArray());
             structres.Value = res;
             _Cached.Add(source, structres);
