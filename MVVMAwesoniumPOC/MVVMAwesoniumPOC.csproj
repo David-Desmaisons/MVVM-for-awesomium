@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9B18B122-A2FC-4537-AB68-5E1EC9959DB8}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MVVMAwesoniumPOC</RootNamespace>
     <AssemblyName>MVVMAwesoniumPOC</AssemblyName>
@@ -35,6 +35,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Awesomium.Core, Version=1.7.4.2, Culture=neutral, PublicKeyToken=e1a0d7c8071a5214" />
     <Reference Include="Awesomium.Windows.Controls, Version=1.7.4.2, Culture=neutral, PublicKeyToken=7a34e179b8b61c39" />
@@ -53,34 +56,14 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
     <Compile Include="AwesomiumBinding\GlobalBuilder.cs" />
     <Compile Include="AwesomiumBinding\IJSOBuilder.cs" />
     <Compile Include="AwesomiumBinding\JSOObjectDescriptor.cs" />
     <Compile Include="AwesomiumBinding\JSOObjectDescriptorFather.cs" />
     <Compile Include="AwesomiumBinding\LocalBuilder.cs" />
     <Compile Include="Infra\EnumarableCollection.cs" />
-    <Compile Include="ViewModelExample\Local.cs" />
-    <Compile Include="ViewModelExample\Person.cs" />
     <Compile Include="AwesomiumBinding\AwesomeBinding.cs" />
     <Compile Include="AwesomiumBinding\ConvertToJSO.cs" />
-    <Compile Include="ViewModelExample\Skill.cs" />
-    <Compile Include="ViewModel\ViewModelBase.cs" />
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -105,36 +88,8 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="src\js\bower_components\jquery\.bower.json" />
-    <None Include="src\js\bower_components\jquery\bower.json" />
-    <None Include="src\js\bower_components\knockout\.bower.json" />
-    <None Include="src\js\bower_components\knockout\bower.json" />
-    <None Include="src\js\bower_components\knockout\LICENSE" />
-    <None Include="src\js\bower_components\knockout\package.json" />
-    <None Include="src\js\bower_components\knockout\README.md" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="src\index.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="src\js\bower_components\knockout\dist\knockout.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="src\js\bower_components\knockout\Gruntfile.js" />
-    <Resource Include="src\js\bower_components\jquery\MIT-LICENSE.txt" />
-    <Content Include="src\js\bower_components\knockout.mapping\build\knockout.mapping.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="src\js\Ko_Extension.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="src\js\main.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
