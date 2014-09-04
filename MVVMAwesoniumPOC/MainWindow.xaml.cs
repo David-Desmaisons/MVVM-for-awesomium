@@ -15,6 +15,7 @@ using Awesomium.Core;
 using MVVMAwesoniumPOC.ViewModel;
 using MVVMAwesoniumPOC.ViewModelExample;
 using MVVMAwesoniumPOC.AwesomiumBinding;
+using System.Reflection;
 
 namespace MVVMAwesoniumPOC
 {
@@ -23,9 +24,20 @@ namespace MVVMAwesoniumPOC
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static string AssemblyDirectory
+        {
+            get
+            {
+                var lCodeBase = Assembly.GetExecutingAssembly().CodeBase;
+                var lUri = new UriBuilder(lCodeBase);
+                var lPath = Uri.UnescapeDataString(lUri.Path);
+                return System.IO.Path.GetDirectoryName(lPath);
+            }
+        }
         public MainWindow()
         {
             InitializeComponent();
+            this.wcBrowser.Source = new Uri(string.Format("{0}\\src\\index.html", AssemblyDirectory));
         }
 
         private Skill _FirstSkill;

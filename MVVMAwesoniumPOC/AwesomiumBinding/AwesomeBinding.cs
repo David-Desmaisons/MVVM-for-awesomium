@@ -74,10 +74,10 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
                     JSObject js = ctj.Convert(iViewModel);
 
                     JSObject vm = view.ExecuteJavascriptWithResult("ko");
-                    JSObject mapping = view.ExecuteJavascriptWithResult("ko.mapping");
+                    //JSObject mapping = view.ExecuteJavascriptWithResult("ko.mapping");
 
-                    JSObject res = mapping.Invoke("fromJS", js);
-                    //JSObject res = vm.Invoke("MapToObservable", js);
+                    //JSObject res = mapping.Invoke("fromJS", js);
+                    JSObject res = vm.Invoke("MapToObservable", js);
                     JSObject res2 = vm.Invoke("applyBindings", res);
                     
                     tcs.SetResult(new AwesomeBinding(res, ctj,view));
