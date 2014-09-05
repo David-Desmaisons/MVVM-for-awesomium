@@ -6,7 +6,7 @@ using Awesomium.Core;
 using System.Reflection;
 using System.Collections;
 
-namespace MVVMAwesoniumPOC.AwesomiumBinding
+namespace MVVMAwesonium.AwesomiumBinding
 {
     
 

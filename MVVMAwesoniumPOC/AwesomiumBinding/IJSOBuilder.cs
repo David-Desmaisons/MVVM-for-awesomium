@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Awesomium.Core;
 
-namespace MVVMAwesoniumPOC.AwesomiumBinding
+namespace MVVMAwesonium.AwesomiumBinding
 {
     public interface IJSOBuilder
     {

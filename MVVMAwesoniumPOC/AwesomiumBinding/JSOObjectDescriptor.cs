@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Awesomium.Core;
 
-namespace MVVMAwesoniumPOC.AwesomiumBinding
+namespace MVVMAwesonium.AwesomiumBinding
 {
     public class JSOObjectDescriptor
     {
@@ -20,17 +20,6 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
             : this(iFather)
         {
             Value = value;
-        }
-
-        public static string Concat(string f, string s)
-        {
-            if (string.IsNullOrEmpty(f))
-                return s;
-
-            if (s.StartsWith("["))
-                return string.Format("{0}{1}", f, s);
-
-            return string.Format("{0}.{1}",f,s);
         }
 
         public IEnumerable<List<string>> GetPaths()

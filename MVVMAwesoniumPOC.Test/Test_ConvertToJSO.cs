@@ -6,11 +6,11 @@ using System.Text;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
-using MVVMAwesoniumPOC.AwesomiumBinding;
+using MVVMAwesonium.AwesomiumBinding;
 using Awesomium.Core;
 using System.Collections;
 
-namespace MVVMAwesoniumPOC.Test
+namespace MVVMAwesonium.Test
 {
     public class Test_ConvertToJSO
     {

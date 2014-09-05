@@ -12,33 +12,24 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Awesomium.Core;
-using MVVMAwesoniumPOC.ViewModel;
-using MVVMAwesoniumPOC.ViewModelExample;
-using MVVMAwesoniumPOC.AwesomiumBinding;
 using System.Reflection;
 
-namespace MVVMAwesoniumPOCUI
+using MVVMAwesonium.ViewModel;
+using MVVMAwesonium.ViewModelExample;
+using MVVMAwesonium.AwesomiumBinding;
+using MVVMAwesonium.Infra;
+
+namespace MVVMAwesonium.UI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static string AssemblyDirectory
-        {
-            get
-            {
-                var lCodeBase = Assembly.GetExecutingAssembly().CodeBase;
-                var lUri = new UriBuilder(lCodeBase);
-                var lPath = Uri.UnescapeDataString(lUri.Path);
-                return System.IO.Path.GetDirectoryName(lPath);
-            }
-        }
-
         public MainWindow()
         {
             InitializeComponent();
-            this.wcBrowser.Source = new Uri(string.Format("{0}\\src\\index.html", AssemblyDirectory));
+            this.wcBrowser.Source = new Uri(string.Format("{0}\\src\\index.html", Assembly.GetExecutingAssembly().GetPath()));
         }
 
         private Skill _FirstSkill;
@@ -76,19 +67,7 @@ namespace MVVMAwesoniumPOCUI
 
   //LastName:"Desmaisons",
  //   Local:{ City:'Florianopolis', Region:'SC'},
- //   Skills: [{Type:'Langage', Name:'French'},{Type:'Info', Name:'C++'}]
-
-        //void f_DocumentReady(object sender, UrlEventArgs e)
-        //{
-        //    IWebView f = this.wcBrowser.WebSession.Views.FirstOrDefault();
-        //    var res2 = f.ExecuteJavascriptWithResult("viewmodel.Name()");
-        //    f.ExecuteJavascript("viewmodel.Name('UHU');viewmodel.commit();");
-        //    //JSValue v = new JSValue("SuperConquerant");
-        //    //JSObject vm = f.ExecuteJavascriptWithResult("viewmodel");
-        //    //JSValue res = vm.Invoke( "Name", v );
-        //    //vm.Invoke("commit", v);
-        //    var res1 = f.ExecuteJavascriptWithResult("viewmodel.Name()");
-        //}
+ //   Skills: [{Type:'Langage', Name:'French'},{Type:'Info', Name:'C++'}
 
     }
 }

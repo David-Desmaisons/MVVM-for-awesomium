@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 using Awesomium.Core;
 
-using MVVMAwesoniumPOC.Infra;
+using MVVMAwesonium.Infra;
 
-namespace MVVMAwesoniumPOC.AwesomiumBinding
+namespace MVVMAwesonium.AwesomiumBinding
 {
     public class AwesomeBinding : IDisposable
     {
@@ -70,6 +70,18 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
            );
         }
 
+
+        private static JSObject MappToJavaScriptSession(JSObject jsobject, IWebView iWebView)
+        {
+            JSObject vm = iWebView.ExecuteJavascriptWithResult("ko");
+            //JSObject mapping = view.ExecuteJavascriptWithResult("ko.mapping");
+            //JSObject res = mapping.Invoke("fromJS", js);
+            JSObject res = vm.Invoke("MapToObservable", jsobject);
+            JSObject res2 = vm.Invoke("applyBindings", res);
+
+            return res;
+        }
+
         public static Task<AwesomeBinding> ApplyBinding(IWebView view, INotifyPropertyChanged iViewModel)
         {
             TaskCompletionSource<AwesomeBinding> tcs = new TaskCompletionSource<AwesomeBinding>();
@@ -80,16 +92,10 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
                     //view.SynchronousMessageTimeout = 1500;
                     //ConvertToJSO ctj = new ConvertToJSO(new GlobalBuilder(view,"ViewModel"));
                     
-                    ConvertToJSO ctj = new ConvertToJSO( new LocalBuilder());
-                    
+                    ConvertToJSO ctj = new ConvertToJSO( new LocalBuilder());               
                     JSObject js = ctj.Convert(iViewModel);
+                    JSObject res = MappToJavaScriptSession(js, view);
 
-                    JSObject vm = view.ExecuteJavascriptWithResult("ko");
-                    //JSObject mapping = view.ExecuteJavascriptWithResult("ko.mapping");
-                    //JSObject res = mapping.Invoke("fromJS", js);
-                    JSObject res = vm.Invoke("MapToObservable", js);
-                    JSObject res2 = vm.Invoke("applyBindings", res);
-                    
                     tcs.SetResult(new AwesomeBinding(res, ctj,view));
                 };
 

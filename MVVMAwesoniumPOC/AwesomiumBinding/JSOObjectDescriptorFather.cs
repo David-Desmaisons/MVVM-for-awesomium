@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MVVMAwesoniumPOC.AwesomiumBinding
+namespace MVVMAwesonium.AwesomiumBinding
 {
     public class JSOObjectDescriptorFather
     {

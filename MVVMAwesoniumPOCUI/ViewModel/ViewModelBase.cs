@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel;
 
-namespace MVVMAwesoniumPOC.ViewModel
+namespace MVVMAwesonium.ViewModel
 {
     public class ViewModelBase : INotifyPropertyChanged
     {

@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MVVMAwesoniumPOC.ViewModel;
+using MVVMAwesonium.ViewModel;
 
-namespace MVVMAwesoniumPOC.ViewModelExample
+namespace MVVMAwesonium.ViewModelExample
 {
-
-
     public class Local : ViewModelBase
     {
 
