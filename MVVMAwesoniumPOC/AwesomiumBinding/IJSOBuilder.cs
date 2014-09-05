@@ -9,9 +9,5 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
     public interface IJSOBuilder
     {
         JSObject CreateJSO(); 
-    }
-
-    
-
-   
+    }  
 }
