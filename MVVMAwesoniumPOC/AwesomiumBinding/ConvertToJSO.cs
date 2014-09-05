@@ -12,7 +12,7 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
 
     public class ConvertToJSO
     {
-        public IDictionary<object, JSOObjectDescriptor> _Cached = new Dictionary<object, JSOObjectDescriptor>();
+        private IDictionary<object, JSOObjectDescriptor> _Cached = new Dictionary<object, JSOObjectDescriptor>();
         private IJSOBuilder _IJSOBuilder;
 
         public ConvertToJSO(IJSOBuilder iJSOBuilder)
@@ -92,6 +92,12 @@ namespace MVVMAwesoniumPOC.AwesomiumBinding
         private bool Convert(double source, JSOObjectDescriptorFather path, out JSValue res)
         {
             res = new JSValue(source);
+            return true;
+        }
+
+        private bool Convert(decimal source, JSOObjectDescriptorFather path, out JSValue res)
+        {
+            res = new JSValue((double)source);
             return true;
         }
 
