@@ -7,9 +7,13 @@
 
 ( function()
 {
-function MapToObservable(or,IndividualKoBuilder,CommitFunction)
+function MapToObservable(or,Listener)
 {
     var res = {};
+
+    //if ((Listener) && (Listener.RegisterMapping))
+    //    Listener.RegisterMapping(res, or);
+
     for(var att in or)
     {
         if (or.hasOwnProperty(att))
@@ -17,37 +21,40 @@ function MapToObservable(or,IndividualKoBuilder,CommitFunction)
             var value = or[att];
             if ((value!==null)&& (typeof value==='object'))
             {
-                if (!Array.isArray(value)) 
-                    res[att]= MapToObservable(value,IndividualKoBuilder,CommitFunction);
+                if (!Array.isArray(value))
+                {
+                    res[att] = MapToObservable(value);
+                }
                 else
                 {
-                    var nar=[];
-                    for(var i in value)
+                    var nar = [];
+                    for (var i in value)
                     {
-                        nar.push(MapToObservable(value[i],IndividualKoBuilder,CommitFunction));
+                        nar.push(MapToObservable(value[i]));
                     }
                     //global ko
-                    res[att]=ko.observableArray(nar);
+                    var collection = ko.observableArray(nar);
+                    res[att] = collection;
+                    //Listener.RegisterMapping(collection, value);
                 }
             }
             else
             {
-                res[att]=IndividualKoBuilder(value);
+                res[att] = ko.observable(value);
+
+                if ((Listener) && (Listener.TrackChanges))
+                    res[att].Subscribe(function (newvalue) { Listener.TrackChanges(value, att, newvalue); });
+
             }
         }
     }
-    
-    if (CommitFunction)
-    {
-        res.commit=CommitFunction;
-    }
-    
+        
     return res;
 }
 
 
 //global ko
-ko.MapToObservable = function (o){ return MapToObservable(o,ko.observable);};
+ko.MapToObservable = function (o){ return MapToObservable(o);};
 
 //global ko 
 ko.bindingHandlers.ExecuteOnEnter = {
