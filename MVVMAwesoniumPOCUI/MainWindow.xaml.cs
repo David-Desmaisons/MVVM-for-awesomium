@@ -50,7 +50,7 @@ namespace MVVMAwesonium.UI
             datacontext.Skills.Add(_FirstSkill);
             datacontext.Skills.Add(new Skill() { Name = "Info", Type = "C++" });
 
-            AwesomeBinding.ApplyBinding(f, datacontext);
+            AwesomeBinding.Bind(f, datacontext, JavascriptBindingMode.TwoWay);
 
             Window w = sender as Window;
             w.DataContext = datacontext;

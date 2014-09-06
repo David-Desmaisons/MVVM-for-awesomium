@@ -35,13 +35,13 @@ namespace MVVMAwesonium.Test
         }
 
         [Fact]
-        public void Test_AwesomeBinding_Basic()
+        public void Test_AwesomeBinding_Basic_OneWay()
         {
             bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
             isValidSynchronizationContext.Should().BeTrue();
 
 
-            using (var mb = AwesomeBinding.ApplyBinding(_WebView, _DataContext).Result)
+            using (var mb = AwesomeBinding.Bind(_WebView, _DataContext,JavascriptBindingMode.OneWay).Result)
             {
                 var js = mb.JSRootObject;
 
@@ -89,14 +89,14 @@ namespace MVVMAwesonium.Test
 
 
         [Fact]
-        public void Test_AwesomeBinding_BasicAlreadyLoaded()
+        public void Test_AwesomeBinding_BasicAlreadyLoaded_OneWay()
         {
             bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
             isValidSynchronizationContext.Should().BeTrue();
 
             WaitLoad(_WebView).Wait();
 
-            using (var mb = AwesomeBinding.ApplyBinding(_WebView, _DataContext).Result)
+            using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.OneWay).Result)
             {
                 mb.Should().NotBeNull();
             }

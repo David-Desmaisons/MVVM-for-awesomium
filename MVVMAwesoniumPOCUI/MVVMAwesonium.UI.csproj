@@ -131,6 +131,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\MVVMAwesoniumPOC\Javascript\Ko_Extension.js">
+      <Link>src\js\Ko_Extension.js</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="src\index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -142,9 +146,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="src\js\bower_components\knockout\Gruntfile.js" />
-    <Content Include="src\js\Ko_Extension.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="src\js\main.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

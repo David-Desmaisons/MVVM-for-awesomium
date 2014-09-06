@@ -74,11 +74,14 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AwesomiumBinding\AwesoniumBindingMode.cs" />
     <Compile Include="AwesomiumBinding\GlobalBuilder.cs" />
     <Compile Include="AwesomiumBinding\IJSOBuilder.cs" />
+    <Compile Include="AwesomiumBinding\JavascriptMapper\IJavaScriptMapper.cs" />
     <Compile Include="AwesomiumBinding\JSOObjectDescriptor.cs" />
     <Compile Include="AwesomiumBinding\JSOObjectDescriptorFather.cs" />
     <Compile Include="AwesomiumBinding\LocalBuilder.cs" />
+    <Compile Include="AwesomiumBinding\JavascriptMapper\OneWayJavascriptMapping.cs" />
     <Compile Include="Infra\AssemblyExtension.cs" />
     <Compile Include="Infra\EnumarableCollection.cs" />
     <Compile Include="AwesomiumBinding\AwesomeBinding.cs" />
@@ -108,7 +111,11 @@
     </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Javascript\Ko_Extension.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

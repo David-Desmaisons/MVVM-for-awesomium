@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Awesomium.Core;
 
 using MVVMAwesonium.Infra;
+using MVVMAwesonium.AwesomiumBinding.JavascriptMapper;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
@@ -39,7 +40,7 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         private void lis_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            string pn =  e.PropertyName;
+            string pn = e.PropertyName;
 
             var value = _ConvertToJSO.GetValue(sender, pn);
 
@@ -80,34 +81,32 @@ namespace MVVMAwesonium.AwesomiumBinding
         }
 
 
-        private static JSObject MappToJavaScriptSession(JSObject jsobject, IWebView iWebView)
-        {
-            JSObject vm = iWebView.ExecuteJavascriptWithResult("ko");
-            //JSObject mapping = view.ExecuteJavascriptWithResult("ko.mapping");
-            //JSObject res = mapping.Invoke("fromJS", js);
-            JSObject res = vm.Invoke("MapToObservable", jsobject);
-            JSObject res2 = vm.Invoke("applyBindings", res);
+        //private static JSObject MappToJavaScriptSession(JSObject jsobject, IWebView iWebView)
+        //{
+        //    JSObject vm = iWebView.ExecuteJavascriptWithResult("ko");
+        //    //JSObject mapping = view.ExecuteJavascriptWithResult("ko.mapping");
+        //    //JSObject res = mapping.Invoke("fromJS", js);
+        //    JSObject res = vm.Invoke("MapToObservable", jsobject);
+        //    JSObject res2 = vm.Invoke("applyBindings", res);
 
-            return res;
-        }
+        //    return res;
+        //}
 
-        public static Task<AwesomeBinding> ApplyBinding(IWebView view, INotifyPropertyChanged iViewModel)
+        public static Task<AwesomeBinding> Bind(IWebView view, object iViewModel, JavascriptBindingMode iMode)
         {
             TaskCompletionSource<AwesomeBinding> tcs = new TaskCompletionSource<AwesomeBinding>();
 
-            Action ToBeApply =
-                () =>
-                {
-                    //view.SynchronousMessageTimeout = 1500;
-                    //ConvertToJSO ctj = new ConvertToJSO(new GlobalBuilder(view,"ViewModel"));
+            IJavaScriptMapper mapper = (iMode == JavascriptBindingMode.OneWay) ?
+                                OneWayJavascriptMapping.Binder : OneWayJavascriptMapping.Binder;
 
-                    ConvertToJSO ctj = new ConvertToJSO(new LocalBuilder());
-                    JSObject js = ctj.Convert(iViewModel);
-                    JSObject res = MappToJavaScriptSession(js, view);
+            Action ToBeApply = () =>
+                    {
+                        ConvertToJSO ctj = new ConvertToJSO(new LocalBuilder());
+                        JSObject js = ctj.Convert(iViewModel);
+                        JSObject res = mapper.MappToJavaScriptSession(js, view);
 
-                    tcs.SetResult(new AwesomeBinding(res, ctj, view));
-                };
-
+                        tcs.SetResult(new AwesomeBinding(res, ctj, view));
+                    };
 
             if (view.IsDocumentReady)
             {
