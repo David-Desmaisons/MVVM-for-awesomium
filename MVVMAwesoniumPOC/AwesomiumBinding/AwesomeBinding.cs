@@ -110,7 +110,9 @@ namespace MVVMAwesonium.AwesomiumBinding
 
 
             if (view.IsDocumentReady)
-                ToBeApply();
+            {
+                WebCore.QueueWork( ()=>ToBeApply()) ;           
+            }
             else
             {
                 UrlEventHandler ea = null;

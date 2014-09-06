@@ -8,43 +8,20 @@ using NSubstitute;
 using FluentAssertions;
 using MVVMAwesonium.ViewModelExample;
 using MVVMAwesonium.AwesomiumBinding;
-using MVVMAwesonium.Infra;
+
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Threading;
 
 namespace MVVMAwesonium.Test
 {
-    public class Test_AwesomeBinding
+    public class Test_AwesomeBinding : TestWebViewBase
     {
-        private IWebView _WebView = null;
         private Person _DataContext;
-        private SynchronizationContext _SynchronizationContext;
-      
-        private Task<SynchronizationContext> Init()
-        {
-            TaskCompletionSource<SynchronizationContext> tcs = new TaskCompletionSource<SynchronizationContext>();
-            Task.Factory.StartNew(() =>
-            {
-                WebCore.Initialize(new WebConfig());
-                WebSession session = WebCore.CreateWebSession(WebPreferences.Default);
 
-                _WebView = WebCore.CreateWebView(500, 500);
-                _WebView.Source = new Uri(string.Format("{0}\\src\\index.html", Assembly.GetExecutingAssembly().GetPath()));
-
-                WebCore.Started += (o, e) => { tcs.SetResult(SynchronizationContext.Current); };
-
-                while (_WebView.IsLoading)
-                {
-                    WebCore.Run();
-                }
-            }
-            );
-
-            return tcs.Task;
-        }
 
         public Test_AwesomeBinding()
+            : base()
         {
             _DataContext = new Person()
             {
@@ -55,20 +32,6 @@ namespace MVVMAwesonium.Test
 
             _DataContext.Skills.Add(new Skill() { Name = "Langage", Type = "French" });
             _DataContext.Skills.Add(new Skill() { Name = "Info", Type = "C++" });
-
-            _SynchronizationContext = Init().Result;
-        }
-
-        private T GetSafe<T>(Func<T> UnsafeGet)
-        {
-            T res = default(T);
-            _SynchronizationContext.Send(_ => res = UnsafeGet(), null);
-            return res;
-        }
-
-        private void DoSafe(Action Doact)
-        {
-            _SynchronizationContext.Send(_ => Doact(), null);
         }
 
         [Fact]
@@ -82,8 +45,7 @@ namespace MVVMAwesonium.Test
             {
                 var js = mb.JSRootObject;
 
-                
-                JSValue res = GetSafe( () => js.Invoke("Name"));
+                JSValue res = GetSafe(() => js.Invoke("Name"));
                 ((string)res).Should().Be("O Monstro");
 
                 JSValue res2 = GetSafe(() => js.Invoke("LastName"));
@@ -101,10 +63,44 @@ namespace MVVMAwesonium.Test
 
                 res4 = GetSafe(() => ((JSObject)js["Local"]).Invoke("City"));
                 ((string)res4).Should().Be("Paris");
-                
+
+
+
+                JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                ((string)res5).Should().Be("Langage");
+
+                _DataContext.Skills[0].Name = "Ling";
+
+                res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                ((string)res5).Should().Be("Ling");
             }
         }
 
+        private Task WaitLoad(IWebView view)
+        {
+            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 
+            UrlEventHandler ea = null;
+            ea = (o, e) => { tcs.SetResult(null); view.DocumentReady -= ea; };
+            view.DocumentReady += ea;
+
+            return tcs.Task;
+        }
+
+
+        [Fact]
+        public void Test_AwesomeBinding_BasicAlreadyLoaded()
+        {
+            bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+            isValidSynchronizationContext.Should().BeTrue();
+
+            WaitLoad(_WebView).Wait();
+
+            using (var mb = AwesomeBinding.ApplyBinding(_WebView, _DataContext).Result)
+            {
+                mb.Should().NotBeNull();
+            }
+        }
     }
-}
+};
+

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Awesomium.Core;
+using System.Threading.Tasks;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
@@ -18,9 +19,19 @@ namespace MVVMAwesonium.AwesomiumBinding
             _NameScape = iNameScape;
         }
 
+        private Task<T> GetTask<T>(IWebView iwb, Func<T> evaluate)
+        {
+            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
+            WebCore.QueueWork(iwb, () => tcs.SetResult(evaluate()));
+            return tcs.Task;
+        }
+
         public JSObject CreateJSO()
         {
-            return _IWebView.CreateGlobalJavascriptObject(string.Format("{0}{1}", _NameScape, _Count++));
+            return GetTask(_IWebView, () => _IWebView.
+                CreateGlobalJavascriptObject(string.Format("{0}{1}", _NameScape, _Count++))).Result;
+
+            //return _IWebView.CreateGlobalJavascriptObject(string.Format("{0}{1}", _NameScape, _Count++));
         }
     }
 }

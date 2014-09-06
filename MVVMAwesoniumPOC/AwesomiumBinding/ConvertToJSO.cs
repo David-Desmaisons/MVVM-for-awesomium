@@ -8,8 +8,6 @@ using System.Collections;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
-    
-
     public class ConvertToJSO
     {
         private IDictionary<object, JSOObjectDescriptor> _Cached = new Dictionary<object, JSOObjectDescriptor>();
@@ -24,7 +22,6 @@ namespace MVVMAwesonium.AwesomiumBinding
         {
             get { return _Cached; }
         }
-
 
         public JSValue GetValue(object root, string iPropertyName)
         {

@@ -57,6 +57,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestWebViewBase.cs" />
+    <Compile Include="Test_GlobalBuilder.cs" />
     <Compile Include="Test_AwesomeBinding.cs" />
     <Compile Include="Test_ConvertToJSO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
