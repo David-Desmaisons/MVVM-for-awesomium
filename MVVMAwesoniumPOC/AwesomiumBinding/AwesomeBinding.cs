@@ -31,7 +31,11 @@ namespace MVVMAwesonium.AwesomiumBinding
             );
         }
 
-   
+
+        internal JSObject JSRootObject
+        {
+            get { return _JSObject; }
+        }
 
         private void lis_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -39,23 +43,28 @@ namespace MVVMAwesonium.AwesomiumBinding
 
             var value = _ConvertToJSO.GetValue(sender, pn);
 
-            JSOObjectDescriptor desc = _ConvertToJSO.Objects[sender];
-            desc.GetPaths().ForEach(p =>
-                {
-                    JSObject js = _JSObject;
-                    int count = p.Count;
-                    for (int i = 0; i < count; i++)
-                    { 
-                        int index = -1;
-                        if ( (i+1<count) && (int.TryParse(p[i+1], out index)))
-                        {
-                            js = ((JSValue[])js.Invoke(p[i++]))[index];
-                        }
-                        else
-                            js = (JSObject)js[p[i]];
-                    }
 
-                    js.Invoke(pn, value);
+            WebCore.QueueWork(
+                () =>
+                {
+                    JSOObjectDescriptor desc = _ConvertToJSO.Objects[sender];
+                    desc.GetPaths().ForEach(p =>
+                        {
+                            JSObject js = _JSObject;
+                            int count = p.Count;
+                            for (int i = 0; i < count; i++)
+                            {
+                                int index = -1;
+                                if ((i + 1 < count) && (int.TryParse(p[i + 1], out index)))
+                                {
+                                    js = ((JSValue[])js.Invoke(p[i++]))[index];
+                                }
+                                else
+                                    js = (JSObject)js[p[i]];
+                            }
+
+                            js.Invoke(pn, value);
+                        });
                 });
         }
 
@@ -87,16 +96,16 @@ namespace MVVMAwesonium.AwesomiumBinding
             TaskCompletionSource<AwesomeBinding> tcs = new TaskCompletionSource<AwesomeBinding>();
 
             Action ToBeApply =
-                ()  =>
+                () =>
                 {
                     //view.SynchronousMessageTimeout = 1500;
                     //ConvertToJSO ctj = new ConvertToJSO(new GlobalBuilder(view,"ViewModel"));
-                    
-                    ConvertToJSO ctj = new ConvertToJSO( new LocalBuilder());               
+
+                    ConvertToJSO ctj = new ConvertToJSO(new LocalBuilder());
                     JSObject js = ctj.Convert(iViewModel);
                     JSObject res = MappToJavaScriptSession(js, view);
 
-                    tcs.SetResult(new AwesomeBinding(res, ctj,view));
+                    tcs.SetResult(new AwesomeBinding(res, ctj, view));
                 };
 
 
@@ -113,6 +122,6 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         }
 
-       
+
     }
 }

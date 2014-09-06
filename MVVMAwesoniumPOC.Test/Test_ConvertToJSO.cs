@@ -14,12 +14,6 @@ namespace MVVMAwesonium.Test
 {
     public class Test_ConvertToJSO
     {
-        private static IWebView _WebView = null;
-        static Test_ConvertToJSO()
-        {
-            _WebView = WebCore.CreateWebView(500, 500, WebViewType.Offscreen);
-        }
-
         private class Test
         {
             public string S1 { get; set; }
@@ -40,8 +34,11 @@ namespace MVVMAwesonium.Test
         private List<Test> _Tests;
         private ArrayList _Tests_NG;
 
+        private IWebView _WebView = null;
+       
         public Test_ConvertToJSO()
-        {
+        { 
+            _WebView = WebCore.CreateWebView(500, 500, WebViewType.Offscreen);
             _IJSOBuilder = new LocalBuilder();
             _ConverTOJSO = new ConvertToJSO(_IJSOBuilder);
             _Test = new Test { S1 = "string", I1 = 25 };
