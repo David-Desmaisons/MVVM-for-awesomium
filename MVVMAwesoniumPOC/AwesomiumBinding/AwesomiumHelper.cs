@@ -29,6 +29,9 @@ namespace MVVMAwesonium.AwesomiumBinding
         {
             public bool Equals(JSObject x, JSObject y)
             {
+                if ((x.RemoteId == 0) || (y.RemoteId == 0))
+                    throw new NotSupportedException("Only remote javascript obejcts suported");
+
                 return x.RemoteId == y.RemoteId;
             }
 

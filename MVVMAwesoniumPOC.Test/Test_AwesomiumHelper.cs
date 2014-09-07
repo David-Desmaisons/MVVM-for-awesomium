@@ -56,5 +56,23 @@ namespace MVVMAwesonium.Test
             new JSValue((JSObject)null).GetSimpleValue().Should().Be(null);
         }
 
+        //[Fact]
+        //public void Test_RemoteObjectComparer_OnlyForRemote_Equals()
+        //{
+        //    bool res = false;
+        //    Action comp = () => res = this.GetSafe(()=>AwesomiumHelper.RemoteObjectComparer.Equals(new JSObject(), new JSObject()));
+        //    comp();
+        //    res.Should().BeFalse();
+        //}
+
+        //[Fact]
+        //public void Test_RemoteObjectComparer_OnlyForRemote_HK()
+        //{
+        //    int hkey = 0;
+        //    Action comp = () => hkey = this.GetSafe(() => AwesomiumHelper.RemoteObjectComparer.GetHashCode(new JSObject()));
+        //    comp();
+        //    hkey.Should().Be(0);
+        //}
+
     }
 }

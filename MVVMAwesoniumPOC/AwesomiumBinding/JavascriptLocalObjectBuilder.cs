@@ -10,15 +10,15 @@ using MVVMAwesonium.Infra;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
-    public class ConvertToJSO : IMapperListener
+    public class JavascriptObjectMapper : IMapperListener
     {
         private IBridgeObject _Root;
-        private IJSOBuilder _IJSOBuilder;
+        private LocalBuilder _IJSOBuilder;
         private IDictionary<object, IBridgeObject> _Cached = new Dictionary<object, IBridgeObject>();
         private IDictionary<JSObject, IBridgeObject> _Reverted =
             new Dictionary<JSObject, IBridgeObject>(AwesomiumHelper.RemoteObjectComparer);
 
-        public ConvertToJSO(IJSOBuilder iJSOBuilder)
+        public JavascriptObjectMapper(LocalBuilder iJSOBuilder)
         {
             _IJSOBuilder = iJSOBuilder;
         }
@@ -36,7 +36,7 @@ namespace MVVMAwesonium.AwesomiumBinding
         public JSValue GetValue(object root, string iPropertyName)
         {
             PropertyInfo propertyInfo = root.GetType().GetProperty(iPropertyName,BindingFlags.Public | BindingFlags.Instance);
-            return Convert(propertyInfo.GetValue(root, null));
+            return CreateLocalJSValue(propertyInfo.GetValue(root, null));
         }
 
         public void SetValue(object root, string iPropertyName,JSValue value)
@@ -45,12 +45,10 @@ namespace MVVMAwesonium.AwesomiumBinding
             propertyInfo.SetValue(root, value.GetSimpleValue(),null);
         }
 
-        public JSValue Convert(object ifrom)
+        public JSValue CreateLocalJSValue(object ifrom)
         {
             _Root = DoConvert(ifrom);
             return _Root.JSValue;
-            //_Cached.ForEach(kvp => { var al = kvp.Value.JSValue; if (al.IsObject)  _Reverted[(JSObject)al] = kvp.Value; });
-            //return res;
         }
 
         private IBridgeObject DoConvert(object ifrom)
@@ -148,7 +146,6 @@ namespace MVVMAwesonium.AwesomiumBinding
         {
             return Convert(source.Cast<object>(), out  res);
         }
-
 
         private void Update(IBridgeObject ibo, JSObject jsobject)
         {

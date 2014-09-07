@@ -11,12 +11,12 @@ using MVVMAwesonium.Infra;
 
 namespace MVVMAwesonium.Test
 {
-    public class TestWebViewBase
+    public class Awesomium_Test_Base
     {
         protected IWebView _WebView = null;
         protected SynchronizationContext _SynchronizationContext;
 
-        public TestWebViewBase()
+        public Awesomium_Test_Base()
         {
             _SynchronizationContext = Init().Result;
            DoSafe(()=> Console.WriteLine("Init Awesonium Thread"));

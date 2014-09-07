@@ -7,7 +7,8 @@ namespace MVVMAwesonium.AwesomiumBinding
 {
     public enum JavascriptBindingMode
     {
+        TwoWay,
         OneWay,
-        TwoWay
+        OneTime
     }
 }

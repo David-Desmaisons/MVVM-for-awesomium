@@ -80,14 +80,14 @@
     <Compile Include="AwesomiumBinding\IJSOBuilder.cs" />
     <Compile Include="AwesomiumBinding\JavascriptToCSharp\IBridgeObject.cs" />
     <Compile Include="AwesomiumBinding\IMapperListener.cs" />
-    <Compile Include="AwesomiumBinding\JavaScriptMapper.cs" />
+    <Compile Include="AwesomiumBinding\JavascriptSessionMapper.cs" />
     <Compile Include="AwesomiumBinding\JavascriptToCSharp\JSArray.cs" />
     <Compile Include="AwesomiumBinding\JavascriptToCSharp\JSGenericObject.cs" />
     <Compile Include="AwesomiumBinding\LocalBuilder.cs" />
     <Compile Include="Infra\AssemblyExtension.cs" />
     <Compile Include="Infra\EnumarableCollection.cs" />
     <Compile Include="AwesomiumBinding\AwesomeBinding.cs" />
-    <Compile Include="AwesomiumBinding\ConvertToJSO.cs" />
+    <Compile Include="AwesomiumBinding\JavascriptLocalObjectBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

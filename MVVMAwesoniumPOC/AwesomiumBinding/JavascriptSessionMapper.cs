@@ -6,20 +6,23 @@ using System.Text;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
-    internal class JavaScriptMapper
+    internal class JavascriptSessionMapper
     {
         private IWebView _IWebView;
         private JSObject _Listener;
         private GlobalBuilder _GlobalBuilder;
 
-        internal JavaScriptMapper(IWebView iWebView)
+        internal JavascriptSessionMapper(IWebView iWebView)
         {
             _IWebView = iWebView;
             _GlobalBuilder = new GlobalBuilder(_IWebView, "MVVMGlue");
         }
 
-        private void BindListener(JSObject iListener, IMapperListener iMapperListener)
+        private bool BindListener(JSObject iListener, IMapperListener iMapperListener)
         {
+            if (iMapperListener == null)
+                return false;
+
             iListener.Bind("RegisterFirst", false, (o, e) => iMapperListener.RegisterFirst((JSObject)e.Arguments[0]));
             iListener.Bind("RegisterMapping", false, (o, e) => 
                    iMapperListener.RegisterMapping((JSObject)e.Arguments[0],(string)e.Arguments[1],(JSObject)e.Arguments[2]));
@@ -32,10 +35,10 @@ namespace MVVMAwesonium.AwesomiumBinding
                         iMapperListener.RegisterCollectionMapping((JSObject)e.Arguments[0], (string)e.Arguments[1], index, (JSObject)e.Arguments[3]);
                 });
 
-            
+             return true;
         }
 
-        internal IDisposable Subscribe(Action<JSObject,string,JSValue> OnChanges)
+        internal IDisposable SubscribeToJavascriptObjectChange(Action<JSObject,string,JSValue> OnChanges)
         {
             _Listener = _GlobalBuilder.CreateJSO();
             _Listener.Bind("TrackChanges",false,(o,e) => OnChanges((JSObject)e.Arguments[0],(string)e.Arguments[1],e.Arguments[2]));
@@ -49,7 +52,9 @@ namespace MVVMAwesonium.AwesomiumBinding
             
             if (_Listener != null)
             {
-                BindListener(_Listener, iMapperListener);
+                bool ok = BindListener(_Listener, iMapperListener);
+                if (ok == false)
+                    throw new NotSupportedException("Should provide a mapper for two way binding");
                 res = Ko.Invoke("MapToObservable", jsobject, _Listener);
             }
             else

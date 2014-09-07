@@ -15,7 +15,7 @@ using System.Threading;
 
 namespace MVVMAwesonium.Test
 {
-    public class Test_AwesomeBinding : TestWebViewBase
+    public class Test_AwesomeBinding : Awesomium_Test_Base
     {
         private Person _DataContext;
 
