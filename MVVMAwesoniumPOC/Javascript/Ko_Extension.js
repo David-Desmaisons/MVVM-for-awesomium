@@ -37,7 +37,7 @@
                         res[att] = ko.observableArray(nar);
                     }
                 } else {
-                    res[att] = ko.observable(value);
+                    res[att] = ko.observable(value).extend({ rateLimit: 200 });
                     if ((Listener) && (Listener.TrackChanges)) {
                         res[att].subscribe(PropertyListener(res, att, Listener));
                     }

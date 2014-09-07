@@ -74,7 +74,7 @@ namespace MVVMAwesonium.AwesomiumBinding
                    if (lis != null) lis.PropertyChanged -= new PropertyChangedEventHandler(lis_PropertyChanged);
                }
            );
-            JavaScripterListener.Dispose();
+            WebCore.QueueWork( ()=>JavaScripterListener.Dispose());
         }
 
         public static Task<AwesomeBinding> Bind(IWebView view, object iViewModel, JavascriptBindingMode iMode)
@@ -93,7 +93,6 @@ namespace MVVMAwesonium.AwesomiumBinding
                         }
 
                         ConvertToJSO ctj = new ConvertToJSO(new LocalBuilder());
-                        //ConvertToJSO ctj = new ConvertToJSO(new GlobalBuilder(view,"ViewObject"));
                         JSObject js = ctj.Convert(iViewModel);
                         JSObject res = mapper.MappToJavaScriptSession(js, ctj);
 
