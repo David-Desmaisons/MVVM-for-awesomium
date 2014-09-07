@@ -6,21 +6,31 @@ using Awesomium.Core;
 using System.Reflection;
 using System.Collections;
 
+using MVVMAwesonium.Infra;
+
 namespace MVVMAwesonium.AwesomiumBinding
 {
-    public class ConvertToJSO
+    public class ConvertToJSO : IMapperListener
     {
-        private IDictionary<object, JSOObjectDescriptor> _Cached = new Dictionary<object, JSOObjectDescriptor>();
+        private IBridgeObject _Root;
         private IJSOBuilder _IJSOBuilder;
+        private IDictionary<object, IBridgeObject> _Cached = new Dictionary<object, IBridgeObject>();
+        private IDictionary<JSObject, IBridgeObject> _Reverted =
+            new Dictionary<JSObject, IBridgeObject>(AwesomiumHelper.RemoteObjectComparer);
 
         public ConvertToJSO(IJSOBuilder iJSOBuilder)
         {
             _IJSOBuilder = iJSOBuilder;
         }
 
-        public IDictionary<object, JSOObjectDescriptor> Objects
+        public IDictionary<object, IBridgeObject> Objects
         {
             get { return _Cached; }
+        }
+
+        public IDictionary<JSObject, IBridgeObject> FromJSToCS
+        {
+            get { return _Reverted; }
         }
 
         public JSValue GetValue(object root, string iPropertyName)
@@ -29,95 +39,139 @@ namespace MVVMAwesonium.AwesomiumBinding
             return Convert(propertyInfo.GetValue(root, null));
         }
 
-        private JSOObjectDescriptor DoConvert(object ifrom, JSOObjectDescriptorFather father = null)
+        public void SetValue(object root, string iPropertyName,JSValue value)
+        {
+            PropertyInfo propertyInfo = root.GetType().GetProperty(iPropertyName, BindingFlags.Public | BindingFlags.Instance);
+            propertyInfo.SetValue(root, value.GetSimpleValue(),null);
+        }
+
+        public JSValue Convert(object ifrom)
+        {
+            _Root = DoConvert(ifrom);
+            return _Root.JSValue;
+            //_Cached.ForEach(kvp => { var al = kvp.Value.JSValue; if (al.IsObject)  _Reverted[(JSObject)al] = kvp.Value; });
+            //return res;
+        }
+
+        private IBridgeObject DoConvert(object ifrom)
         {
             if (ifrom == null)
-                return new JSOObjectDescriptor(JSValue.Null, father);
+                return new JSGenericObject(JSValue.Null, ifrom);
 
             dynamic dfr = ifrom;
             JSValue value;
-            if (Convert(dfr, father, out value))
+            if (Convert(dfr, out value))
             {
-                return new JSOObjectDescriptor(value, father);
+                return new JSGenericObject(value, ifrom);
             }
 
-            JSOObjectDescriptor res=null;
+            IBridgeObject res = null;
+            if (Convert(dfr, out res))
+            {
+                return res;
+            }
+
             if (_Cached.TryGetValue(ifrom, out res))
             {
-                res.Father.Add(father);
                 return res;
             }
 
             JSObject resobject = _IJSOBuilder.CreateJSO();
 
-            res = new JSOObjectDescriptor(new JSValue(resobject), father);
+            JSGenericObject gres = new JSGenericObject(new JSValue(resobject), ifrom);
 
             PropertyInfo[] propertyInfos = ifrom.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
             foreach (PropertyInfo propertyInfo in propertyInfos)
             {
-                resobject[propertyInfo.Name] = DoConvert(propertyInfo.GetValue(ifrom, null), new JSOObjectDescriptorFather(res, propertyInfo.Name)).Value;
+                string pn = propertyInfo.Name;
+                var child = DoConvert(propertyInfo.GetValue(ifrom, null));
+                resobject[pn] = child.JSValue;
+                gres.Children[pn]=child;
             }
 
-            _Cached.Add(ifrom, res);
-            return res;
+            _Cached.Add(ifrom, gres);
+            return gres;
         }
 
 
-        public JSValue Convert(object ifrom)
-        {
-            return DoConvert(ifrom).Value;
-        }
-
-        private bool Convert(object source, JSOObjectDescriptorFather path, out JSValue res)
+        private bool Convert(object source, out JSValue res)
         {
             res = new JSValue();
             return false;
         }
 
-        private bool Convert(string source, JSOObjectDescriptorFather path, out JSValue res)
+        private bool Convert(string source, out JSValue res)
         {
             res = new JSValue(source);
             return true;
         }
 
-        private bool Convert(int source, JSOObjectDescriptorFather path, out JSValue res)
+        private bool Convert(int source, out JSValue res)
         {
             res = new JSValue(source);
             return true;
         }
 
-        private bool Convert(double source, JSOObjectDescriptorFather path, out JSValue res)
+        private bool Convert(double source, out JSValue res)
         {
             res = new JSValue(source);
             return true;
         }
 
-        private bool Convert(decimal source, JSOObjectDescriptorFather path, out JSValue res)
+        private bool Convert(decimal source, out JSValue res)
         {
             res = new JSValue((double)source);
             return true;
         }
 
-        private bool Convert(bool source, JSOObjectDescriptorFather path, out JSValue res)
+        private bool Convert(bool source, out JSValue res)
         {
             res = new JSValue(source);
             return true;
         }
 
-        private bool Convert<T>(IEnumerable<T> source, JSOObjectDescriptorFather path, out JSValue res)
+
+        private bool Convert(object source, out IBridgeObject res)
         {
-            var structres = new JSOObjectDescriptor(path);
-            int i=0;
-            var ind = source.Select(s => DoConvert(s, new JSOObjectDescriptorFather(structres, string.Format("{0}",i++)))).ToList();
-            res = new JSValue(ind.Select(des => des.Value).ToArray());
-            structres.Value = res;
-            _Cached.Add(source, structres);
+            res = null;
+            return false;
+        }
+
+        private bool Convert<T>(IEnumerable<T> source, out IBridgeObject res)
+        {
+            res = new JSArray(source.Select(s => DoConvert(s)), source);
+            _Cached.Add(source, res);
             return true;
         }
 
-        private bool Convert(IEnumerable source, JSOObjectDescriptorFather path, out JSValue res)
+        private bool Convert(IEnumerable source, out IBridgeObject res)
         {
-            return Convert(source.Cast<object>(), path, out  res);
+            return Convert(source.Cast<object>(), out  res);
+        }
+
+
+        private void Update(IBridgeObject ibo, JSObject jsobject)
+        {
+            ibo.JSValue = jsobject;
+            _Reverted[jsobject] = ibo;
+        }
+
+        public void RegisterFirst(JSObject iRoot)
+        {
+            Update(_Root, iRoot);
+        }
+
+        public void RegisterMapping(JSObject iFather, string att, JSObject iChild)
+        {
+            JSGenericObject jso = _Reverted[iFather] as JSGenericObject;
+            Update( jso.Children[att], iChild);
+        }
+
+        public void RegisterCollectionMapping(JSObject iFather, string att, int index, JSObject iChild)
+        {
+            JSGenericObject jsof = _Reverted[iFather] as JSGenericObject;
+            JSArray jsos = jsof.Children[att] as JSArray;
+            Update(jsos.Children[index], iChild);
         }
     }
 }

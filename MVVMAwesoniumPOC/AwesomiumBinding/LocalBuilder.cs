@@ -12,5 +12,13 @@ namespace MVVMAwesonium.AwesomiumBinding
         {
             return new JSObject();
         }
+
+
+        //public JSObject CreateJSOChild(JSObject father,string iPropertyName)
+        //{
+        //    JSObject child = new JSObject();
+        //    father[iPropertyName] = child;
+        //    return child;
+        //}
     }
 }

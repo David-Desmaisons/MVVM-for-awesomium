@@ -74,14 +74,16 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AwesomiumBinding\AwesomiumHelper.cs" />
     <Compile Include="AwesomiumBinding\AwesoniumBindingMode.cs" />
     <Compile Include="AwesomiumBinding\GlobalBuilder.cs" />
     <Compile Include="AwesomiumBinding\IJSOBuilder.cs" />
-    <Compile Include="AwesomiumBinding\JavascriptMapper\IJavaScriptMapper.cs" />
-    <Compile Include="AwesomiumBinding\JSOObjectDescriptor.cs" />
-    <Compile Include="AwesomiumBinding\JSOObjectDescriptorFather.cs" />
+    <Compile Include="AwesomiumBinding\JavascriptToCSharp\IBridgeObject.cs" />
+    <Compile Include="AwesomiumBinding\IMapperListener.cs" />
+    <Compile Include="AwesomiumBinding\JavaScriptMapper.cs" />
+    <Compile Include="AwesomiumBinding\JavascriptToCSharp\JSArray.cs" />
+    <Compile Include="AwesomiumBinding\JavascriptToCSharp\JSGenericObject.cs" />
     <Compile Include="AwesomiumBinding\LocalBuilder.cs" />
-    <Compile Include="AwesomiumBinding\JavascriptMapper\OneWayJavascriptMapping.cs" />
     <Compile Include="Infra\AssemblyExtension.cs" />
     <Compile Include="Infra\EnumarableCollection.cs" />
     <Compile Include="AwesomiumBinding\AwesomeBinding.cs" />
@@ -116,6 +118,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -14,32 +14,32 @@
         };
     }
 
-    function MapToObservable(or, Listener) {
+    function MapToObservable(or, Listener, first) {
         var res = {};
+
+        if ((first) && (Listener) && (Listener.RegisterFirst)) Listener.RegisterFirst(res);
 
         for (var att in or) {
             if (or.hasOwnProperty(att)) {
                 var value = or[att];
                 if ((value !== null) && (typeof value === 'object')) {
                     if (!Array.isArray(value)) {
-                        res[att] = MapToObservable(value, Listener);
+                        res[att] = MapToObservable(value, Listener, false);
+                        if ((Listener) && (Listener.RegisterMapping)) Listener.RegisterMapping(res, att, res[att]);
                     } else {
                         var nar = [];
                         for (var i in value) {
-                            nar.push(MapToObservable(value[i], Listener));
+                            var eli = MapToObservable(value[i], Listener, false);
+                            nar.push(eli);
+                            if ((Listener) && (Listener.RegisterCollectionMapping)) Listener.RegisterCollectionMapping(res, att, i, eli);
                         }
 
-                        var collection = ko.observableArray(nar);
-                        res[att] = collection;
-
-                        if ((Listener) && (Listener.RegisterCollection)) {
-                            Listener.RegisterCollection(or, att, res);
-                        }
+                        res[att] = ko.observableArray(nar);
                     }
                 } else {
                     res[att] = ko.observable(value);
                     if ((Listener) && (Listener.TrackChanges)) {
-                        res[att].subscribe(PropertyListener(or, att, Listener));
+                        res[att].subscribe(PropertyListener(res, att, Listener));
                     }
                 }
             }
@@ -51,7 +51,7 @@
 
     //global ko
     ko.MapToObservable = function (o, list) {
-        return MapToObservable(o, list);
+        return MapToObservable(o, list,true);
     };
 
 //global ko 

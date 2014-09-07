@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Awesomium.Core;
 
 using MVVMAwesonium.Infra;
-using MVVMAwesonium.AwesomiumBinding.JavascriptMapper;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
@@ -17,12 +16,13 @@ namespace MVVMAwesonium.AwesomiumBinding
         private ConvertToJSO _ConvertToJSO;
         private JSObject _JSObject;
         private IWebView _IWebView;
-        private bool _InitReentry = false;
-
+        
         private AwesomeBinding(IWebView iWebView)
         {
             _IWebView = iWebView;
         }
+
+        private IDisposable JavaScripterListener { get; set; }
 
         private void Init(JSObject iJSObject, ConvertToJSO iConvertToJSO)
         {
@@ -44,9 +44,6 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         private void lis_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (_InitReentry)
-                return;
-
             string pn = e.PropertyName;
 
             var value = _ConvertToJSO.GetValue(sender, pn);
@@ -54,26 +51,19 @@ namespace MVVMAwesonium.AwesomiumBinding
             WebCore.QueueWork(
                 () =>
                 {
-                    JSOObjectDescriptor desc = _ConvertToJSO.Objects[sender];
-                    desc.GetPaths().ForEach(p =>
-                        {
-                            JSObject js = _JSObject;
-                            int count = p.Count;
-                            for (int i = 0; i < count; i++)
-                            {
-                                int index = -1;
-                                if ((i + 1 < count) && (int.TryParse(p[i + 1], out index)))
-                                {
-                                    js = ((JSValue[])js.Invoke(p[i++]))[index];
-                                }
-                                else
-                                    js = (JSObject)js[p[i]];
-                            }
-
-                            js.Invoke(pn, value);
-                        });
+                    var el = (JSObject)_ConvertToJSO.Objects[sender].JSValue;
+                    el.Invoke(pn, value);
                 });
         }
+
+        private void OnJavaScriptChanges(JSObject objectchanged, string PropertyName ,JSValue newValue)
+        {
+            INotifyPropertyChanged inpc = _ConvertToJSO.FromJSToCS[objectchanged].CValue as INotifyPropertyChanged;
+            if (inpc == null)
+                return;
+
+            _ConvertToJSO.SetValue(inpc, PropertyName, newValue);
+         }
 
         public void Dispose()
         {
@@ -84,6 +74,7 @@ namespace MVVMAwesonium.AwesomiumBinding
                    if (lis != null) lis.PropertyChanged -= new PropertyChangedEventHandler(lis_PropertyChanged);
                }
            );
+            JavaScripterListener.Dispose();
         }
 
         public static Task<AwesomeBinding> Bind(IWebView view, object iViewModel, JavascriptBindingMode iMode)
@@ -94,12 +85,17 @@ namespace MVVMAwesonium.AwesomiumBinding
                     {
                         AwesomeBinding binding = new AwesomeBinding(view);
 
-                        IJavaScriptMapper mapper = (iMode == JavascriptBindingMode.OneWay) ?
-                            OneWayJavascriptMapping.Binder : OneWayJavascriptMapping.Binder;
+                        var mapper = new JavaScriptMapper(view);
+
+                        if (iMode == JavascriptBindingMode.TwoWay)
+                        {
+                            binding.JavaScripterListener = mapper.Subscribe(binding.OnJavaScriptChanges);
+                        }
 
                         ConvertToJSO ctj = new ConvertToJSO(new LocalBuilder());
+                        //ConvertToJSO ctj = new ConvertToJSO(new GlobalBuilder(view,"ViewObject"));
                         JSObject js = ctj.Convert(iViewModel);
-                        JSObject res = mapper.MappToJavaScriptSession(js, view);
+                        JSObject res = mapper.MappToJavaScriptSession(js, ctj);
 
                         binding.Init(res, ctj);
 
