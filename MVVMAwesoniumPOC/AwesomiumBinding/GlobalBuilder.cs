@@ -19,24 +19,24 @@ namespace MVVMAwesonium.AwesomiumBinding
             _NameScape = iNameScape;
         }
 
-        //private Task<T> GetTask<T>(IWebView iwb, Func<T> evaluate)
-        //{
-        //    TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-        //    WebCore.QueueWork(iwb, () => tcs.SetResult(evaluate()));
-        //    return tcs.Task;
-        //}
-
-        //public JSObject CreateJSOChild(JSObject father, string iPropertyName)
-        //{
-        //    return _IWebView.CreateGlobalJavascriptObject(string.Format("{0}.{1}", father.GlobalObjectName, iPropertyName));
-        //}
+        private Task<T> GetTask<T>(IWebView iwb, Func<T> evaluate)
+        {
+            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
+            WebCore.QueueWork(iwb, () => tcs.SetResult(evaluate()));
+            return tcs.Task;
+        }
 
         public JSObject CreateJSO()
         {
-            //return GetTask(_IWebView, () => _IWebView.
-            //    CreateGlobalJavascriptObject(string.Format("{0}{1}", _NameScape, _Count++))).Result;
-
-            return _IWebView.CreateGlobalJavascriptObject(string.Format("{0}{1}", _NameScape, _Count++));
+            string Name = string.Format("{0}{1}", _NameScape, _Count++);
+            try
+            {
+                return _IWebView.CreateGlobalJavascriptObject(Name);
+            }
+            catch (InvalidOperationException)
+            {
+                return GetTask(_IWebView, () => _IWebView.CreateGlobalJavascriptObject(Name)).Result;
+            }
         }
     }
 }

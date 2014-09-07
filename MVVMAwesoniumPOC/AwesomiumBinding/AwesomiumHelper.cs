@@ -22,9 +22,6 @@ namespace MVVMAwesonium.AwesomiumBinding
             if (@this.IsDouble)
                 return (double)@this;
 
-            if ( (@this.IsNull) || (@this.IsUndefined))
-                return null;
-
             return null;
         }
 

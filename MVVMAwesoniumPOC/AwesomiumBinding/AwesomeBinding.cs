@@ -85,6 +85,9 @@ namespace MVVMAwesonium.AwesomiumBinding
                     {
                         AwesomeBinding binding = new AwesomeBinding(view);
 
+                        ConvertToJSO ctj = new ConvertToJSO(new LocalBuilder());
+                        JSObject js = ctj.Convert(iViewModel);
+
                         var mapper = new JavaScriptMapper(view);
 
                         if (iMode == JavascriptBindingMode.TwoWay)
@@ -92,8 +95,6 @@ namespace MVVMAwesonium.AwesomiumBinding
                             binding.JavaScripterListener = mapper.Subscribe(binding.OnJavaScriptChanges);
                         }
 
-                        ConvertToJSO ctj = new ConvertToJSO(new LocalBuilder());
-                        JSObject js = ctj.Convert(iViewModel);
                         JSObject res = mapper.MappToJavaScriptSession(js, ctj);
 
                         binding.Init(res, ctj);

@@ -9,7 +9,5 @@ namespace MVVMAwesonium.AwesomiumBinding
     public interface IJSOBuilder
     {
         JSObject CreateJSO();
-
-        //JSObject CreateJSOChild(JSObject father, string iPropertyName); 
     }  
 }

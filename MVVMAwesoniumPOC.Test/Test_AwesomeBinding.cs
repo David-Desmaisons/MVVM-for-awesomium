@@ -101,6 +101,57 @@ namespace MVVMAwesonium.Test
                 mb.Should().NotBeNull();
             }
         }
+
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay()
+        {
+            bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+            isValidSynchronizationContext.Should().BeTrue();
+
+
+            using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+            {
+                //Teste One Way
+                var js = mb.JSRootObject;
+
+                JSValue res = GetSafe(() => js.Invoke("Name"));
+                ((string)res).Should().Be("O Monstro");
+
+                JSValue res2 = GetSafe(() => js.Invoke("LastName"));
+                ((string)res2).Should().Be("Desmaisons");
+
+                _DataContext.Name = "23";
+
+                JSValue res3 = GetSafe(() => js.Invoke("Name"));
+                ((string)res3).Should().Be("23");
+
+                JSValue res4 = GetSafe(() => ((JSObject)js["Local"]).Invoke("City"));
+                ((string)res4).Should().Be("Florianopolis");
+
+                _DataContext.Local.City = "Paris";
+
+                res4 = GetSafe(() => ((JSObject)js["Local"]).Invoke("City"));
+                ((string)res4).Should().Be("Paris");
+
+                JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                ((string)res5).Should().Be("Langage");
+
+                _DataContext.Skills[0].Name = "Ling";
+
+                res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                ((string)res5).Should().Be("Ling");
+
+                //Teste Two Way
+                this.DoSafe(() => mb.JSRootObject.Invoke("Name", "resName"));
+                JSValue resName = GetSafe(() => mb.JSRootObject.Invoke("Name"));
+                ((string)resName).Should().Be("resName");
+
+                Thread.Sleep(500);
+
+                _DataContext.Name.Should().Be("resName");
+            }
+        }
     }
 };
 

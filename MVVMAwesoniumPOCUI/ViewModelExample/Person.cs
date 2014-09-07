@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MVVMAwesonium.ViewModel;
+using System.Collections.ObjectModel;
 
 namespace MVVMAwesonium.ViewModelExample
 {
@@ -10,7 +11,7 @@ namespace MVVMAwesonium.ViewModelExample
     {
         public Person()
         {
-            Skills = new List<Skill>();
+            Skills = new ObservableCollection<Skill>();
         }
 
         private string _LastName;
@@ -53,6 +54,6 @@ namespace MVVMAwesonium.ViewModelExample
             }
         }
 
-        public List<Skill> Skills { get; private set; }
+        public IList<Skill> Skills { get; private set; }
     }
 }
