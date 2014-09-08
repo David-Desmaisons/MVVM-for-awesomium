@@ -35,6 +35,7 @@
                         }
 
                         res[att] = ko.observableArray(nar);
+                        if ((Listener) && (Listener.RegisterMapping)) Listener.RegisterMapping(res, att, res[att]);
                     }
                 } else {
                     res[att] = ko.observable(value).extend({

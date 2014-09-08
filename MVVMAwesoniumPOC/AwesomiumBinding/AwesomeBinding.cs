@@ -24,12 +24,13 @@ namespace MVVMAwesonium.AwesomiumBinding
             _IWebView = iWebView;
         }
 
-        private IDisposable JavaScripterListener { get; set; }
+        private IJSListener JavaScripterListener { get; set; }
 
-        private void Init(JSObject iJSObject, JavascriptObjectMapper iConvertToJSO)
+        private void Init(JSObject iJSObject, JavascriptObjectMapper iConvertToJSO, IJSListener iJavaScripterListener)
         {
             _ConvertToJSO = iConvertToJSO;
             _JSObject = iJSObject;
+            JavaScripterListener = iJavaScripterListener;
 
         }
 
@@ -74,6 +75,48 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    JSValue? addvalue = _ConvertToJSO.CreateLocalJSValue(e.NewItems[0]);
+
+                    if (addvalue == null)
+                        return;
+
+                    WebCore.QueueWork(
+                        () =>
+                        {
+                            var el = (JSObject)_ConvertToJSO.Objects[sender].JSValue;
+                            el.Invoke("splice",new JSValue(e.NewStartingIndex), new JSValue(0),addvalue.Value);
+                        });
+                    
+                        break;
+
+                case NotifyCollectionChangedAction.Remove:
+                        WebCore.QueueWork(
+                            () =>
+                            {
+                                var el = (JSObject)_ConvertToJSO.Objects[sender].JSValue;
+                                el.Invoke("splice", new JSValue(e.OldStartingIndex), new JSValue(e.OldItems.Count));
+                            });
+
+                        break;
+
+                case NotifyCollectionChangedAction.Replace:
+                       JSValue? newvalue = _ConvertToJSO.CreateLocalJSValue(e.NewItems[0]);
+
+                       if (newvalue == null)
+                        return;
+
+                    WebCore.QueueWork(
+                        () =>
+                        {
+                            var el = (JSObject)_ConvertToJSO.Objects[sender].JSValue;
+                            el.Invoke("splice", new JSValue(e.NewStartingIndex), new JSValue(1), newvalue.Value);
+                        });
+                    
+                        break;
+            }
         }
 
         private void OnJavaScriptChanges(JSObject objectchanged, string PropertyName, JSValue newValue)
@@ -113,19 +156,18 @@ namespace MVVMAwesonium.AwesomiumBinding
                     {
                         AwesomeBinding binding = new AwesomeBinding(view);
 
-                        JavascriptObjectMapper ctj = new JavascriptObjectMapper(new LocalBuilder());
-                        JSObject js = ctj.CreateLocalJSValue(iViewModel);
+                        JavascriptObjectMapper ObjectMapper = new JavascriptObjectMapper();
+                        JSObject js = ObjectMapper.CreateLocalJSValue(iViewModel);
 
                         var mapper = new JavascriptSessionMapper(view);
 
                         if (iMode == JavascriptBindingMode.TwoWay)
-                        {
-                            binding.JavaScripterListener = mapper.SubscribeToJavascriptObjectChange(binding.OnJavaScriptChanges);
-                        }
+                            mapper.OnJavascriptObjecChanges = binding.OnJavaScriptChanges;
 
-                        JSObject res = mapper.MappToJavaScriptSession(js, (iMode == JavascriptBindingMode.OneTime) ? null : ctj);
+                        JSObject res = null;
+                        var listener =  mapper.MappToJavaScriptSession(js, (iMode == JavascriptBindingMode.OneTime) ? null : ObjectMapper, out res);
 
-                        binding.Init(res, ctj);
+                        binding.Init(res, ObjectMapper, listener);
                         if (iMode != JavascriptBindingMode.OneTime)
                             binding.ListenToCSharpObject();
 

@@ -74,20 +74,22 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AwesomiumBinding\AwesomiumHelper.cs" />
+    <Compile Include="AwesomiumBinding\Helper\AwesomiumHelper.cs" />
     <Compile Include="AwesomiumBinding\AwesoniumBindingMode.cs" />
-    <Compile Include="AwesomiumBinding\GlobalBuilder.cs" />
-    <Compile Include="AwesomiumBinding\IJSOBuilder.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\JSListener.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\GlobalBuilder.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\IJSListener.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\IJSOBuilder.cs" />
     <Compile Include="AwesomiumBinding\JavascriptToCSharp\IBridgeObject.cs" />
-    <Compile Include="AwesomiumBinding\IMapperListener.cs" />
-    <Compile Include="AwesomiumBinding\JavascriptSessionMapper.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\IMapperListener.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\JavascriptSessionMapper.cs" />
     <Compile Include="AwesomiumBinding\JavascriptToCSharp\JSArray.cs" />
     <Compile Include="AwesomiumBinding\JavascriptToCSharp\JSGenericObject.cs" />
-    <Compile Include="AwesomiumBinding\LocalBuilder.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\LocalBuilder.cs" />
     <Compile Include="Infra\AssemblyExtension.cs" />
     <Compile Include="Infra\EnumarableCollection.cs" />
     <Compile Include="AwesomiumBinding\AwesomeBinding.cs" />
-    <Compile Include="AwesomiumBinding\JavascriptObjectMapper.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\JavascriptObjectMapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
