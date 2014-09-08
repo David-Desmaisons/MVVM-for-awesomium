@@ -24,7 +24,7 @@
                 var value = or[att];
                 if ((value !== null) && (typeof value === 'object')) {
                     if (!Array.isArray(value)) {
-                        res[att] = MapToObservable(value, Listener, false);
+                        res[att] = ko.observable(MapToObservable(value, Listener, false));
                         if ((Listener) && (Listener.RegisterMapping)) Listener.RegisterMapping(res, att, res[att]);
                     } else {
                         var nar = [];
@@ -37,7 +37,9 @@
                         res[att] = ko.observableArray(nar);
                     }
                 } else {
-                    res[att] = ko.observable(value).extend({ rateLimit: 200 });
+                    res[att] = ko.observable(value).extend({
+                        rateLimit: 200
+                    });
                     if ((Listener) && (Listener.TrackChanges)) {
                         res[att].subscribe(PropertyListener(res, att, Listener));
                     }

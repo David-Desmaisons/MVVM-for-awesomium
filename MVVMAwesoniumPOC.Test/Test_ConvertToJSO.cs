@@ -200,7 +200,7 @@ namespace MVVMAwesonium.Test
         [Fact]
         public void Test_GetValue_String()
         {
-            JSValue res = _ConverTOJSO.GetValue(_Test, "S1");
+            JSValue res = _ConverTOJSO.GetValue(_Test, "S1").Value;
             res.Should().NotBeNull();
             res.IsString.Should().BeTrue();
             string resv = (string)res;
@@ -211,7 +211,7 @@ namespace MVVMAwesonium.Test
         [Fact]
         public void Test_GetValue_Int()
         {
-            JSValue res = _ConverTOJSO.GetValue(_Test, "I1");
+            JSValue res = _ConverTOJSO.GetValue(_Test, "I1").Value;
             res.Should().NotBeNull();
             res.IsNumber.Should().BeTrue();
             int resv = (int)res;

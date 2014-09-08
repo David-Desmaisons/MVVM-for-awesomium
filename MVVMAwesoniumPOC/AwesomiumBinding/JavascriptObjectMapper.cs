@@ -33,10 +33,10 @@ namespace MVVMAwesonium.AwesomiumBinding
             get { return _Reverted; }
         }
 
-        public JSValue GetValue(object root, string iPropertyName)
+        public JSValue? GetValue(object root, string iPropertyName)
         {
             PropertyInfo propertyInfo = root.GetType().GetProperty(iPropertyName,BindingFlags.Public | BindingFlags.Instance);
-            return CreateLocalJSValue(propertyInfo.GetValue(root, null));
+            return (propertyInfo==null) ? new Nullable<JSValue>() :CreateLocalJSValue(propertyInfo.GetValue(root, null));
         }
 
         public void SetValue(object root, string iPropertyName,JSValue value)

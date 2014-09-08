@@ -59,10 +59,13 @@ namespace MVVMAwesonium.UI
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            _FirstSkill.Name = "Lingua";
-            _FirstSkill.Type = "Frances";
-            _Person.Local.City = "ded";
+            //_FirstSkill.Name = "Lingua";
+            //_FirstSkill.Type = "Frances";
+            //_Person.Local.City = "ded";
 
+            _Person.Local = new Local() { City="Paris", Region="IDF"};
+
+            //_Person.Skills.Add(new Skill() { Name = "Info", Type = "javascript" });
         }
 
   //LastName:"Desmaisons",

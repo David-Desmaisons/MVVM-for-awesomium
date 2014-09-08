@@ -87,7 +87,7 @@
     <Compile Include="Infra\AssemblyExtension.cs" />
     <Compile Include="Infra\EnumarableCollection.cs" />
     <Compile Include="AwesomiumBinding\AwesomeBinding.cs" />
-    <Compile Include="AwesomiumBinding\JavascriptLocalObjectBuilder.cs" />
+    <Compile Include="AwesomiumBinding\JavascriptObjectMapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

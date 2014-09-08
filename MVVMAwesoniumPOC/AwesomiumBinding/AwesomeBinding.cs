@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Awesomium.Core;
 
 using MVVMAwesonium.Infra;
+using System.Collections;
+using System.Collections.Specialized;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
@@ -37,13 +39,14 @@ namespace MVVMAwesonium.AwesomiumBinding
             if (_IsListening)
                 return;
 
-            _ConvertToJSO.Objects.ForEach(
-                        t =>
-                        {
-                            var lis = t.Key as INotifyPropertyChanged;
-                            if (lis != null) lis.PropertyChanged += new PropertyChangedEventHandler(lis_PropertyChanged);
-                        }
-                    );
+            foreach (var t in _ConvertToJSO.Objects.Keys)
+            {
+                var lis = t as INotifyPropertyChanged;
+                if ((lis != null) && !(t is IEnumerable)) lis.PropertyChanged += Object_PropertyChanged;
+
+                var collis = t as INotifyCollectionChanged;
+                if (collis != null) collis.CollectionChanged += CollectionChanged;
+            }
             _IsListening = true;
         }
 
@@ -52,18 +55,25 @@ namespace MVVMAwesonium.AwesomiumBinding
             get { return _JSObject; }
         }
 
-        private void lis_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void Object_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             string pn = e.PropertyName;
 
-            var value = _ConvertToJSO.GetValue(sender, pn);
+            JSValue? value = _ConvertToJSO.GetValue(sender, pn);
+
+            if (value == null)
+                return;
 
             WebCore.QueueWork(
                 () =>
                 {
                     var el = (JSObject)_ConvertToJSO.Objects[sender].JSValue;
-                    el.Invoke(pn, value);
+                    el.Invoke(pn, value.Value);
                 });
+        }
+
+        private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
         }
 
         private void OnJavaScriptChanges(JSObject objectchanged, string PropertyName, JSValue newValue)
@@ -79,15 +89,16 @@ namespace MVVMAwesonium.AwesomiumBinding
         {
             if (_IsListening)
             {
-                _IsListening = false;
+                foreach (var t in _ConvertToJSO.Objects.Keys)
+                {
+                    var lis = t as INotifyPropertyChanged;
+                    if ((lis != null) && !(t is IEnumerable)) lis.PropertyChanged -= new PropertyChangedEventHandler(Object_PropertyChanged);
 
-                _ConvertToJSO.Objects.ForEach(
-                   t =>
-                   {
-                       var lis = t.Key as INotifyPropertyChanged;
-                       if (lis != null) lis.PropertyChanged -= new PropertyChangedEventHandler(lis_PropertyChanged);
-                   }
-               );
+                    var collis = t as INotifyCollectionChanged;
+                    if (collis != null) collis.CollectionChanged += CollectionChanged;
+                } 
+                
+                _IsListening = false;
             }
 
             if (JavaScripterListener != null)
