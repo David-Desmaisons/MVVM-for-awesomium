@@ -40,7 +40,7 @@ namespace MVVMAwesonium.Test
         { 
             _WebView = WebCore.CreateWebView(500, 500, WebViewType.Offscreen);
             _IJSOBuilder = new LocalBuilder();
-            _ConverTOJSO = new JavascriptObjectMapper(_IJSOBuilder);
+            _ConverTOJSO = new JavascriptObjectMapper();
             _Test = new Test { S1 = "string", I1 = 25 };
             _Tests = new List<Test>();
             _Tests.Add(new Test() { S1 = "string1", I1 = 1 });
