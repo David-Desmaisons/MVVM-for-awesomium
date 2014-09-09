@@ -56,12 +56,12 @@ namespace MVVMAwesonium.Test
                 JSValue res3 = GetSafe(() => js.Invoke("Name"));
                 ((string)res3).Should().Be("23");
 
-                JSValue res4 = GetSafe(() => ((JSObject)js["Local"]).Invoke("City"));
+                JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
                 ((string)res4).Should().Be("Florianopolis");
 
                 _DataContext.Local.City = "Paris";
 
-                res4 = GetSafe(() => ((JSObject)js["Local"]).Invoke("City"));
+                res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
                 ((string)res4).Should().Be("Paris");
 
 
@@ -126,12 +126,12 @@ namespace MVVMAwesonium.Test
                 JSValue res3 = GetSafe(() => js.Invoke("Name"));
                 ((string)res3).Should().Be("23");
 
-                JSValue res4 = GetSafe(() => ((JSObject)js["Local"]).Invoke("City"));
+                JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
                 ((string)res4).Should().Be("Florianopolis");
 
                 _DataContext.Local.City = "Paris";
 
-                res4 = GetSafe(() => ((JSObject)js["Local"]).Invoke("City"));
+                res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
                 ((string)res4).Should().Be("Paris");
 
                 JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));

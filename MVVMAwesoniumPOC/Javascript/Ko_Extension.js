@@ -25,7 +25,7 @@
                 if ((value !== null) && (typeof value === 'object')) {
                     if (!Array.isArray(value)) {
                         res[att] = ko.observable(MapToObservable(value, Listener, false));
-                        if ((Listener) && (Listener.RegisterMapping)) Listener.RegisterMapping(res, att, res[att]);
+                        if ((Listener) && (Listener.RegisterMapping)) Listener.RegisterMapping(res, att, res[att]());
                     } else {
                         var nar = [];
                         for (var i in value) {
