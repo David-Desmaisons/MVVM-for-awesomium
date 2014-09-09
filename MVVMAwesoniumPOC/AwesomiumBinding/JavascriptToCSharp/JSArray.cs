@@ -20,5 +20,10 @@ namespace MVVMAwesonium.AwesomiumBinding
         public object CValue { get; set; }
 
         public IList<IBridgeObject> Children { get; private set; }
+
+        public IEnumerable<IBridgeObject> GetChildren()
+        {
+            return Children;
+        }
     }
 }

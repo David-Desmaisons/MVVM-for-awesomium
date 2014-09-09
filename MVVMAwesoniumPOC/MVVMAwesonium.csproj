@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="AwesomiumBinding\Helper\AwesomiumHelper.cs" />
     <Compile Include="AwesomiumBinding\AwesoniumBindingMode.cs" />
+    <Compile Include="AwesomiumBinding\JavascriptToCSharp\IBridgeObjectExtender.cs" />
     <Compile Include="AwesomiumBinding\Mapping\JSListener.cs" />
     <Compile Include="AwesomiumBinding\Mapping\GlobalBuilder.cs" />
     <Compile Include="AwesomiumBinding\Mapping\IJSListener.cs" />

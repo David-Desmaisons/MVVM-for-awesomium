@@ -23,6 +23,8 @@ namespace MVVMAwesonium.AwesomiumBinding
             _IJSOBuilder = new LocalBuilder();
         }
 
+        public IBridgeObject Root { get { return _Root; } }
+
         public IDictionary<object, IBridgeObject> Objects
         {
             get { return _Cached; }
@@ -127,7 +129,6 @@ namespace MVVMAwesonium.AwesomiumBinding
             res = new JSValue(source);
             return true;
         }
-
 
         private bool Convert(object source, out IBridgeObject res)
         {

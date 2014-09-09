@@ -14,6 +14,11 @@ namespace MVVMAwesonium.AwesomiumBinding
             CValue = icValue;
         }
 
+        public override string ToString()
+        {
+            return string.Format("<Object C#:{0}>",CValue);
+        }
+
         private Dictionary<string, IBridgeObject> _Children = new Dictionary<string, IBridgeObject>();
 
         public IDictionary<string, IBridgeObject> Children { get { return _Children; } }
@@ -22,5 +27,9 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         public object CValue { get; set; }
 
+        public IEnumerable<IBridgeObject> GetChildren()
+        {
+            return _Children.Values; 
+        }
     }
 }

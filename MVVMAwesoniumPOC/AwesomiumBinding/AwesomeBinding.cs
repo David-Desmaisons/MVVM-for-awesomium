@@ -40,16 +40,12 @@ namespace MVVMAwesonium.AwesomiumBinding
             if (_IsListening)
                 return;
 
-            foreach (var t in _ConvertToJSO.Objects.Keys)
-            {
-                var lis = t as INotifyPropertyChanged;
-                if ((lis != null) && !(t is IEnumerable)) lis.PropertyChanged += Object_PropertyChanged;
-
-                var collis = t as INotifyCollectionChanged;
-                if (collis != null) collis.CollectionChanged += CollectionChanged;
-            }
+            _ConvertToJSO.Root.ApplyOnListenable(n => n.PropertyChanged += Object_PropertyChanged,
+                                                    c => c.CollectionChanged += CollectionChanged);
             _IsListening = true;
         }
+
+       
 
         internal JSObject JSRootObject
         {
@@ -132,14 +128,8 @@ namespace MVVMAwesonium.AwesomiumBinding
         {
             if (_IsListening)
             {
-                foreach (var t in _ConvertToJSO.Objects.Keys)
-                {
-                    var lis = t as INotifyPropertyChanged;
-                    if ((lis != null) && !(t is IEnumerable)) lis.PropertyChanged -= new PropertyChangedEventHandler(Object_PropertyChanged);
-
-                    var collis = t as INotifyCollectionChanged;
-                    if (collis != null) collis.CollectionChanged += CollectionChanged;
-                } 
+                _ConvertToJSO.Root.ApplyOnListenable(n => n.PropertyChanged -= Object_PropertyChanged,
+                                                    c => c.CollectionChanged -= CollectionChanged);
                 
                 _IsListening = false;
             }
