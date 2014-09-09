@@ -64,8 +64,6 @@ namespace MVVMAwesonium.Test
                 res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
                 ((string)res4).Should().Be("Paris");
 
-
-
                 JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
                 ((string)res5).Should().Be("Langage");
 

@@ -92,9 +92,6 @@
     <Content Include="src\index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\js\bower_components\knockout.mapping\build\knockout.mapping.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="src\js\bower_components\knockout\dist\knockout.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

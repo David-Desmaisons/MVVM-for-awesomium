@@ -139,9 +139,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="src\js\bower_components\jquery\MIT-LICENSE.txt" />
-    <Content Include="src\js\bower_components\knockout.mapping\build\knockout.mapping.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="src\js\bower_components\knockout\dist\knockout.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

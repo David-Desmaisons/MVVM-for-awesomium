@@ -47,10 +47,17 @@ namespace MVVMAwesonium.AwesomiumBinding
             propertyInfo.SetValue(root, value.GetSimpleValue(),null);
         }
 
-        public JSValue CreateLocalJSValue(object ifrom)
+        internal JSValue CreateLocalJSValue(object ifrom)
         {
             _Root = DoConvert(ifrom);
             return _Root.JSValue;
+        }
+
+        public static JavascriptObjectMapper CreateMapping(object ifrom)
+        {
+            JavascriptObjectMapper res = new JavascriptObjectMapper();
+            res._Root = res.DoConvert(ifrom);
+            return res;
         }
 
         private IBridgeObject DoConvert(object ifrom)

@@ -15,8 +15,7 @@ namespace MVVMAwesonium.AwesomiumBinding
 {
     public class AwesomeBinding : IDisposable
     {
-        private JavascriptObjectMapper _ConvertToJSO;
-        private JSObject _JSObject;
+        private JavascriptObjectMapper _MappedObject;
         private IWebView _IWebView;
 
         private AwesomeBinding(IWebView iWebView)
@@ -26,12 +25,10 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         private IJSListener JavaScripterListener { get; set; }
 
-        private void Init(JSObject iJSObject, JavascriptObjectMapper iConvertToJSO, IJSListener iJavaScripterListener)
+        private void Init(JavascriptObjectMapper iConvertToJSO, IJSListener iJavaScripterListener)
         {
-            _ConvertToJSO = iConvertToJSO;
-            _JSObject = iJSObject;
+            _MappedObject = iConvertToJSO;
             JavaScripterListener = iJavaScripterListener;
-
         }
 
         private bool _IsListening = false;
@@ -40,7 +37,7 @@ namespace MVVMAwesonium.AwesomiumBinding
             if (_IsListening)
                 return;
 
-            _ConvertToJSO.Root.ApplyOnListenable(n => n.PropertyChanged += Object_PropertyChanged,
+            _MappedObject.Root.ApplyOnListenable(n => n.PropertyChanged += Object_PropertyChanged,
                                                     c => c.CollectionChanged += CollectionChanged);
             _IsListening = true;
         }
@@ -49,14 +46,14 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         internal JSObject JSRootObject
         {
-            get { return _JSObject; }
+            get { return _MappedObject.Root.JSValue; }
         }
 
         private void Object_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             string pn = e.PropertyName;
 
-            JSValue? value = _ConvertToJSO.GetValue(sender, pn);
+            JSValue? value = _MappedObject.GetValue(sender, pn);
 
             if (value == null)
                 return;
@@ -64,7 +61,7 @@ namespace MVVMAwesonium.AwesomiumBinding
             WebCore.QueueWork(
                 () =>
                 {
-                    var el = (JSObject)_ConvertToJSO.Objects[sender].JSValue;
+                    var el = (JSObject)_MappedObject.Objects[sender].JSValue;
                     el.Invoke(pn, value.Value);
                 });
         }
@@ -74,7 +71,7 @@ namespace MVVMAwesonium.AwesomiumBinding
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    JSValue? addvalue = _ConvertToJSO.CreateLocalJSValue(e.NewItems[0]);
+                    JSValue? addvalue = _MappedObject.CreateLocalJSValue(e.NewItems[0]);
 
                     if (addvalue == null)
                         return;
@@ -82,7 +79,7 @@ namespace MVVMAwesonium.AwesomiumBinding
                     WebCore.QueueWork(
                         () =>
                         {
-                            var el = (JSObject)_ConvertToJSO.Objects[sender].JSValue;
+                            var el = (JSObject)_MappedObject.Objects[sender].JSValue;
                             el.Invoke("splice",new JSValue(e.NewStartingIndex), new JSValue(0),addvalue.Value);
                         });
                     
@@ -92,14 +89,14 @@ namespace MVVMAwesonium.AwesomiumBinding
                         WebCore.QueueWork(
                             () =>
                             {
-                                var el = (JSObject)_ConvertToJSO.Objects[sender].JSValue;
+                                var el = (JSObject)_MappedObject.Objects[sender].JSValue;
                                 el.Invoke("splice", new JSValue(e.OldStartingIndex), new JSValue(e.OldItems.Count));
                             });
 
                         break;
 
                 case NotifyCollectionChangedAction.Replace:
-                       JSValue? newvalue = _ConvertToJSO.CreateLocalJSValue(e.NewItems[0]);
+                       JSValue? newvalue = _MappedObject.CreateLocalJSValue(e.NewItems[0]);
 
                        if (newvalue == null)
                         return;
@@ -107,7 +104,7 @@ namespace MVVMAwesonium.AwesomiumBinding
                     WebCore.QueueWork(
                         () =>
                         {
-                            var el = (JSObject)_ConvertToJSO.Objects[sender].JSValue;
+                            var el = (JSObject)_MappedObject.Objects[sender].JSValue;
                             el.Invoke("splice", new JSValue(e.NewStartingIndex), new JSValue(1), newvalue.Value);
                         });
                     
@@ -117,18 +114,18 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         private void OnJavaScriptChanges(JSObject objectchanged, string PropertyName, JSValue newValue)
         {
-            INotifyPropertyChanged inpc = _ConvertToJSO.FromJSToCS[objectchanged].CValue as INotifyPropertyChanged;
+            INotifyPropertyChanged inpc = _MappedObject.FromJSToCS[objectchanged].CValue as INotifyPropertyChanged;
             if (inpc == null)
                 return;
 
-            _ConvertToJSO.SetValue(inpc, PropertyName, newValue);
+            _MappedObject.SetValue(inpc, PropertyName, newValue);
         }
 
         public void Dispose()
         {
             if (_IsListening)
             {
-                _ConvertToJSO.Root.ApplyOnListenable(n => n.PropertyChanged -= Object_PropertyChanged,
+                _MappedObject.Root.ApplyOnListenable(n => n.PropertyChanged -= Object_PropertyChanged,
                                                     c => c.CollectionChanged -= CollectionChanged);
                 
                 _IsListening = false;
@@ -146,18 +143,16 @@ namespace MVVMAwesonium.AwesomiumBinding
                     {
                         AwesomeBinding binding = new AwesomeBinding(view);
 
-                        JavascriptObjectMapper ObjectMapper = new JavascriptObjectMapper();
-                        JSObject js = ObjectMapper.CreateLocalJSValue(iViewModel);
+                        JavascriptObjectMapper ObjectMapper = JavascriptObjectMapper.CreateMapping(iViewModel);
 
                         var mapper = new JavascriptSessionMapper(view);
 
                         if (iMode == JavascriptBindingMode.TwoWay)
                             mapper.OnJavascriptObjecChanges = binding.OnJavaScriptChanges;
 
-                        JSObject res = null;
-                        var listener =  mapper.MappToJavaScriptSession(js, (iMode == JavascriptBindingMode.OneTime) ? null : ObjectMapper, out res);
+                        var listener =  mapper.MappToJavaScriptSession(ObjectMapper);
 
-                        binding.Init(res, ObjectMapper, listener);
+                        binding.Init( ObjectMapper, listener);
                         if (iMode != JavascriptBindingMode.OneTime)
                             binding.ListenToCSharpObject();
 

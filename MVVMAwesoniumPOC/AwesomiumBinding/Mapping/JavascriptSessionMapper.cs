@@ -46,11 +46,11 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         public Action<JSObject, string, JSValue> OnJavascriptObjecChanges { get; set; }
 
-        public IJSListener MappToJavaScriptSession(JSObject iLocaljsobject, IMapperListener iMapperListener, out JSObject Globalres)
+        public IJSListener MappToJavaScriptSession(JavascriptObjectMapper iLocaljsobject)
         {
-            var listener = BindListener(_GlobalBuilder.CreateJSO(), iMapperListener);
+            var listener = BindListener(_GlobalBuilder.CreateJSO(), iLocaljsobject);
             JSObject Ko = _IWebView.ExecuteJavascriptWithResult("ko");
-            Globalres = Ko.Invoke("MapToObservable", iLocaljsobject, listener); 
+            var Globalres = Ko.Invoke("MapToObservable", iLocaljsobject.Root.JSValue, listener); 
             Ko.Invoke("applyBindings", Globalres);
             return new JSListener(listener);
         }
