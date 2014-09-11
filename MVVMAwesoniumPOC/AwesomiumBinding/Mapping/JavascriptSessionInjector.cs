@@ -53,7 +53,8 @@ namespace MVVMAwesonium.AwesomiumBinding
                 JSObject Ko = _IWebView.ExecuteJavascriptWithResult("ko");
 
                 JSValue Globalres = Ko.Invoke("MapToObservable", ihybridobject.JSValue, mapp, _Listener);
-                Ko.Invoke("applyBindings", Globalres);
+                if (IsRoot)
+                    Ko.Invoke("applyBindings", Globalres);
             }
         }
 
