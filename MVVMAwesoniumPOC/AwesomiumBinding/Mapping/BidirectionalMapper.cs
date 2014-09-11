@@ -13,22 +13,22 @@ namespace MVVMAwesonium.AwesomiumBinding
     {
         private JavascriptBindingMode _BindingMode;
         private readonly IJSCBridge _Root;
-        private CSharpToJavascriptMapper _CSharpToJavascriptMapper;
-        private JavascriptSessionInjector _JavascriptSessionMapper;
+        private CSharpToJavascriptMapper _JSObjectBuilder;
+        private JavascriptSessionInjector _SessionInjector;
         private IDictionary<object, IJSCBridge> _FromCSharp = new Dictionary<object, IJSCBridge>();
         private IDictionary<uint, IJSCBridge> _FromJavascript = new Dictionary<uint, IJSCBridge>();
 
         internal BidirectionalMapper(object iRoot, IWebView iwebview, JavascriptBindingMode iMode)
         {
-            _CSharpToJavascriptMapper = new CSharpToJavascriptMapper(new LocalBuilder(), this);
-            _Root = _CSharpToJavascriptMapper.Map(iRoot);
+            _JSObjectBuilder = new CSharpToJavascriptMapper(new LocalBuilder(), this);
+            _Root = _JSObjectBuilder.Map(iRoot);
             _BindingMode = iMode;
 
             Action<JSObject, string, JSValue> JavascriptObjecChanges = null;
             if (iMode == JavascriptBindingMode.TwoWay)
                 JavascriptObjecChanges = OnJavaScriptChanges;
 
-            _JavascriptSessionMapper = new JavascriptSessionInjector(iwebview, JavascriptObjecChanges);
+            _SessionInjector = new JavascriptSessionInjector(iwebview, JavascriptObjecChanges);
             InjectInHTLMSession(_Root, true);
 
             if (ListenToCSharp)
@@ -112,7 +112,7 @@ namespace MVVMAwesonium.AwesomiumBinding
             if (iroot.Type != JSType.Object)
                 return;
 
-            _JavascriptSessionMapper.Map(iroot, new JavascriptMapper(iroot, this));
+            _SessionInjector.Map(iroot, new JavascriptMapper(iroot, this));
         }
 
         private void OnJavaScriptChanges(JSObject objectchanged, string PropertyName, JSValue newValue)
@@ -138,7 +138,7 @@ namespace MVVMAwesonium.AwesomiumBinding
             if (Object.Equals(nv, oldbridgedchild.CValue))
                 return;
 
-            IJSCBridge newbridgedchild = _CSharpToJavascriptMapper.Map(nv);
+            IJSCBridge newbridgedchild = _JSObjectBuilder.Map(nv);
             
             
             bool needrelisten = ListenToCSharp && ((newbridgedchild.Type == JSType.Object) ||
@@ -194,7 +194,7 @@ namespace MVVMAwesonium.AwesomiumBinding
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    IJSCBridge addvalue = _CSharpToJavascriptMapper.Map(e.NewItems[0]);
+                    IJSCBridge addvalue = _JSObjectBuilder.Map(e.NewItems[0]);
 
                     if (addvalue == null)
                         return;
@@ -224,7 +224,7 @@ namespace MVVMAwesonium.AwesomiumBinding
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
-                    IJSCBridge newvalue = _CSharpToJavascriptMapper.Map(e.NewItems[0]);
+                    IJSCBridge newvalue = _JSObjectBuilder.Map(e.NewItems[0]);
 
                     if (newvalue == null)
                         return;
@@ -248,10 +248,10 @@ namespace MVVMAwesonium.AwesomiumBinding
             if (ListenToCSharp)
                 UnlistenToCSharpChanges(_Root);
 
-            if (_JavascriptSessionMapper != null)
+            if (_SessionInjector != null)
             {
-                _JavascriptSessionMapper.Dispose();
-                _JavascriptSessionMapper = null;
+                _SessionInjector.Dispose();
+                _SessionInjector = null;
             }
         }
 

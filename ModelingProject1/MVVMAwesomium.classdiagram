@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" dslVersion="1.0.0.0" Id="bf543072-62cb-4c06-8ab5-74bcab525d44" name="MVVMAwesomium" linkedPackageId="d2c7ea2a-7bec-4509-b663-4324b4197965" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm5="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" dslVersion="1.0.0.0" Id="bf543072-62cb-4c06-8ab5-74bcab525d44" name="MVVMAwesomium" linkedPackageId="d2c7ea2a-7bec-4509-b663-4324b4197965" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
   <packagedElements>
     <logicalClassDesignerModelHasTypes>
       <class Id="6265210d-2f06-4bd1-9467-9346af4d1de2" name="AwesomiumBinding" isAbstract="false" isLeaf="false" isActiveClass="false">
@@ -198,7 +198,7 @@
           </interfaceRealization>
         </suppliersInternal>
         <targetEnds>
-          <association Id="a16445aa-8b3e-474a-ae4c-8a4afa9d12b5" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" name="Session injector" isAbstract="false">
+          <association Id="a16445aa-8b3e-474a-ae4c-8a4afa9d12b5" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" name="JSObjectBuilder" isAbstract="false">
             <classMoniker Id="0f8a98cd-676f-4ca3-aaaa-38dfe4726075" LastKnownName="CSharpToJavascriptMapper" />
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
@@ -214,7 +214,7 @@
             </relationshipOwnedElementsInternal>
             <elementDefinition Id="64761c54-8814-4e83-a211-8bfbdfa8318f" />
           </association>
-          <association Id="b84caa5a-f939-403b-ade3-cd0bc3c630ff" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" name="Elements" isAbstract="false">
+          <association Id="b84caa5a-f939-403b-ade3-cd0bc3c630ff" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" name="FromCSharp" isAbstract="false">
             <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IBridgeObject" />
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
@@ -256,7 +256,7 @@
             </relationshipOwnedElementsInternal>
             <elementDefinition Id="0cb6564a-f7ef-44b6-bfc4-32fa5ed7b4ef" />
           </association>
-          <association Id="f7a9110f-b7b4-495b-9370-c78590d7c2a6" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" name="Session injector" isAbstract="false">
+          <association Id="f7a9110f-b7b4-495b-9370-c78590d7c2a6" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" name="SessionInjector" isAbstract="false">
             <classMoniker Id="44b7284d-259a-4b55-a683-b3b81c6215ea" LastKnownName="JavascriptSessionInjector" />
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
@@ -271,6 +271,32 @@
               </associationHasOwnedEnds>
             </relationshipOwnedElementsInternal>
             <elementDefinition Id="d4647140-b353-42c1-a484-a3edab5fab37" />
+          </association>
+          <association Id="a15f88e3-c228-4ddb-a06b-d79ee42a6a11" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" name="FromJavascript" isAbstract="false">
+            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IBridgeObject" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="4f0391a1-5801-4dcd-9390-3f2daa4ff8c5" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="5404d8b4-2d68-4a50-a1a1-0a66132b4f70" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="7bbcd2ab-b924-40a2-8e75-238779c6e78b" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <lowerValueInternal>
+                    <literalString Id="aa7ad4db-6703-4f10-9373-c5a2201c10b1" name="Lower" value="1">
+                      <elementDefinition Id="77e7df60-8d97-4e23-9da6-b72f502bd696" />
+                    </literalString>
+                  </lowerValueInternal>
+                  <upperValueInternal>
+                    <literalString Id="021a8b33-9d23-47be-87a3-831e1d4c1678" name="Upper" value="n">
+                      <elementDefinition Id="3f74a459-1eab-4aab-a40c-15ed4bd6b3b6" />
+                    </literalString>
+                  </upperValueInternal>
+                  <elementDefinition Id="ff67aac6-b324-46b4-9bf0-350552a4362f" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="67084ea7-8f88-4165-bb05-2b8035506f04" />
           </association>
         </targetEnds>
         <ownedOperationsInternal>
@@ -304,6 +330,22 @@
     <logicalClassDesignerModelHasTypes>
       <class Id="44b7284d-259a-4b55-a683-b3b81c6215ea" name="JavascriptSessionInjector" isAbstract="false" isLeaf="false" isActiveClass="false">
         <elementDefinition Id="4347f5c1-706f-4942-990d-f4fc588b8dfb" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="e7dab870-fe1a-43e6-ad0a-e84b6d26de61" name="JSBasic" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="66a51917-0a1d-4e42-912d-188414269b63" />
+        <suppliersInternal>
+          <interfaceRealization Id="80737a93-cb47-4d4b-aaf6-b08e2ce74cdf">
+            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IBridgeObject" />
+            <elementDefinition Id="b1f4357f-3f46-4ba6-a7b9-ef309314142f" />
+          </interfaceRealization>
+        </suppliersInternal>
+        <ownedOperationsInternal>
+          <operation Id="0ecf0cbf-87ca-456c-a50b-a452c52d46dd" name="GetChildren" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="b7725bc9-b1f2-4810-8682-c4f7b6f5a347" />
+          </operation>
+        </ownedOperationsInternal>
       </class>
     </logicalClassDesignerModelHasTypes>
   </packagedElements>
