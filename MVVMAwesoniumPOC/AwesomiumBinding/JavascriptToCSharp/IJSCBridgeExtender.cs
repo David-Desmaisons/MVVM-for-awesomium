@@ -8,37 +8,37 @@ using System.Text;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
-    public static class IBridgeObjectExtender
+    public static class IJSCBridgeExtender
     {
-        public static IEnumerable<IBridgeObject> GetAllChildren(this IBridgeObject @this, bool IncludeMySelf=false)
+        public static IEnumerable<IJSCBridge> GetAllChildren(this IJSCBridge @this, bool IncludeMySelf=false)
         {
             if (IncludeMySelf)
                 yield return @this;
 
-            foreach(IBridgeObject direct in @this.GetChildren())
+            foreach(IJSCBridge direct in @this.GetChildren())
             {
                 yield return direct;
 
-                foreach (IBridgeObject indirect in direct.GetAllChildren())
+                foreach (IJSCBridge indirect in direct.GetAllChildren())
                 {
                     yield return indirect;
                 }
             }
         }
 
-         public static void ApplyOnListenable(this IBridgeObject @this, Action<INotifyPropertyChanged> OnObject,
+         public static void ApplyOnListenable(this IJSCBridge @this, Action<INotifyPropertyChanged> OnObject,
                             Action<INotifyCollectionChanged> OnCollection)
         {
-            foreach (var child in @this.GetAllChildren(true))
+            foreach (var child in @this.GetAllChildren(true).Select(c => c.CValue).Distinct())
             {
-                var NotifyCollectionChanged = child.CValue as INotifyCollectionChanged;
+                var NotifyCollectionChanged = child as INotifyCollectionChanged;
                 if (NotifyCollectionChanged != null)
                 {
                     OnCollection(NotifyCollectionChanged);
                     continue;
                 }
 
-                var NotifyPropertyChanged = child.CValue as INotifyPropertyChanged;
+                var NotifyPropertyChanged = child as INotifyPropertyChanged;
                 if ((NotifyPropertyChanged != null) && !(child is IEnumerable))
                     OnObject(NotifyPropertyChanged);
             }

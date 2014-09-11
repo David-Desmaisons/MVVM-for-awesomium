@@ -27,7 +27,7 @@ namespace MVVMAwesonium.Test
         }
 
 
-        private JavascriptObjectMapper _ConverTOJSO;
+        private CSharpToJavascriptMapper _ConverTOJSO;
         private LocalBuilder _IJSOBuilder;
         private Test _Test;
         private Test2 _Test2;
@@ -35,12 +35,15 @@ namespace MVVMAwesonium.Test
         private ArrayList _Tests_NG;
 
         private IWebView _WebView = null;
+        private ICSharpMapper _ICSharpMapper;
        
         public Test_ConvertToJSO()
         { 
             _WebView = WebCore.CreateWebView(500, 500, WebViewType.Offscreen);
             _IJSOBuilder = new LocalBuilder();
-            _ConverTOJSO = new JavascriptObjectMapper();
+            _ICSharpMapper = Substitute.For<ICSharpMapper>();
+            _ICSharpMapper.GetCached(Arg.Any<object>()).Returns((IJSCBridge)null);
+            _ConverTOJSO = new CSharpToJavascriptMapper(_IJSOBuilder, _ICSharpMapper);
             _Test = new Test { S1 = "string", I1 = 25 };
             _Tests = new List<Test>();
             _Tests.Add(new Test() { S1 = "string1", I1 = 1 });
@@ -55,14 +58,14 @@ namespace MVVMAwesonium.Test
         [Fact]
         public void Test_Null()
         {
-            JSValue res = _ConverTOJSO.CreateLocalJSValue(null);
+            JSValue res = _ConverTOJSO.Map(null).JSValue;
             res.IsNull.Should().BeTrue();
         }
 
         [Fact]
         public void Test_Simple()
         {
-            JSObject res = _ConverTOJSO.CreateLocalJSValue(_Test);
+            JSObject res = _ConverTOJSO.Map(_Test).JSValue;
             res.Should().NotBeNull();
             var res1 = res["S1"];
             res1.Should().NotBeNull();
@@ -77,7 +80,7 @@ namespace MVVMAwesonium.Test
         [Fact]
         public void Test_List()
         {
-            JSValue[] resv = (JSValue[])_ConverTOJSO.CreateLocalJSValue(_Tests);
+            JSValue[] resv = (JSValue[])_ConverTOJSO.Map(_Tests).JSValue;
 
             resv.Should().NotBeNull();
             resv.Length.Should().Be(2);
@@ -105,7 +108,7 @@ namespace MVVMAwesonium.Test
         [Fact]
         public void Test_List_Not_Generic()
         {
-            JSValue[] resv = (JSValue[])_ConverTOJSO.CreateLocalJSValue(_Tests_NG);
+            JSValue[] resv = (JSValue[])_ConverTOJSO.Map(_Tests_NG).JSValue;
 
             resv.Should().NotBeNull();
             resv.Length.Should().Be(2);
@@ -134,7 +137,7 @@ namespace MVVMAwesonium.Test
         [Fact]
         public void Test_Double()
         {
-            JSValue res = _ConverTOJSO.CreateLocalJSValue(0.2D);
+            JSValue res = _ConverTOJSO.Map(0.2D).JSValue;
             res.Should().NotBeNull();
             res.IsNumber.Should().BeTrue();
             double resd = (double)res;
@@ -145,7 +148,7 @@ namespace MVVMAwesonium.Test
         [Fact]
         public void Test_Decimal()
         {
-            JSValue res = _ConverTOJSO.CreateLocalJSValue(0.2M);
+            JSValue res = _ConverTOJSO.Map(0.2M).JSValue;
             res.Should().NotBeNull();
             res.IsNumber.Should().BeTrue();
             double resd = (double)res;
@@ -157,7 +160,7 @@ namespace MVVMAwesonium.Test
         [Fact]
         public void Test_Bool()
         {
-            JSValue res = _ConverTOJSO.CreateLocalJSValue(true);
+            JSValue res = _ConverTOJSO.Map(true).JSValue;
             res.Should().NotBeNull();
             res.IsBoolean.Should().BeTrue();
             bool resd = (bool)res;
@@ -168,7 +171,7 @@ namespace MVVMAwesonium.Test
         [Fact]
         public void Test_Bool_False()
         {
-            JSValue res = _ConverTOJSO.CreateLocalJSValue(false);
+            JSValue res = _ConverTOJSO.Map(false).JSValue;
             res.Should().NotBeNull();
             res.IsBoolean.Should().BeTrue();
             bool resd = (bool)res;
@@ -180,7 +183,7 @@ namespace MVVMAwesonium.Test
         [Fact]
         public void Test_String()
         {
-            JSValue res = _ConverTOJSO.CreateLocalJSValue("toto");
+            JSValue res = _ConverTOJSO.Map("toto").JSValue;
             res.Should().NotBeNull();
             res.IsString.Should().BeTrue();
             string resd = (string)res;
@@ -191,32 +194,10 @@ namespace MVVMAwesonium.Test
         [Fact]
         public void Test_Object_Double_reference()
         {
-            JSObject res = _ConverTOJSO.CreateLocalJSValue(_Test2);
+            JSObject res = _ConverTOJSO.Map(_Test2).JSValue;
             res.Should().NotBeNull();
 
-            _ConverTOJSO.Objects.Count.Should().Be(2);
-        }
-
-        [Fact]
-        public void Test_GetValue_String()
-        {
-            JSValue res = _ConverTOJSO.GetValue(_Test, "S1").Value;
-            res.Should().NotBeNull();
-            res.IsString.Should().BeTrue();
-            string resv = (string)res;
-
-            resv.Should().Be("string");
-        }
-
-        [Fact]
-        public void Test_GetValue_Int()
-        {
-            JSValue res = _ConverTOJSO.GetValue(_Test, "I1").Value;
-            res.Should().NotBeNull();
-            res.IsNumber.Should().BeTrue();
-            int resv = (int)res;
-
-            resv.Should().Be(25);
+            _ICSharpMapper.Received().Cache(_Test,Arg.Any<IJSCBridge>());
         }
     }
 }

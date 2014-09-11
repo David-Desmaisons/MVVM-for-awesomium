@@ -42,8 +42,10 @@ namespace MVVMAwesonium.Test
 
 
             using (var mb = AwesomeBinding.Bind(_WebView, _DataContext,JavascriptBindingMode.OneWay).Result)
-            {
+            {  
+                Thread.Sleep(500);
                 var js = mb.JSRootObject;
+              
 
                 JSValue res = GetSafe(() => js.Invoke("Name"));
                 ((string)res).Should().Be("O Monstro");
@@ -100,6 +102,10 @@ namespace MVVMAwesonium.Test
             }
         }
 
+        private JSValue Get(JSObject root, string pn)
+        {
+            return root.Invoke(pn);
+        }
 
         [Fact]
         public void Test_AwesomeBinding_Basic_TwoWay()
@@ -110,10 +116,11 @@ namespace MVVMAwesonium.Test
 
             using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
             {
+                Thread.Sleep(500);
                 //Teste One Way
                 var js = mb.JSRootObject;
 
-                JSValue res = GetSafe(() => js.Invoke("Name"));
+                JSValue res = GetSafe(()=> Get(js, "Name"));
                 ((string)res).Should().Be("O Monstro");
 
                 JSValue res2 = GetSafe(() => js.Invoke("LastName"));

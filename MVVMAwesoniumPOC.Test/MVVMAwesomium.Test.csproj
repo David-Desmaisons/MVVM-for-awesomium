@@ -65,13 +65,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MVVMAwesoniumPOCUI\MVVMAwesonium.UI.csproj">
+    <ProjectReference Include="..\MVVMAwesoniumPOCUI\MVVMAwesomium.UI.csproj">
       <Project>{83FD4663-5C46-4885-83DB-D65C99A1C9F0}</Project>
-      <Name>MVVMAwesonium.UI</Name>
+      <Name>MVVMAwesomium.UI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MVVMAwesoniumPOC\MVVMAwesonium.csproj">
+    <ProjectReference Include="..\MVVMAwesoniumPOC\MVVMAwesomium.csproj">
       <Project>{9B18B122-A2FC-4537-AB68-5E1EC9959DB8}</Project>
-      <Name>MVVMAwesonium</Name>
+      <Name>MVVMAwesomium</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

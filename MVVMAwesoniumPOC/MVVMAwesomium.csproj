@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{83FD4663-5C46-4885-83DB-D65C99A1C9F0}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{9B18B122-A2FC-4537-AB68-5E1EC9959DB8}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MVVMAwesonium.UI</RootNamespace>
-    <AssemblyName>MVVMAwesonium.UI</AssemblyName>
+    <RootNamespace>MVVMAwesonium</RootNamespace>
+    <AssemblyName>MVVMAwesonium</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -34,6 +34,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -71,23 +74,27 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ViewModelExample\Local.cs" />
-    <Compile Include="ViewModelExample\Person.cs" />
-    <Compile Include="ViewModelExample\Skill.cs" />
-    <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="AwesomiumBinding\Helper\AwesomiumHelper.cs" />
+    <Compile Include="AwesomiumBinding\JavascriptToCSharp\JSBasicObject.cs" />
+    <Compile Include="AwesomiumBinding\JavascriptToCSharp\JSType.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\ICSharpMapper.cs" />
+    <Compile Include="JavascriptBindingMode.cs" />
+    <Compile Include="AwesomiumBinding\JavascriptToCSharp\IJSCBridgeExtender.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\GlobalBuilder.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\IJSOBuilder.cs" />
+    <Compile Include="AwesomiumBinding\JavascriptToCSharp\IJSCBridge.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\IJavascriptMapper.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\JavascriptSessionInjector.cs" />
+    <Compile Include="AwesomiumBinding\JavascriptToCSharp\JSArray.cs" />
+    <Compile Include="AwesomiumBinding\JavascriptToCSharp\JSGenericObject.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\BidirectionalMapper.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\LocalBuilder.cs" />
+    <Compile Include="Infra\AssemblyExtension.cs" />
+    <Compile Include="Infra\EnumarableCollection.cs" />
+    <Compile Include="AwesomeBinding.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\CSharpToJavascriptMapper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -110,43 +117,13 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="src\js\bower_components\jquery\.bower.json" />
-    <None Include="src\js\bower_components\jquery\bower.json" />
-    <None Include="src\js\bower_components\knockout\.bower.json" />
-    <None Include="src\js\bower_components\knockout\bower.json" />
-    <None Include="src\js\bower_components\knockout\LICENSE" />
-    <None Include="src\js\bower_components\knockout\package.json" />
-    <None Include="src\js\bower_components\knockout\README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MVVMAwesoniumPOC\MVVMAwesonium.csproj">
-      <Project>{9B18B122-A2FC-4537-AB68-5E1EC9959DB8}</Project>
-      <Name>MVVMAwesonium</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\MVVMAwesoniumPOC\Javascript\Ko_Extension.js">
-      <Link>src\js\Ko_Extension.js</Link>
+    <Content Include="Javascript\Ko_Extension.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\index.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Resource Include="src\js\bower_components\jquery\MIT-LICENSE.txt" />
-    <Content Include="src\js\bower_components\knockout\dist\knockout.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="src\js\bower_components\knockout\Gruntfile.js" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

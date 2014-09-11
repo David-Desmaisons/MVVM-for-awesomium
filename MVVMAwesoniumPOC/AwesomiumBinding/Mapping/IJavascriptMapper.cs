@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
-    internal interface IMapperListener
+    internal interface IJavascriptMapper
     {
         void RegisterFirst(JSObject iRoot);
 

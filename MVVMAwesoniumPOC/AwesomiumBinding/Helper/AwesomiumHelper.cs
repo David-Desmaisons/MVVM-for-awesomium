@@ -25,28 +25,28 @@ namespace MVVMAwesonium.AwesomiumBinding
             return null;
         }
 
-        private class Comparer : IEqualityComparer<JSObject>
-        {
-            public bool Equals(JSObject x, JSObject y)
-            {
-                if ((x.RemoteId == 0) || (y.RemoteId == 0))
-                    throw new NotSupportedException("Only remote javascript obejcts suported");
+        //private class Comparer : IEqualityComparer<JSObject>
+        //{
+        //    public bool Equals(JSObject x, JSObject y)
+        //    {
+        //        if ((x.RemoteId == 0) || (y.RemoteId == 0))
+        //            throw new NotSupportedException("Only remote javascript obejcts suported");
 
-                return x.RemoteId == y.RemoteId;
-            }
+        //        return x.RemoteId == y.RemoteId;
+        //    }
 
-            public int GetHashCode(JSObject obj)
-            {
-                if (obj.RemoteId == 0)
-                    throw new NotSupportedException("Only remote javascript obejcts suported");
+        //    public int GetHashCode(JSObject obj)
+        //    {
+        //        if (obj.RemoteId == 0)
+        //            throw new NotSupportedException("Only remote javascript obejcts suported");
 
-                return obj.RemoteId.GetHashCode();
-            }
-        }
+        //        return obj.RemoteId.GetHashCode();
+        //    }
+        //}
 
-        private static Comparer _Comparer = new Comparer();
+        //private static Comparer _Comparer = new Comparer();
 
-        public static IEqualityComparer<JSObject> RemoteObjectComparer { get { return _Comparer; } }
+        //public static IEqualityComparer<JSObject> RemoteObjectComparer { get { return _Comparer; } }
 
     }
 }

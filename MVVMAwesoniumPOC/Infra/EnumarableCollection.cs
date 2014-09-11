@@ -7,15 +7,15 @@ namespace MVVMAwesonium.Infra
 {
     public static class EnumarableCollection
     {
-        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> @this, Action<T> ToDo)
-        {
-            foreach (T el in @this)
-            {
-                ToDo(el);
-            }
+        //public static IEnumerable<T> ForEach<T>(this IEnumerable<T> @this, Action<T> ToDo)
+        //{
+        //    foreach (T el in @this)
+        //    {
+        //        ToDo(el);
+        //    }
 
-            return @this;
-        }
+        //    return @this;
+        //}
 
         //public static IEnumerable<T> Single<T>(this T @this)
         //{

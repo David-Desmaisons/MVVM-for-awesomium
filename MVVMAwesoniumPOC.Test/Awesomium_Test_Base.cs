@@ -51,7 +51,14 @@ namespace MVVMAwesonium.Test
         {
             T res = default(T);
             _SynchronizationContext.Send(_ => res = UnsafeGet(), null);
+            //Thread.Sleep(2000);
             return res;
+            //using (ManualResetEvent done = new ManualResetEvent(false))
+            //{
+            //    _SynchronizationContext.Send(_ => { res = UnsafeGet(); done.Set(); }, null);
+            //    done.WaitOne();
+            //}
+            //return res;
         }
 
         protected void DoSafe(Action Doact)
