@@ -72,6 +72,9 @@
           <property Id="6bca1d58-6bb9-48b9-b9c2-0518bf0125ae" name="CSharpValue" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
             <elementDefinition Id="9cf54f07-cc27-4f7b-bcaa-3a9123420aab" />
           </property>
+          <property Id="043dda0c-53ee-4830-894e-858b87aec5a3" name="Type" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="a0e088e8-5542-4239-8cef-345814067a0b" />
+          </property>
         </ownedAttributes>
         <ownedOperations>
           <operation Id="4081ed6a-1fe0-4758-b158-f921cb993b97" name="GetChildren" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
