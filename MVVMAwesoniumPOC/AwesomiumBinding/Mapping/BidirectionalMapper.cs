@@ -14,7 +14,7 @@ namespace MVVMAwesonium.AwesomiumBinding
 {
     public class BidirectionalMapper : IDisposable, ICSharpMapper
     {
-        private JavascriptBindingMode _BindingMode;
+        private readonly JavascriptBindingMode _BindingMode;
         private readonly IJSCBridge _Root;
         private CSharpToJavascriptMapper _JSObjectBuilder;
         private JavascriptSessionInjector _SessionInjector;
@@ -31,13 +31,19 @@ namespace MVVMAwesonium.AwesomiumBinding
             if (iMode == JavascriptBindingMode.TwoWay)
                 JavascriptObjecChanges = OnJavaScriptChanges;
 
-            _SessionInjector = new JavascriptSessionInjector(iwebview, JavascriptObjecChanges);
-            InjectInHTLMSession(_Root, true);
+            _SessionInjector = new JavascriptSessionInjector(iwebview, JavascriptObjecChanges);      
+        }
 
-            if (ListenToCSharp)
-            {
-                ListenToCSharpChanges(_Root);
-            }
+        internal Task Init()
+        {
+            return InjectInHTLMSession(_Root, true).ContinueWith(_ =>
+                {
+                    if (ListenToCSharp)
+                    {
+                        ListenToCSharpChanges(_Root);
+                    }
+                }
+            );
         }
 
         #region IJavascriptMapper
@@ -120,7 +126,7 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         private Task InjectInHTLMSession(IJSCBridge iroot, bool isroot = false)
         {
-            if (iroot.Type != JSType.Object)
+            if ((iroot==null) || (iroot.Type != JSType.Object))
             {
                 return TaskHelper.FromResult<object>(null);
             }
@@ -155,50 +161,66 @@ namespace MVVMAwesonium.AwesomiumBinding
 
             IJSCBridge newbridgedchild = _JSObjectBuilder.Map(nv);
 
-            var relistener = ReListen();
-
-            InjectInHTLMSession(newbridgedchild).ContinueWith(_ =>
-               WebCore.QueueWork(
-                   () =>
-                   {
-                       using (relistener)
-                       {
-                           currentfather.Reroot(pn, newbridgedchild);
-                       }
-                   }));
+            RegisterAndDo(newbridgedchild, ReListen(), () => currentfather.Reroot(pn, newbridgedchild));
         }
+
+        #region Relisten
 
         private class ReListener : IDisposable
         {
             private HashSet<INotifyPropertyChanged> _OldObject = new HashSet<INotifyPropertyChanged>();
             private HashSet<INotifyCollectionChanged> _OldCollections = new HashSet<INotifyCollectionChanged>();
+            private int _Count = 1;
 
             private BidirectionalMapper _BidirectionalMapper;
             public ReListener(BidirectionalMapper iBidirectionalMapper)
             {
                 _BidirectionalMapper = iBidirectionalMapper;
-                _BidirectionalMapper._Root.ApplyOnListenable((e)=>_OldObject.Add(e),(e)=>_OldCollections.Add(e));
+                _BidirectionalMapper._Root.ApplyOnListenable((e) => _OldObject.Add(e), (e) => _OldCollections.Add(e));
+            }
+
+            public void AddRef()
+            {
+                _Count++;
             }
 
             public void Dispose()
             {
-                   var newObject = new HashSet<INotifyPropertyChanged>();
-                   var new_Collections = new HashSet<INotifyCollectionChanged>();
+                if (--_Count == 0)
+                {
+                    Clean();
+                }
+            }
 
-                   _BidirectionalMapper._Root.ApplyOnListenable((e) => newObject.Add(e), (e) => new_Collections.Add(e));
+            private void Clean()
+            {
+                var newObject = new HashSet<INotifyPropertyChanged>();
+                var new_Collections = new HashSet<INotifyCollectionChanged>();
 
-                   _OldObject.Where(o => !newObject.Contains(o)).ForEach(o => o.PropertyChanged -= _BidirectionalMapper.Object_PropertyChanged);
-                   newObject.Where(o => !_OldObject.Contains(o)).ForEach(o => o.PropertyChanged += _BidirectionalMapper.Object_PropertyChanged);
+                _BidirectionalMapper._Root.ApplyOnListenable((e) => newObject.Add(e), (e) => new_Collections.Add(e));
 
-                   _OldCollections.Where(o => !new_Collections.Contains(o)).ForEach(o => o.CollectionChanged -= _BidirectionalMapper.CollectionChanged);
-                   new_Collections.Where(o => !_OldCollections.Contains(o)).ForEach(o => o.CollectionChanged += _BidirectionalMapper.CollectionChanged);                 
+                _OldObject.Where(o => !newObject.Contains(o)).ForEach(o => o.PropertyChanged -= _BidirectionalMapper.Object_PropertyChanged);
+                newObject.Where(o => !_OldObject.Contains(o)).ForEach(o => o.PropertyChanged += _BidirectionalMapper.Object_PropertyChanged);
+
+                _OldCollections.Where(o => !new_Collections.Contains(o)).ForEach(o => o.CollectionChanged -= _BidirectionalMapper.CollectionChanged);
+                new_Collections.Where(o => !_OldCollections.Contains(o)).ForEach(o => o.CollectionChanged += _BidirectionalMapper.CollectionChanged);
+
+                _BidirectionalMapper._ReListen = null;
             }
         }
 
+        private ReListener _ReListen = null;
         private IDisposable ReListen()
         {
-            return new ReListener(this);
+            if (_ReListen!=null)
+                _ReListen.AddRef();
+            else
+                _ReListen = new ReListener(this);
+
+            return _ReListen;
         }
+
+        #endregion
 
         private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -216,30 +238,7 @@ namespace MVVMAwesonium.AwesomiumBinding
                     if (addvalue == null)
                         return;
 
-                    InjectInHTLMSession(addvalue).ContinueWith(_ =>
-                        WebCore.QueueWork(
-                            () =>
-                            {
-                                using (listen)
-                                {
-                                    InjectInHTLMSession(addvalue);
-                                    arr.Add(addvalue, e.NewStartingIndex);
-                                }
-                            }));
-
-                    break;
-
-                case NotifyCollectionChangedAction.Remove:
-
-                    WebCore.QueueWork(
-                        () =>
-                        {
-                            using (listen)
-                            {
-                                arr.Remove(e.OldStartingIndex);
-                            }
-                        });
-
+                    RegisterAndDo(addvalue, listen, () => arr.Add(addvalue, e.NewStartingIndex));
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
@@ -248,30 +247,30 @@ namespace MVVMAwesonium.AwesomiumBinding
                     if (newvalue == null)
                         return;
 
-                    InjectInHTLMSession(newvalue).ContinueWith(_ =>
+                    RegisterAndDo(newvalue,listen, () => arr.Insert(newvalue, e.NewStartingIndex) );
+                    break;
 
-                        WebCore.QueueWork(
-                        () =>
-                        {
-                            using (listen)
-                            {
-                               arr.Insert(newvalue, e.NewStartingIndex);
-                            }
-                        }));
+                case NotifyCollectionChangedAction.Remove:
+                    RegisterAndDo(null, listen, () => arr.Remove(e.OldStartingIndex));
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    WebCore.QueueWork(
-                        () =>
-                        {
-                            using (listen)
-                            {
-                                arr.Reset();
-                            }
-                        });
-
+                    RegisterAndDo(null, listen, () => arr.Reset());
                     break;
             }
+        }
+
+        private void RegisterAndDo(IJSCBridge ivalue, IDisposable idisp, Action Do)
+        {
+            InjectInHTLMSession(ivalue).ContinueWith(_ =>
+                WebCore.QueueWork(() =>
+                    {
+                        using (idisp)
+                        {
+                            Do();
+                        }
+                    }
+                ));
         }
 
         public void Dispose()

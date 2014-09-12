@@ -65,7 +65,7 @@ namespace MVVMAwesonium.UI
 
             _Person.Local = new Local() { City="Paris", Region="IDF"};
 
-            _Person.Skills.Insert(0,new Skill() { Name = "Info", Type = "javascript" });
+            _Person.Skills.Insert(0, new Skill() { Name = "Info", Type = "javascript" });
 
             //_Person.Skills.RemoveAt(_Person.Skills.Count-1);
 

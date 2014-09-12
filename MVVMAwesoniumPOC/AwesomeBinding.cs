@@ -39,7 +39,8 @@ namespace MVVMAwesonium.AwesomiumBinding
 
             Action ToBeApply = () =>
                     {
-                        tcs.SetResult(new AwesomeBinding(new BidirectionalMapper(iViewModel, view, iMode)));
+                        var mapper = new BidirectionalMapper(iViewModel, view, iMode);
+                        mapper.Init().ContinueWith(_ => tcs.SetResult(new AwesomeBinding(mapper)));
                     };
 
             if (view.IsDocumentReady)

@@ -43,10 +43,8 @@ namespace MVVMAwesonium.Test
 
             using (var mb = AwesomeBinding.Bind(_WebView, _DataContext,JavascriptBindingMode.OneWay).Result)
             {  
-                Thread.Sleep(500);
                 var js = mb.JSRootObject;
               
-
                 JSValue res = GetSafe(() => js.Invoke("Name"));
                 ((string)res).Should().Be("O Monstro");
 
@@ -56,7 +54,7 @@ namespace MVVMAwesonium.Test
                 _DataContext.Name = "23";
 
                 JSValue res3 = GetSafe(() => js.Invoke("Name"));
-                ((string)res3).Should().Be("23");
+                ((string)res3).Should().Be("O Monstro");
 
                 JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
                 ((string)res4).Should().Be("Florianopolis");
@@ -64,7 +62,7 @@ namespace MVVMAwesonium.Test
                 _DataContext.Local.City = "Paris";
 
                 res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
-                ((string)res4).Should().Be("Paris");
+                ((string)res4).Should().Be("Florianopolis");
 
                 JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
                 ((string)res5).Should().Be("Langage");
@@ -72,8 +70,10 @@ namespace MVVMAwesonium.Test
                 _DataContext.Skills[0].Name = "Ling";
 
                 res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
-                ((string)res5).Should().Be("Ling");
+                ((string)res5).Should().Be("Langage");
             }
+
+            //WebCore.Shutdown();
         }
 
         private Task WaitLoad(IWebView view)
@@ -100,6 +100,8 @@ namespace MVVMAwesonium.Test
             {
                 mb.Should().NotBeNull();
             }
+
+            //WebCore.Shutdown();
         }
 
         private JSValue Get(JSObject root, string pn)
@@ -116,7 +118,6 @@ namespace MVVMAwesonium.Test
 
             using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
             {
-                Thread.Sleep(500);
                 //Teste One Way
                 var js = mb.JSRootObject;
 
@@ -128,6 +129,7 @@ namespace MVVMAwesonium.Test
 
                 _DataContext.Name = "23";
 
+                Thread.Sleep(50);
                 JSValue res3 = GetSafe(() => js.Invoke("Name"));
                 ((string)res3).Should().Be("23");
 
@@ -135,6 +137,7 @@ namespace MVVMAwesonium.Test
                 ((string)res4).Should().Be("Florianopolis");
 
                 _DataContext.Local.City = "Paris";
+                Thread.Sleep(50);
 
                 res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
                 ((string)res4).Should().Be("Paris");
@@ -143,6 +146,7 @@ namespace MVVMAwesonium.Test
                 ((string)res5).Should().Be("Langage");
 
                 _DataContext.Skills[0].Name = "Ling";
+                Thread.Sleep(50);
 
                 res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
                 ((string)res5).Should().Be("Ling");
@@ -156,6 +160,8 @@ namespace MVVMAwesonium.Test
 
                 _DataContext.Name.Should().Be("resName");
             }
+
+            //WebCore.Shutdown();
         }
     }
 };
