@@ -36,6 +36,12 @@ namespace MVVMAwesonium.AwesomiumBinding
             Items.RemoveAt(Index);
         }
 
+        public void Reset()
+        {
+            ((JSObject)JSValue).Invoke("removeAll");
+            Items.Clear();
+        }
+
         public JSValue JSValue { get; set; }
 
         public object CValue { get; set; }

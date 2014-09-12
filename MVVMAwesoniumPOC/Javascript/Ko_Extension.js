@@ -42,10 +42,8 @@
                          if ( Mapper.RegisterMapping) Mapper.RegisterMapping(res, att, -1, res[att]);
                      }
                  } else {
-                     res[att] = ko.observable(value).extend({
-                         rateLimit: 200
-                     });
-                     if ((Listener) && (Listener.TrackChanges)) {
+                     res[att] = ko.observable(value);
+                     if (Listener.TrackChanges) {
                          res[att].subscribe(PropertyListener(res, att, Listener));
                      }
                  }
