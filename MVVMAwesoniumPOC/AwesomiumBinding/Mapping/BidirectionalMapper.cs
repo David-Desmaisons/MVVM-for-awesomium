@@ -240,6 +240,18 @@ namespace MVVMAwesonium.AwesomiumBinding
                         });
 
                     break;
+
+                case NotifyCollectionChangedAction.Reset:
+                    WebCore.QueueWork(
+                        () =>
+                        {
+                            using (ReListen())
+                            {
+                                arr.Reset();
+                            }
+                        });
+
+                    break;
             }
         }
 

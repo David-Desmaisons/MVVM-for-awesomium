@@ -6,9 +6,9 @@ using Awesomium.Core;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
-    public class JSBasicObject : IJSCBridge
+    internal class JSBasicObject : IJSCBridge
     {
-        public JSBasicObject(JSValue value, object icValue)
+        internal JSBasicObject(JSValue value, object icValue)
         {
             JSValue = value;
             CValue = icValue;
