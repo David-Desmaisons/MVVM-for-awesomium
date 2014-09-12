@@ -43,6 +43,8 @@ namespace MVVMAwesonium.AwesomiumBinding
                     iMapperListener.RegisterMapping((JSObject)e.Arguments[0], (string)e.Arguments[1], (JSObject)e.Arguments[3]);
             });
 
+            mapper.Bind("End", false, (o, e) => iMapperListener.End((JSObject)e.Arguments[0]));
+
             return mapper;
         }
 

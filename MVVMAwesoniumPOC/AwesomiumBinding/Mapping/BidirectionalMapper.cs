@@ -6,6 +6,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using MVVMAwesonium.Infra;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
@@ -43,6 +46,7 @@ namespace MVVMAwesonium.AwesomiumBinding
         {
             private IJSCBridge _Root;
             private BidirectionalMapper _LiveMapper;
+            private TaskCompletionSource<object> _TCS = new TaskCompletionSource<object>();
             public JavascriptMapper(IJSCBridge iRoot, BidirectionalMapper iFather)
             {
                 _LiveMapper = iFather;
@@ -62,6 +66,13 @@ namespace MVVMAwesonium.AwesomiumBinding
             public void RegisterCollectionMapping(JSObject iFather, string att, int index, JSObject iChild)
             {
                 _LiveMapper.RegisterCollectionMapping(iFather, att, index, iChild);
+            }
+
+            internal Task UpdateTask { get { return _TCS.Task; } }
+
+            public void End(JSObject iRoot)
+            {
+                _TCS.TrySetResult(null);
             }
         }
 
@@ -107,12 +118,16 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         public JSObject JSValueRoot { get { return _Root.JSValue; } }
 
-        private void InjectInHTLMSession(IJSCBridge iroot, bool isroot = false)
+        private Task InjectInHTLMSession(IJSCBridge iroot, bool isroot = false)
         {
             if (iroot.Type != JSType.Object)
-                return;
+            {
+                return TaskHelper.FromResult<object>(null);
+            }
 
-            _SessionInjector.Map(iroot, new JavascriptMapper(iroot, this));
+            var jvm = new JavascriptMapper(iroot, this);
+            _SessionInjector.Map(iroot, jvm);
+            return jvm.UpdateTask;
         }
 
         private void OnJavaScriptChanges(JSObject objectchanged, string PropertyName, JSValue newValue)
@@ -139,42 +154,44 @@ namespace MVVMAwesonium.AwesomiumBinding
                 return;
 
             IJSCBridge newbridgedchild = _JSObjectBuilder.Map(nv);
-            
-            
-            bool needrelisten = ListenToCSharp && ((newbridgedchild.Type == JSType.Object) ||
-                                    (oldbridgedchild.Type == JSType.Object));
 
-            WebCore.QueueWork(
-                () =>
-                {
-                    InjectInHTLMSession(newbridgedchild);
+            var relistener = ReListen();
 
-                    using (IDisposable d = (needrelisten) ? ReListen() : null)
-                    {
-                        currentfather.Reroot(pn, newbridgedchild);
-                        var el = (JSObject)currentfather.JSValue;
-                        el.Invoke(pn, newbridgedchild.JSValue);
-                    }
-                });
-        }
-
-        private void Connect(IJSCBridge ibridged)
-        {
-            InjectInHTLMSession(ibridged);
+            InjectInHTLMSession(newbridgedchild).ContinueWith(_ =>
+               WebCore.QueueWork(
+                   () =>
+                   {
+                       using (relistener)
+                       {
+                           currentfather.Reroot(pn, newbridgedchild);
+                       }
+                   }));
         }
 
         private class ReListener : IDisposable
         {
+            private HashSet<INotifyPropertyChanged> _OldObject = new HashSet<INotifyPropertyChanged>();
+            private HashSet<INotifyCollectionChanged> _OldCollections = new HashSet<INotifyCollectionChanged>();
+
             private BidirectionalMapper _BidirectionalMapper;
             public ReListener(BidirectionalMapper iBidirectionalMapper)
             {
                 _BidirectionalMapper = iBidirectionalMapper;
-                _BidirectionalMapper.UnlistenToCSharpChanges(_BidirectionalMapper._Root);
+                _BidirectionalMapper._Root.ApplyOnListenable((e)=>_OldObject.Add(e),(e)=>_OldCollections.Add(e));
             }
 
             public void Dispose()
             {
-                _BidirectionalMapper.ListenToCSharpChanges(_BidirectionalMapper._Root);
+                   var newObject = new HashSet<INotifyPropertyChanged>();
+                   var new_Collections = new HashSet<INotifyCollectionChanged>();
+
+                   _BidirectionalMapper._Root.ApplyOnListenable((e) => newObject.Add(e), (e) => new_Collections.Add(e));
+
+                   _OldObject.Where(o => !newObject.Contains(o)).ForEach(o => o.PropertyChanged -= _BidirectionalMapper.Object_PropertyChanged);
+                   newObject.Where(o => !_OldObject.Contains(o)).ForEach(o => o.PropertyChanged += _BidirectionalMapper.Object_PropertyChanged);
+
+                   _OldCollections.Where(o => !new_Collections.Contains(o)).ForEach(o => o.CollectionChanged -= _BidirectionalMapper.CollectionChanged);
+                   new_Collections.Where(o => !_OldCollections.Contains(o)).ForEach(o => o.CollectionChanged += _BidirectionalMapper.CollectionChanged);                 
             }
         }
 
@@ -189,7 +206,7 @@ namespace MVVMAwesonium.AwesomiumBinding
             if (arr == null)
                 return;
 
-            var el = (JSObject)arr.JSValue;
+            var listen = ReListen();
 
             switch (e.Action)
             {
@@ -199,23 +216,25 @@ namespace MVVMAwesonium.AwesomiumBinding
                     if (addvalue == null)
                         return;
 
-                    WebCore.QueueWork(
-                        () =>
-                        {
-                            using (ReListen())
+                    InjectInHTLMSession(addvalue).ContinueWith(_ =>
+                        WebCore.QueueWork(
+                            () =>
                             {
-                                InjectInHTLMSession(addvalue);
-                                arr.Add(addvalue, e.NewStartingIndex);
-                            }
-                        });
+                                using (listen)
+                                {
+                                    InjectInHTLMSession(addvalue);
+                                    arr.Add(addvalue, e.NewStartingIndex);
+                                }
+                            }));
 
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
+
                     WebCore.QueueWork(
                         () =>
                         {
-                            using (ReListen())
+                            using (listen)
                             {
                                 arr.Remove(e.OldStartingIndex);
                             }
@@ -229,23 +248,23 @@ namespace MVVMAwesonium.AwesomiumBinding
                     if (newvalue == null)
                         return;
 
-                    WebCore.QueueWork(
+                    InjectInHTLMSession(newvalue).ContinueWith(_ =>
+
+                        WebCore.QueueWork(
                         () =>
                         {
-                            using (ReListen())
+                            using (listen)
                             {
-                                InjectInHTLMSession(newvalue);
-                                arr.Insert(newvalue, e.NewStartingIndex);
+                               arr.Insert(newvalue, e.NewStartingIndex);
                             }
-                        });
-
+                        }));
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
                     WebCore.QueueWork(
                         () =>
                         {
-                            using (ReListen())
+                            using (listen)
                             {
                                 arr.Reset();
                             }

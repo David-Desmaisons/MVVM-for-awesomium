@@ -13,5 +13,7 @@ namespace MVVMAwesonium.AwesomiumBinding
         void RegisterMapping(JSObject iFather,string att, JSObject iChild);
 
         void RegisterCollectionMapping(JSObject iFather, string att, int index, JSObject iChild);
+
+        void End(JSObject iRoot);
     }
 }

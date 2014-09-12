@@ -50,6 +50,8 @@
              }
          }
 
+         if (first && (Mapper.End)) Mapper.End(res);
+
          return res;
      }
 
