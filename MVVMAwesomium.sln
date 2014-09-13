@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.UI", "MVVMAwe
 EndProject
 Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ProjectUML", "ModelingProject1\ProjectUML.modelproj", "{D216F584-18BE-4D16-9A9A-8B1F0FBAC180}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.UI2", "MVVMAwesomium.UI2\MVVMAwesomium.UI2.csproj", "{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,16 @@ Global
 		{D216F584-18BE-4D16-9A9A-8B1F0FBAC180}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{D216F584-18BE-4D16-9A9A-8B1F0FBAC180}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D216F584-18BE-4D16-9A9A-8B1F0FBAC180}.Release|x86.ActiveCfg = Release|Any CPU
+		{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

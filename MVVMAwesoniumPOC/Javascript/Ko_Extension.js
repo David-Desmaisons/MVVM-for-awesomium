@@ -14,34 +14,59 @@
     }
 
 
-    function MapToObservable(or, first, Mapper, Listener) {
-        if (typeof value === 'object')
-            return or;
+    function MapToObservable(or, context, Mapper, Listener) {
 
-        var res = {};
+        if (typeof or !== 'object') return or;
+
+        if (!MapToObservable.Cache) {
+            MapToObservable.Cache = {};
+            MapToObservable._MappedId = 0;
+        }
+
+        //not very clean, but must handle "read-only" object with predefined _MappedId
+        if (or._MappedId)
+        {
+            var tentative = MapToObservable.Cache[or._MappedId];
+            if (tentative) return tentative;
+        }
+        else
+        {
+            while (MapToObservable.Cache[MapToObservable._MappedId]) { MapToObservable._MappedId++;};
+            or._MappedId = MapToObservable._MappedId;
+        }
 
         if (!Mapper) Mapper = {};
         if (!Listener) Listener = {};
 
-        if (first && (Mapper.RegisterFirst)) Mapper.RegisterFirst(res);
+        var res = {};     
+        MapToObservable.Cache[or._MappedId] = res;
+        if (Mapper.Register) Mapper.Register(res, context);
 
         for (var att in or) {
-            if (or.hasOwnProperty(att)) {
+            if ((att!="_MappedId") && (or.hasOwnProperty(att))) {
                 var value = or[att];
                 if ((value !== null) && (typeof value === 'object')) {
                     if (!Array.isArray(value)) {
-                        res[att] = ko.observable(MapToObservable(value, false, Mapper, Listener));
-                        if (Mapper.RegisterMapping) Mapper.RegisterMapping(res, att, -1, res[att]());
+                        res[att] = ko.observable(MapToObservable(value, {
+                            object: res,
+                            attribute: att
+                        }, Mapper, Listener));
                     } else {
+                        debugger;
                         var nar = [];
                         for (var i in value) {
-                            var eli = MapToObservable(value[i], false, Mapper, Listener);
-                            nar.push(eli);
-                            if (Mapper.RegisterMapping) Mapper.RegisterMapping(res, att, i, eli);
+                            nar.push(MapToObservable(value[i], {
+                                object: res,
+                                attribute: att,
+                                index: i
+                            }, Mapper, Listener));
                         }
 
                         res[att] = ko.observableArray(nar);
-                        if (Mapper.RegisterMapping) Mapper.RegisterMapping(res, att, -1, res[att]);
+                        if (Mapper.Register) Mapper.Register(res[att], {
+                            object: res,
+                            attribute: att
+                        });
                     }
                 } else {
                     res[att] = ko.observable(value);
@@ -52,16 +77,16 @@
             }
         }
 
-        if (first && (Mapper.End)) Mapper.End(res);
+        if ((context === null) && (Mapper.End)) Mapper.End(res);
 
         return res;
     }
 
-
     //global ko
     ko.MapToObservable = function (o, mapper, listener) {
-        return MapToObservable(o, true, mapper, listener);
+        return MapToObservable(o, null, mapper, listener);
     };
+
     //global ko 
     ko.bindingHandlers.ExecuteOnEnter = {
         init: function (element, valueAccessor, allBindings, viewModel) {

@@ -161,7 +161,7 @@ namespace MVVMAwesonium.AwesomiumBinding
 
             IJSCBridge newbridgedchild = _JSObjectBuilder.Map(nv);
 
-            RegisterAndDo(newbridgedchild, ReListen(), () => currentfather.Reroot(pn, newbridgedchild));
+            RegisterAndDo(newbridgedchild, () => currentfather.Reroot(pn, newbridgedchild));
         }
 
         #region Relisten
@@ -228,8 +228,7 @@ namespace MVVMAwesonium.AwesomiumBinding
             if (arr == null)
                 return;
 
-            var listen = ReListen();
-
+  
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -238,7 +237,7 @@ namespace MVVMAwesonium.AwesomiumBinding
                     if (addvalue == null)
                         return;
 
-                    RegisterAndDo(addvalue, listen, () => arr.Add(addvalue, e.NewStartingIndex));
+                    RegisterAndDo(addvalue, () => arr.Add(addvalue, e.NewStartingIndex));
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
@@ -247,21 +246,23 @@ namespace MVVMAwesonium.AwesomiumBinding
                     if (newvalue == null)
                         return;
 
-                    RegisterAndDo(newvalue,listen, () => arr.Insert(newvalue, e.NewStartingIndex) );
+                    RegisterAndDo(newvalue, () => arr.Insert(newvalue, e.NewStartingIndex) );
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
-                    RegisterAndDo(null, listen, () => arr.Remove(e.OldStartingIndex));
+                    RegisterAndDo(null, () => arr.Remove(e.OldStartingIndex));
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    RegisterAndDo(null, listen, () => arr.Reset());
+                    RegisterAndDo(null, () => arr.Reset());
                     break;
             }
         }
 
-        private void RegisterAndDo(IJSCBridge ivalue, IDisposable idisp, Action Do)
+        private void RegisterAndDo(IJSCBridge ivalue, Action Do)
         {
+            var idisp = ReListen();
+
             InjectInHTLMSession(ivalue).ContinueWith(_ =>
                 WebCore.QueueWork(() =>
                     {

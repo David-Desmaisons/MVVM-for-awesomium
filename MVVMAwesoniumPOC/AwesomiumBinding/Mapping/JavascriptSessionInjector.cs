@@ -30,17 +30,22 @@ namespace MVVMAwesonium.AwesomiumBinding
         {
             var mapper = _GlobalBuilder.CreateJSO();
 
-            mapper.Bind("RegisterFirst", false, (o, e) => 
-                iMapperListener.RegisterFirst((JSObject)e.Arguments[0]));
-
-            mapper.Bind("RegisterMapping", false, (o, e) =>
+            mapper.Bind("Register", false, (o, e) =>
             {
-                string pn = (string)e.Arguments[2];
-                int index = -1;
-                if ((int.TryParse(pn, out index)) && (index != -1))
-                    iMapperListener.RegisterCollectionMapping((JSObject)e.Arguments[0], (string)e.Arguments[1], index, (JSObject)e.Arguments[3]);
+                JSObject registerd = (JSObject)e.Arguments[0];
+                JSObject Context = (JSObject)e.Arguments[1];
+
+                if (Context == null)
+                {
+                    iMapperListener.RegisterFirst(registerd);
+                    return;
+                }
+
+                if (Context.HasProperty("index"))
+                    iMapperListener.RegisterCollectionMapping((JSObject)Context["object"],
+                        (string)Context["attribute"], int.Parse(Context["index"]), registerd);
                 else
-                    iMapperListener.RegisterMapping((JSObject)e.Arguments[0], (string)e.Arguments[1], (JSObject)e.Arguments[3]);
+                    iMapperListener.RegisterMapping((JSObject)Context["object"], (string)Context["attribute"], registerd);
             });
 
             mapper.Bind("End", false, (o, e) => iMapperListener.End((JSObject)e.Arguments[0]));

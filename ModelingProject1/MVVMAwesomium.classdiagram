@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm5="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" dslVersion="1.0.0.0" Id="bf543072-62cb-4c06-8ab5-74bcab525d44" name="MVVMAwesomium" linkedPackageId="d2c7ea2a-7bec-4509-b663-4324b4197965" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" dslVersion="1.0.0.0" Id="bf543072-62cb-4c06-8ab5-74bcab525d44" name="MVVMAwesomium" linkedPackageId="d2c7ea2a-7bec-4509-b663-4324b4197965" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
   <packagedElements>
     <logicalClassDesignerModelHasTypes>
       <class Id="6265210d-2f06-4bd1-9467-9346af4d1de2" name="AwesomiumBinding" isAbstract="false" isLeaf="false" isActiveClass="false">
@@ -315,11 +315,6 @@
     <logicalClassDesignerModelHasTypes>
       <Interface Id="159d1921-659c-4725-83cb-aad010f32133" name="ICSharpMapper" isAbstract="false" isLeaf="false">
         <elementDefinition Id="39542b90-3ef4-46b1-9bde-300ef5020aab" />
-        <ownedAttributes>
-          <property Id="65f5eefa-3f65-40c8-b550-91931bbcba53" name="IsBasic" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
-            <elementDefinition Id="de0eabf5-ba8d-4d84-b3c0-9d158503d50c" />
-          </property>
-        </ownedAttributes>
         <ownedOperations>
           <operation Id="974d4df7-7803-48b6-b620-477b34a64311" name="GetCached" isLeaf="false" isStatic="false" isAbstract="true" concurrency="Sequential" isQuery="false">
             <elementDefinition Id="b79d9308-7164-4214-b7ae-9b231e3c8544" />
