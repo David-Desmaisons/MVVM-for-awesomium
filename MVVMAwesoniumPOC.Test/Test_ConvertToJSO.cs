@@ -59,7 +59,8 @@ namespace MVVMAwesonium.Test
         public void Test_Null()
         {
             JSValue res = _ConverTOJSO.Map(null).JSValue;
-            res.IsNull.Should().BeTrue();
+            res.IsObject.Should().BeTrue();
+            ((JSObject)res).GetPropertyNames().Length.Should().Be(0);
         }
 
         [Fact]

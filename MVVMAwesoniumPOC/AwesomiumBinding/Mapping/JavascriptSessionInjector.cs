@@ -53,7 +53,7 @@ namespace MVVMAwesonium.AwesomiumBinding
             return mapper;
         }
 
-        public void Map(IJSCBridge ihybridobject, IJavascriptMapper ijvm, bool IsRoot = true)
+        public void Map(IJSCBridge ihybridobject, IJavascriptMapper ijvm, bool IsRoot = false)
         {
             using (var mapp = GetMapper(ijvm))
             {

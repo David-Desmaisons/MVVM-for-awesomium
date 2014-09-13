@@ -8,9 +8,13 @@ namespace MVVMAwesonium.AwesomiumBinding
 {
     public class LocalBuilder : IJSOBuilder
     {
+       private static int _MapCount = 0;         
+
         public JSObject CreateJSO()
         {
-            return new JSObject();
+            JSObject res =new JSObject();
+            res["_MappedId"] = new JSValue(_MapCount++);
+            return res;
         }
     }
 }

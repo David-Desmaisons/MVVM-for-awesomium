@@ -14,8 +14,6 @@ namespace MVVMAwesonium.AwesomiumBinding
     {
         private readonly IJSOBuilder _IJSOBuilder;
         private readonly ICSharpMapper _Cacher;
-        private static int _MapCount = 0;
-
         public CSharpToJavascriptMapper(IJSOBuilder Builder, ICSharpMapper icacher)
         {
             _IJSOBuilder = Builder;
@@ -25,7 +23,7 @@ namespace MVVMAwesonium.AwesomiumBinding
         internal IJSCBridge Map(object ifrom)
         {
             if (ifrom == null)
-                return new JSGenericObject(new JSObject(), ifrom);
+                return new JSGenericObject(_IJSOBuilder.CreateJSO(), ifrom);
 
             dynamic dfr = ifrom;
             JSValue value;
@@ -47,8 +45,7 @@ namespace MVVMAwesonium.AwesomiumBinding
             }
 
             JSObject resobject = _IJSOBuilder.CreateJSO();
-            resobject["_MappedId"] = new JSValue(_MapCount++);
-
+   
             JSGenericObject gres = new JSGenericObject(new JSValue(resobject), ifrom);
 
             PropertyInfo[] propertyInfos = ifrom.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
@@ -59,7 +56,7 @@ namespace MVVMAwesonium.AwesomiumBinding
                 resobject[pn] = child.JSValue;
                 gres.Attributes[pn]=child;
             }
-       
+      
             _Cacher.Cache(ifrom, gres);
             return gres;
         }

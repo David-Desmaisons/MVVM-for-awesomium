@@ -132,7 +132,7 @@ namespace MVVMAwesonium.AwesomiumBinding
             }
 
             var jvm = new JavascriptMapper(iroot, this);
-            _SessionInjector.Map(iroot, jvm);
+            _SessionInjector.Map(iroot, jvm, isroot);
             return jvm.UpdateTask;
         }
 

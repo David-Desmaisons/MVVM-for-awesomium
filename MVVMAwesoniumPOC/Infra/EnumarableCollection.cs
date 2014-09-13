@@ -16,10 +16,5 @@ namespace MVVMAwesonium.Infra
 
             return @this;
         }
-
-        //public static IEnumerable<T> Single<T>(this T @this)
-        //{
-        //    yield return @this;
-        //}
     }
 }

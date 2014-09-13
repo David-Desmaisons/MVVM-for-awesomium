@@ -23,20 +23,25 @@
             MapToObservable._MappedId = 0;
         }
 
+        if (!Mapper) Mapper = {};
+        if (!Listener) Listener = {};
+
+
         //not very clean, but must handle "read-only" object with predefined _MappedId
         if (or._MappedId)
         {
             var tentative = MapToObservable.Cache[or._MappedId];
-            if (tentative) return tentative;
+            if (tentative)
+            {
+                if ((context === null) && (Mapper.End)) Mapper.End(res);
+                return tentative;
+            }
         }
         else
         {
             while (MapToObservable.Cache[MapToObservable._MappedId]) { MapToObservable._MappedId++;};
             or._MappedId = MapToObservable._MappedId;
         }
-
-        if (!Mapper) Mapper = {};
-        if (!Listener) Listener = {};
 
         var res = {};     
         MapToObservable.Cache[or._MappedId] = res;
