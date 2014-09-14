@@ -3,6 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+/// <reference path="../../../MVVMAwesoniumPOC/Javascript/knockout.js" />
+/// <reference path="../../../MVVMAwesoniumPOC/Javascript//Ko_Extension.js" />
+
 
 describe("MapToObservable", function () {
     var basicmaped = { Name: "Albert", LastName: "Einstein" };
