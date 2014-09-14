@@ -43,8 +43,8 @@ namespace MVVMAwesomium.UI2
                 LastName = "Desmaisons",
                 Local = new Local() { City = "Florianopolis", Region = "SC" }
             };
-            datacontext.Two = datacontext.One;
-            //datacontext.Two = null;
+            //datacontext.Two = datacontext.One;
+            datacontext.Two = null;
 
             AwesomeBinding.Bind(f, datacontext, JavascriptBindingMode.TwoWay);
 

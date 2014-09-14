@@ -60,7 +60,8 @@ namespace MVVMAwesonium.Test
         {
             JSValue res = _ConverTOJSO.Map(null).JSValue;
             res.IsObject.Should().BeTrue();
-            ((JSObject)res).GetPropertyNames().Length.Should().Be(0);
+            ((JSObject)res).GetPropertyNames().Length.Should().Be(1);
+            ((JSObject)res).HasProperty("_MappedId").Should().BeTrue();
         }
 
         [Fact]

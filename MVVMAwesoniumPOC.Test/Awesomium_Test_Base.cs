@@ -31,7 +31,7 @@ namespace MVVMAwesonium.Test
                 WebSession session = WebCore.CreateWebSession(WebPreferences.Default);
 
                 _WebView = WebCore.CreateWebView(500, 500);
-                _WebView.Source = new Uri(string.Format("{0}\\src\\index.html", Assembly.GetExecutingAssembly().GetPath()));
+                _WebView.Source = new Uri(string.Format("{0}\\javascript\\index.html", Assembly.GetExecutingAssembly().GetPath()));
 
                 WebCore.Started += (o, e) => { tcs.SetResult(SynchronizationContext.Current); };
 

@@ -76,30 +76,45 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="src\js\bower_components\jquery\.bower.json" />
-    <None Include="src\js\bower_components\jquery\bower.json" />
-    <None Include="src\js\bower_components\knockout\.bower.json" />
-    <None Include="src\js\bower_components\knockout\bower.json" />
-    <None Include="src\js\bower_components\knockout\LICENSE" />
-    <None Include="src\js\bower_components\knockout\package.json" />
-    <None Include="src\js\bower_components\knockout\README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\MVVMAwesoniumPOC\Javascript\knockout.js">
+      <Link>javascript\src\knockout.js</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="..\MVVMAwesoniumPOC\Javascript\Ko_Extension.js">
-      <Link>src\js\Ko_Extension.js</Link>
+      <Link>javascript\src\Ko_Extension.js</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\index.html">
+    <Content Include="javascript\lib\jasmine-2.0.3\boot.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\js\bower_components\knockout\dist\knockout.js">
+    <Content Include="javascript\lib\jasmine-2.0.3\console.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="src\js\bower_components\knockout\Gruntfile.js" />
+    <Content Include="javascript\lib\jasmine-2.0.3\jasmine-html.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="javascript\lib\jasmine-2.0.3\jasmine.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="javascript\lib\jasmine-2.0.3\jasmine.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="javascript\lib\jasmine-2.0.3\jasmine_favicon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="javascript\SpecRunner.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="javascript\index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="javascript\spec\MapToObservable.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

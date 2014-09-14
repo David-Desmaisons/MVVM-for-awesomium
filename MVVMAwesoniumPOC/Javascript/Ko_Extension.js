@@ -1,10 +1,3 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- * global ko
- */
-
 (function () {
 
     function PropertyListener(object, propertyname, listener) {
@@ -12,7 +5,6 @@
             listener.TrackChanges(object, propertyname, newvalue);
         };
     }
-
 
     function MapToObservable(or, context, Mapper, Listener) {
 
@@ -25,7 +17,6 @@
 
         if (!Mapper) Mapper = {};
         if (!Listener) Listener = {};
-
 
         //not very clean, but must handle "read-only" object with predefined _MappedId
         if (or._MappedId)

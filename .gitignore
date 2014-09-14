@@ -181,3 +181,4 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+/MVVMAwesomium.javascript.test/nbproject/private/

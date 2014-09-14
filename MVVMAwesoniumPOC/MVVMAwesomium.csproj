@@ -120,6 +120,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Javascript\knockout.js" />
     <Content Include="Javascript\Ko_Extension.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
