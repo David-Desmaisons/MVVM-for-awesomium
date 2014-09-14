@@ -14,10 +14,9 @@ using System.Windows.Shapes;
 using Awesomium.Core;
 using System.Reflection;
 
-using MVVMAwesonium.ViewModel;
-using MVVMAwesonium.ViewModelExample;
 using MVVMAwesonium.AwesomiumBinding;
 using MVVMAwesonium.Infra;
+using MVVMAwesonium.ViewModel.Example;
 
 namespace MVVMAwesonium.UI
 {

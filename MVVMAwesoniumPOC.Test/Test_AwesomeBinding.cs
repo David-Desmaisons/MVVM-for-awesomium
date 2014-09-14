@@ -6,12 +6,13 @@ using Awesomium.Core;
 using Xunit;
 using NSubstitute;
 using FluentAssertions;
-using MVVMAwesonium.ViewModelExample;
 using MVVMAwesonium.AwesomiumBinding;
 
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Threading;
+
+using MVVMAwesonium.ViewModel.Example;
 
 namespace MVVMAwesonium.Test
 {

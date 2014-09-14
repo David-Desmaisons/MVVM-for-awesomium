@@ -5,7 +5,7 @@ using System.Text;
 using MVVMAwesonium.ViewModel;
 using System.Collections.ObjectModel;
 
-namespace MVVMAwesonium.ViewModelExample
+namespace MVVMAwesonium.ViewModel.Example
 {
     public class Person : ViewModelBase
     {

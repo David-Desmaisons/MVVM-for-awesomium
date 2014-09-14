@@ -65,9 +65,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MVVMAwesoniumPOCUI\MVVMAwesomium.UI.csproj">
-      <Project>{83FD4663-5C46-4885-83DB-D65C99A1C9F0}</Project>
-      <Name>MVVMAwesomium.UI</Name>
+    <ProjectReference Include="..\MVVMAwesomium.ViewModel\MVVMAwesomium.ViewModel.csproj">
+      <Project>{e35b9010-5429-4ffe-a788-e9c40e743e9c}</Project>
+      <Name>MVVMAwesomium.ViewModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\MVVMAwesoniumPOC\MVVMAwesomium.csproj">
       <Project>{9B18B122-A2FC-4537-AB68-5E1EC9959DB8}</Project>

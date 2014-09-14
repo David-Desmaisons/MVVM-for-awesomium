@@ -228,7 +228,6 @@ namespace MVVMAwesonium.AwesomiumBinding
             if (arr == null)
                 return;
 
-  
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:

@@ -97,9 +97,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MVVMAwesoniumPOCUI\MVVMAwesomium.UI.csproj">
-      <Project>{83fd4663-5c46-4885-83db-d65c99a1c9f0}</Project>
-      <Name>MVVMAwesomium.UI</Name>
+    <ProjectReference Include="..\MVVMAwesomium.ViewModel\MVVMAwesomium.ViewModel.csproj">
+      <Project>{e35b9010-5429-4ffe-a788-e9c40e743e9c}</Project>
+      <Name>MVVMAwesomium.ViewModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\MVVMAwesoniumPOC\MVVMAwesomium.csproj">
       <Project>{9b18b122-a2fc-4537-ab68-5e1ec9959db8}</Project>

@@ -1,6 +1,5 @@
 ﻿using Awesomium.Core;
 using MVVMAwesonium.AwesomiumBinding;
-using MVVMAwesonium.ViewModelExample;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MVVMAwesonium.Infra;
+using MVVMAwesonium.ViewModel.Example;
 
 namespace MVVMAwesomium.UI2
 {

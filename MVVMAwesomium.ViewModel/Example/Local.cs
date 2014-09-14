@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using MVVMAwesonium.ViewModel;
 
-namespace MVVMAwesonium.ViewModelExample
+namespace MVVMAwesonium.ViewModel.Example
 {
     public class Local : ViewModelBase
     {

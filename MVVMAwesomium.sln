@@ -13,6 +13,8 @@ Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ProjectUML", "ModelingProje
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.UI2", "MVVMAwesomium.UI2\MVVMAwesomium.UI2.csproj", "{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.ViewModel", "MVVMAwesomium.ViewModel\MVVMAwesomium.ViewModel.csproj", "{E35B9010-5429-4FFE-A788-E9C40E743E9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +78,16 @@ Global
 		{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}.Release|x86.ActiveCfg = Release|Any CPU
+		{E35B9010-5429-4FFE-A788-E9C40E743E9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E35B9010-5429-4FFE-A788-E9C40E743E9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E35B9010-5429-4FFE-A788-E9C40E743E9C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E35B9010-5429-4FFE-A788-E9C40E743E9C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E35B9010-5429-4FFE-A788-E9C40E743E9C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E35B9010-5429-4FFE-A788-E9C40E743E9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E35B9010-5429-4FFE-A788-E9C40E743E9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E35B9010-5429-4FFE-A788-E9C40E743E9C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E35B9010-5429-4FFE-A788-E9C40E743E9C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E35B9010-5429-4FFE-A788-E9C40E743E9C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

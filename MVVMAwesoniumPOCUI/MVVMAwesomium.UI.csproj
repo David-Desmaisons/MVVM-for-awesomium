@@ -79,11 +79,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ViewModelExample\Couple.cs" />
-    <Compile Include="ViewModelExample\Local.cs" />
-    <Compile Include="ViewModelExample\Person.cs" />
-    <Compile Include="ViewModelExample\Skill.cs" />
-    <Compile Include="ViewModel\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainWindow.xaml.cs">
@@ -120,6 +115,10 @@
     <None Include="src\js\bower_components\knockout\README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MVVMAwesomium.ViewModel\MVVMAwesomium.ViewModel.csproj">
+      <Project>{e35b9010-5429-4ffe-a788-e9c40e743e9c}</Project>
+      <Name>MVVMAwesomium.ViewModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MVVMAwesoniumPOC\MVVMAwesomium.csproj">
       <Project>{9B18B122-A2FC-4537-AB68-5E1EC9959DB8}</Project>
       <Name>MVVMAwesomium</Name>
