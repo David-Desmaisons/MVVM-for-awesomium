@@ -53,11 +53,5 @@ namespace MVVMAwesomium.UI2
 
             _DT = datacontext;
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            _DT.Two = _DT.One;
-                //;new Person() { Name = "Claudia", LastName = "Vicente" };
-        }
     }
 }

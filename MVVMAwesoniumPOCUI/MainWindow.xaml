@@ -28,7 +28,7 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Button Content="Button" Height="23" Click="Button_Click" Width="75" />
+            <Button Content="Button" Height="23" Command="{Binding Path=Command}" Width="75" />
         </StackPanel>
     </Grid>
 </Window>

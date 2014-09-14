@@ -1,13 +1,24 @@
-﻿using MVVMAwesonium.ViewModel;
+﻿using MVVMAwesomium.ViewModel.Infra;
+using MVVMAwesonium.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 
 namespace MVVMAwesonium.ViewModel.Example
 {
     public class Couple : ViewModelBase
     {
+        public Couple()
+        {
+            MakeSelf = new RelayCommand(_ => DoMakeSelf());
+        }
+
+        private void DoMakeSelf()
+        {
+            Two = One;
+        }
 
         private Person _Person;
         public Person One
@@ -28,5 +39,7 @@ namespace MVVMAwesonium.ViewModel.Example
                 Set(ref _Person2, value, "Two");
             }
         }
+
+        public ICommand MakeSelf { get; private set; }
     }
 }

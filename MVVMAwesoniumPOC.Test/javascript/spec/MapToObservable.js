@@ -8,8 +8,14 @@
 
 
 describe("MapToObservable", function () {
-    var basicmaped = { Name: "Albert", LastName: "Einstein" };
-    var basicmaped2 = { Name: "Mickey", LastName: "Mouse" };
+    var basicmaped,basicmaped2,basicmaped3;
+
+
+    beforeEach(function() {
+        basicmaped = { Name: "Albert", LastName: "Einstein" };
+        basicmaped2 = { Name: "Mickey", LastName: "Mouse" };
+        basicmaped3 = { One: basicmaped2, Two: basicmaped2 };
+    });
 
     it("should map basic property", function () {
         var mapped = ko.MapToObservable(basicmaped);
@@ -24,5 +30,13 @@ describe("MapToObservable", function () {
         var mapped2 = ko.MapToObservable(basicmaped2);
 
         expect(mapped).toBe(mapped2);
+    });
+
+    it("should should preserve references", function () {
+        var mapped = ko.MapToObservable(basicmaped3);
+        var mapped2 = ko.MapToObservable(basicmaped2);
+
+        expect(mapped.One()).toBe(mapped.Two());
+        expect(mapped.One()).toBe(mapped2);
     });
 });

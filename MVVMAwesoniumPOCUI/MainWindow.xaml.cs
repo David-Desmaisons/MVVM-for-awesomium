@@ -56,20 +56,7 @@ namespace MVVMAwesonium.UI
             _Person = datacontext;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            //_FirstSkill.Name = "Lingua";
-            //_FirstSkill.Type = "Frances";
-            //_Person.Local.City = "ded";
-
-            _Person.Local = new Local() { City="Paris", Region="IDF"};
-
-            _Person.Skills.Insert(0, new Skill() { Name = "Info", Type = "javascript" });
-
-            //_Person.Skills.RemoveAt(_Person.Skills.Count-1);
-
-            //_Person.Skills[0]= new Skill() { Name = "Info", Type = "knockout" };
-        }
+      
 
   //LastName:"Desmaisons",
  //   Local:{ City:'Florianopolis', Region:'SC'},

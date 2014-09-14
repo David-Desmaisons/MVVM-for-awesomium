@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using MVVMAwesonium.ViewModel;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
+using MVVMAwesomium.ViewModel.Infra;
 
 namespace MVVMAwesonium.ViewModel.Example
 {
@@ -12,6 +14,20 @@ namespace MVVMAwesonium.ViewModel.Example
         public Person()
         {
             Skills = new ObservableCollection<Skill>();
+            Command = new RelayCommand(_Age => DoCommand());
+        }
+
+
+        private void DoCommand()
+        {
+            Local = new Local() { City = "Paris", Region = "IDF" };
+            Skills.Insert(0, new Skill() { Name = "Info", Type = "javascript" });
+
+            //_FirstSkill.Name = "Lingua";
+            //_FirstSkill.Type = "Frances";
+            //_Person.Local.City = "ded";
+            //_Person.Skills.RemoveAt(_Person.Skills.Count-1);
+            //_Person.Skills[0]= new Skill() { Name = "Info", Type = "knockout" };
         }
 
         private string _LastName;
@@ -55,5 +71,7 @@ namespace MVVMAwesonium.ViewModel.Example
         }
 
         public IList<Skill> Skills { get; private set; }
+
+        public ICommand Command { get; private set; }
     }
 }
