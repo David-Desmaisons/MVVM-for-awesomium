@@ -19,7 +19,7 @@
         if (!Listener) Listener = {};
 
         //not very clean, but must handle "read-only" object with predefined _MappedId
-        if (or._MappedId)
+        if (or._MappedId!==undefined)
         {
             var tentative = MapToObservable.Cache[or._MappedId];
             if (tentative)
