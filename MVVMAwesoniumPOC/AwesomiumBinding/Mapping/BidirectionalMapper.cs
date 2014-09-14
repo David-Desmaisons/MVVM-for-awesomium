@@ -50,10 +50,10 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         private class JavascriptMapper : IJavascriptMapper
         {
-            private IJSCBridge _Root;
+            private IJSCInjectableBridge _Root;
             private BidirectionalMapper _LiveMapper;
             private TaskCompletionSource<object> _TCS = new TaskCompletionSource<object>();
-            public JavascriptMapper(IJSCBridge iRoot, BidirectionalMapper iFather)
+            public JavascriptMapper(IJSCInjectableBridge iRoot, BidirectionalMapper iFather)
             {
                 _LiveMapper = iFather;
                 _Root = iRoot;
@@ -87,23 +87,23 @@ namespace MVVMAwesonium.AwesomiumBinding
             return _FromJavascript[jsobject.RemoteId];
         }
 
-        private void Update(IJSCBridge ibo, JSObject jsobject)
+        private void Update(IJSCInjectableBridge ibo, JSObject jsobject)
         {
-            ibo.JSValue = jsobject;
+            ibo.MappedJSValue = jsobject;
             _FromJavascript[jsobject.RemoteId] = ibo;
         }
 
         public void RegisterMapping(JSObject iFather, string att, JSObject iChild)
         {
             JSGenericObject jso = GetFromJavascript(iFather) as JSGenericObject;
-            Update(jso.Attributes[att], iChild);
+            Update(jso.Attributes[att] as IJSCInjectableBridge, iChild);
         }
 
         public void RegisterCollectionMapping(JSObject iFather, string att, int index, JSObject iChild)
         {
             JSGenericObject jsof = GetFromJavascript(iFather) as JSGenericObject;
             JSArray jsos = jsof.Attributes[att] as JSArray;
-            Update(jsos.Items[index], iChild);
+            Update(jsos.Items[index] as IJSCInjectableBridge, iChild);
         }
 
         #endregion
@@ -131,7 +131,7 @@ namespace MVVMAwesonium.AwesomiumBinding
                 return TaskHelper.FromResult<object>(null);
             }
 
-            var jvm = new JavascriptMapper(iroot, this);
+            var jvm = new JavascriptMapper(iroot as IJSCInjectableBridge, this);
             _SessionInjector.Map(iroot, jvm, isroot);
             return jvm.UpdateTask;
         }

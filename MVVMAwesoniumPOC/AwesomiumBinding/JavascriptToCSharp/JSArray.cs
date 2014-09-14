@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
-    internal class JSArray : IJSCBridge
+    internal class JSArray : IJSCInjectableBridge
     {
         public JSArray(IEnumerable<IJSCBridge> values,object collection)
         {
@@ -17,7 +17,7 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         public void Add(IJSCBridge iIJSCBridge, int Index)
         {
-            ((JSObject)JSValue).Invoke("splice", new JSValue(Index), new JSValue(0), iIJSCBridge.JSValue);
+            ((JSObject)MappedJSValue).Invoke("splice", new JSValue(Index), new JSValue(0), iIJSCBridge.GetSessionValue());
             if (Index > Items.Count - 1)
                 Items.Add(iIJSCBridge);
             else
@@ -26,25 +26,25 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         public void Insert(IJSCBridge iIJSCBridge, int Index)
         {
-            ((JSObject)JSValue).Invoke("splice", new JSValue(Index), new JSValue(1), iIJSCBridge.JSValue);
+            ((JSObject)MappedJSValue).Invoke("splice", new JSValue(Index), new JSValue(1), iIJSCBridge.GetSessionValue());
             Items[Index]=iIJSCBridge;
         }
 
         public void Remove( int Index)
         {
-            ((JSObject)JSValue).Invoke("splice", new JSValue(Index), new JSValue(1));
+            ((JSObject)MappedJSValue).Invoke("splice", new JSValue(Index), new JSValue(1));
             Items.RemoveAt(Index);
         }
 
         public void Reset()
         {
-            ((JSObject)JSValue).Invoke("removeAll");
+            ((JSObject)MappedJSValue).Invoke("removeAll");
             Items.Clear();
         }
 
-        public JSValue JSValue { get; set; }
+        public JSValue JSValue { get; private set; }
 
-        public object CValue { get; set; }
+        public object CValue { get; private set; }
 
         public IList<IJSCBridge> Items { get; private set; }
 
@@ -54,5 +54,7 @@ namespace MVVMAwesonium.AwesomiumBinding
         }
 
         public JSType Type { get { return JSType.Array; } }
+
+        public JSValue MappedJSValue { get; set; }
     }
 }

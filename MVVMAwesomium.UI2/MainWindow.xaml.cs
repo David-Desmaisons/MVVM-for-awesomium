@@ -56,7 +56,8 @@ namespace MVVMAwesomium.UI2
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            _DT.Two = new Person() { Name = "Claudia", LastName = "Vicente" };
+            _DT.Two = _DT.One;
+                //;new Person() { Name = "Claudia", LastName = "Vicente" };
         }
     }
 }

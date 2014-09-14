@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Awesomium.Core;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -24,6 +25,12 @@ namespace MVVMAwesonium.AwesomiumBinding
                     yield return indirect;
                 }
             }
+        }
+
+        public static JSValue GetSessionValue(this IJSCBridge @this)
+        {
+            IJSCInjectableBridge inj = @this as IJSCInjectableBridge;
+            return (inj!=null) ?  inj.MappedJSValue : @this.JSValue;    
         }
 
          public static void ApplyOnListenable(this IJSCBridge @this, Action<INotifyPropertyChanged> OnObject,

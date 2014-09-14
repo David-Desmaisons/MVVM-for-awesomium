@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AwesomiumBinding\Helper\AwesomiumHelper.cs" />
+    <Compile Include="AwesomiumBinding\JavascriptToCSharp\IJSCInjectableBridge.cs" />
     <Compile Include="AwesomiumBinding\JavascriptToCSharp\JSBasicObject.cs" />
     <Compile Include="AwesomiumBinding\JavascriptToCSharp\JSType.cs" />
     <Compile Include="AwesomiumBinding\Mapping\ICSharpMapper.cs" />

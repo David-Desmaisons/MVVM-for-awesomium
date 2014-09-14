@@ -19,9 +19,9 @@ namespace MVVMAwesonium.AwesomiumBinding
             return string.Format("<Basic Object C#:{0}>",CValue);
         }
 
-        public JSValue JSValue { get; set; }
+        public JSValue JSValue { get; private set; }
 
-        public object CValue { get; set; }
+        public object CValue { get; private set; }
 
         public JSType Type { get { return JSType.Basic; } }
 

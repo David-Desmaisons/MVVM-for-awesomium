@@ -6,9 +6,9 @@ namespace MVVMAwesonium.AwesomiumBinding
 {
     public interface IJSCBridge
     {
-        JSValue JSValue { get; set; }
+        JSValue JSValue { get; }
 
-        object CValue { get; set; }
+        object CValue { get;}
 
         JSType Type { get; }
 

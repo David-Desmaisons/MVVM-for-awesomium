@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
-    public class JSGenericObject : IJSCBridge
+    public class JSGenericObject : IJSCInjectableBridge
     {
         public JSGenericObject(JSValue value, object icValue)
         {
@@ -24,9 +24,11 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         public IDictionary<string, IJSCBridge> Attributes { get { return _Attributes; } }
 
-        public JSValue JSValue { get; set; }
+        public JSValue JSValue { get; private set; }
 
-        public object CValue { get; set; }
+        public JSValue MappedJSValue { get; set; }
+
+        public object CValue { get; private set; }
 
         public JSType Type { get { return JSType.Object; } }
 
@@ -53,7 +55,7 @@ namespace MVVMAwesonium.AwesomiumBinding
         public void Reroot(string PropertyName, IJSCBridge newValue)
         { 
             _Attributes[PropertyName]=newValue;
-            ((JSObject)JSValue).Invoke(PropertyName, newValue.JSValue);    
+            ((JSObject)MappedJSValue).Invoke(PropertyName, newValue.GetSessionValue() );    
         }
     }
 }
