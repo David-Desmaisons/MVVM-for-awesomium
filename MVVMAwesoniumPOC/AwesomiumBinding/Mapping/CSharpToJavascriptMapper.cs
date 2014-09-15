@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Collections;
 
 using MVVMAwesonium.Infra;
+using System.Windows.Input;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
@@ -49,12 +50,21 @@ namespace MVVMAwesonium.AwesomiumBinding
             JSGenericObject gres = new JSGenericObject(new JSValue(resobject), ifrom);
 
             PropertyInfo[] propertyInfos = ifrom.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            foreach (PropertyInfo propertyInfo in propertyInfos)
+            foreach (PropertyInfo propertyInfo in propertyInfos.Where(p => p.CanRead))
             {
                 string pn = propertyInfo.Name;
-                var child = Map(propertyInfo.GetValue(ifrom, null));
-                resobject[pn] = child.JSValue;
-                gres.Attributes[pn]=child;
+                var childvalue = propertyInfo.GetValue(ifrom, null);
+
+                if (!(childvalue is ICommand))
+                { 
+                    var child = Map(childvalue);
+                    resobject[pn] = child.JSValue;
+                    gres.Attributes[pn]=child;
+                }
+                else
+                {
+                    gres.Commands[pn] = childvalue as ICommand;
+                }
             }
       
             _Cacher.Cache(ifrom, gres);

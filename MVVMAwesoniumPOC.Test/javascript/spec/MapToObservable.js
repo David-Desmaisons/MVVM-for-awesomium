@@ -7,14 +7,15 @@
 /// <reference path="../../../MVVMAwesoniumPOC/Javascript//Ko_Extension.js" />
 
 
-describe("MapToObservable", function () {
-    var basicmaped,basicmaped2,basicmaped3;
+describe("Map To Observable", function () {
+    var basicmaped, basicmaped2, basicmaped3, basicmaped4;
 
 
     beforeEach(function() {
         basicmaped = { Name: "Albert", LastName: "Einstein" };
         basicmaped2 = { Name: "Mickey", LastName: "Mouse" };
         basicmaped3 = { One: basicmaped2, Two: basicmaped2 };
+        basicmaped4 = { One: basicmaped, Two: basicmaped2 };
     });
 
     it("should map basic property", function () {
@@ -30,6 +31,13 @@ describe("MapToObservable", function () {
         var mapped2 = ko.MapToObservable(basicmaped2);
 
         expect(mapped).toBe(mapped2);
+    });
+
+    it("should should work with nested", function () {
+        var mapped = ko.MapToObservable(basicmaped4);
+
+        expect(mapped.One().Name()).toBe("Albert");
+        expect(mapped.Two().Name()).toBe("Mickey");
     });
 
     it("should should preserve references", function () {

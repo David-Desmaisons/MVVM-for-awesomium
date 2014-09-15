@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
-    internal class JSArray : IJSCInjectableBridge
+    internal class JSArray : IJSObservableBridge
     {
         public JSArray(IEnumerable<IJSCBridge> values,object collection)
         {
@@ -55,6 +55,11 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         public JSType Type { get { return JSType.Array; } }
 
-        public JSValue MappedJSValue { get; set; }
+        public JSValue MappedJSValue { get; private set; }
+
+        public void SetMappedJSValue(JSValue ijsobject, ICSharpMapper mapper)
+        {
+            MappedJSValue = ijsobject;
+        }
     }
 }

@@ -201,10 +201,10 @@
         isActiveClass="false">
         <suppliersInternal>
           <interfaceRealization
-            Id="60b2e511-8147-4ac0-839f-30fb2be893a5">
+            Id="f7763ad8-18d0-484d-98c7-f608e428b646">
             <interfaceMoniker
-              Id="30c7d5cd-5631-43d7-adbc-788aa11991ee"
-              LastKnownName="IBridgeObject"
+              Id="41304816-6ca5-486e-bdb6-ba20b5563f4e"
+              LastKnownName="IJSObservableBridge"
               LastKnownLocation="ModelingProject1.uml" />
           </interfaceRealization>
         </suppliersInternal>
@@ -274,9 +274,22 @@
             </relationshipOwnedElementsInternal>
           </association>
         </targetEnds>
+        <ownedAttributesInternal>
+          <property
+            Id="a3a03743-4c27-4ac6-8efc-fc31711fd5a1"
+            name="Commands"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+        </ownedAttributesInternal>
         <ownedOperationsInternal>
           <operation
-            Id="254d03a4-ef24-4310-80d3-383b02c4c94c"
+            Id="8f38ff3d-b988-4e79-9c3c-07d160ef253d"
             name="GetChildren"
             isLeaf="false"
             isStatic="false"
@@ -295,10 +308,10 @@
         isActiveClass="false">
         <suppliersInternal>
           <interfaceRealization
-            Id="49a26dae-dccf-44c7-ab05-8d19f3ac5218">
+            Id="9fd9632d-865f-46f4-9dae-32e8355e870e">
             <interfaceMoniker
-              Id="30c7d5cd-5631-43d7-adbc-788aa11991ee"
-              LastKnownName="IBridgeObject"
+              Id="41304816-6ca5-486e-bdb6-ba20b5563f4e"
+              LastKnownName="IJSObservableBridge"
               LastKnownLocation="ModelingProject1.uml" />
           </interfaceRealization>
         </suppliersInternal>
@@ -370,7 +383,7 @@
         </targetEnds>
         <ownedOperationsInternal>
           <operation
-            Id="1331fa47-e44d-4095-82f0-ba640063e662"
+            Id="6d108648-2f27-47bc-ac4c-49182c99bca1"
             name="GetChildren"
             isLeaf="false"
             isStatic="false"
@@ -764,6 +777,37 @@
             isQuery="false" />
         </ownedOperationsInternal>
       </class>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="41304816-6ca5-486e-bdb6-ba20b5563f4e"
+        name="IJSObservableBridge"
+        isAbstract="false"
+        isLeaf="false">
+        <generalsInternal>
+          <generalization
+            Id="432e0284-10c4-4c69-a8f9-19de79c0ea42"
+            isSubstitutable="false">
+            <interfaceMoniker
+              Id="30c7d5cd-5631-43d7-adbc-788aa11991ee"
+              LastKnownName="IBridgeObject"
+              LastKnownLocation="ModelingProject1.uml" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributes>
+          <property
+            Id="3dd38caa-31c6-452e-a7f4-d43adb21ff6d"
+            name="MappedJSValue"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isUnique="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false" />
+        </ownedAttributes>
+      </Interface>
     </packageHasNamedElement>
   </packagedElements>
   <primitiveType

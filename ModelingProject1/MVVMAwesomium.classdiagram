@@ -87,9 +87,9 @@
       <class Id="39c20991-fd09-43fd-9660-7b67a5ed0e6c" name="JSGenericObject" isAbstract="false" isLeaf="false" isActiveClass="false">
         <elementDefinition Id="f9ca6a3f-0a7c-40d9-a351-5d2fbe92aae7" />
         <suppliersInternal>
-          <interfaceRealization Id="1cbfb8cb-b699-4a27-8d48-4dadbfc74602">
-            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IBridgeObject" />
-            <elementDefinition Id="60b2e511-8147-4ac0-839f-30fb2be893a5" />
+          <interfaceRealization Id="b06043cd-db36-41fa-8410-dec8c1d5eb32">
+            <interfaceMoniker Id="1adb9317-6aa9-4ea5-aaab-0d20bb399b05" LastKnownName="IJSObservableBridge" />
+            <elementDefinition Id="f7763ad8-18d0-484d-98c7-f608e428b646" />
           </interfaceRealization>
         </suppliersInternal>
         <targetEnds>
@@ -130,9 +130,14 @@
             <elementDefinition Id="b22b3d1d-3873-4e12-afb4-6a6149b596b1" />
           </association>
         </targetEnds>
+        <ownedAttributesInternal>
+          <property Id="f960bb83-d92f-4640-93b9-ccd2b4b6bea2" name="Commands" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="a3a03743-4c27-4ac6-8efc-fc31711fd5a1" />
+          </property>
+        </ownedAttributesInternal>
         <ownedOperationsInternal>
-          <operation Id="8a1b5df7-c5f9-4084-bf62-9febbf1bba56" name="GetChildren" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
-            <elementDefinition Id="254d03a4-ef24-4310-80d3-383b02c4c94c" />
+          <operation Id="92a6e5aa-d88f-4b90-9ccb-fbbd418fc710" name="GetChildren" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="8f38ff3d-b988-4e79-9c3c-07d160ef253d" />
           </operation>
         </ownedOperationsInternal>
       </class>
@@ -141,9 +146,9 @@
       <class Id="6506fba2-3bf1-4ec0-9f30-16f0e9cb3193" name="JSArray" isAbstract="false" isLeaf="false" isActiveClass="false">
         <elementDefinition Id="b7967b6b-8636-46d9-a023-3991d796a3ba" />
         <suppliersInternal>
-          <interfaceRealization Id="d42277b5-136b-4d82-a169-787f315256ee">
-            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IBridgeObject" />
-            <elementDefinition Id="49a26dae-dccf-44c7-ab05-8d19f3ac5218" />
+          <interfaceRealization Id="d8f9740b-901e-4ec2-9f89-9a61b2e4539c">
+            <interfaceMoniker Id="1adb9317-6aa9-4ea5-aaab-0d20bb399b05" LastKnownName="IJSObservableBridge" />
+            <elementDefinition Id="9fd9632d-865f-46f4-9dae-32e8355e870e" />
           </interfaceRealization>
         </suppliersInternal>
         <targetEnds>
@@ -185,8 +190,8 @@
           </association>
         </targetEnds>
         <ownedOperationsInternal>
-          <operation Id="c17b4880-5d4e-4d8a-a5b2-4ac29d6fb83d" name="GetChildren" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
-            <elementDefinition Id="1331fa47-e44d-4095-82f0-ba640063e662" />
+          <operation Id="5e149d6c-781d-4385-89b1-473d84913957" name="GetChildren" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="6d108648-2f27-47bc-ac4c-49182c99bca1" />
           </operation>
         </ownedOperationsInternal>
       </class>
@@ -345,6 +350,22 @@
           </operation>
         </ownedOperationsInternal>
       </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <Interface Id="1adb9317-6aa9-4ea5-aaab-0d20bb399b05" name="IJSObservableBridge" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="41304816-6ca5-486e-bdb6-ba20b5563f4e" />
+        <generalsInternal>
+          <generalization Id="cb268514-3b51-40c5-aa89-a082b5b68925" isSubstitutable="false">
+            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IBridgeObject" />
+            <elementDefinition Id="432e0284-10c4-4c69-a8f9-19de79c0ea42" />
+          </generalization>
+        </generalsInternal>
+        <ownedAttributes>
+          <property Id="904220c6-978d-43c3-8e72-f81824700608" name="MappedJSValue" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+            <elementDefinition Id="3dd38caa-31c6-452e-a7f4-d43adb21ff6d" />
+          </property>
+        </ownedAttributes>
+      </Interface>
     </logicalClassDesignerModelHasTypes>
   </packagedElements>
   <package Id="d2c7ea2a-7bec-4509-b663-4324b4197965" name="ModelingProject1">

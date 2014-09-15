@@ -29,7 +29,7 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         public static JSValue GetSessionValue(this IJSCBridge @this)
         {
-            IJSCInjectableBridge inj = @this as IJSCInjectableBridge;
+            IJSObservableBridge inj = @this as IJSObservableBridge;
             return (inj!=null) ?  inj.MappedJSValue : @this.JSValue;    
         }
 

@@ -11,6 +11,7 @@ namespace MVVMAwesonium.AwesomiumBinding
         private IWebView _IWebView;    
         private GlobalBuilder _GlobalBuilder;  
         private JSObject _Listener;
+        private JSValue _Globalres;
         private Action<JSObject, string, JSValue> _OnJavascriptObjecChanges;
 
         internal JavascriptSessionInjector(IWebView iWebView, Action<JSObject, string, JSValue> OnJavascriptObjecChanges)
@@ -25,6 +26,8 @@ namespace MVVMAwesonium.AwesomiumBinding
                 _Listener.Bind("TrackChanges", false, (o, e) => _OnJavascriptObjecChanges((JSObject)e.Arguments[0], (string)e.Arguments[1], e.Arguments[2]));
             }
         }
+
+    
 
         private JSObject GetMapper(IJavascriptMapper iMapperListener)
         {
@@ -53,16 +56,25 @@ namespace MVVMAwesonium.AwesomiumBinding
             return mapper;
         }
 
-        public void Map(IJSCBridge ihybridobject, IJavascriptMapper ijvm, bool IsRoot = false)
+        private JSObject GetKo()
+        {
+            return _IWebView.ExecuteJavascriptWithResult("ko");
+        }
+
+        private bool _IsFirst=true;
+        public void Map(IJSCBridge ihybridobject, IJavascriptMapper ijvm)
         {
             using (var mapp = GetMapper(ijvm))
             {
-                JSObject Ko = _IWebView.ExecuteJavascriptWithResult("ko");
-
-                JSValue Globalres = Ko.Invoke("MapToObservable", ihybridobject.JSValue, mapp, _Listener);
-                if (IsRoot)
-                    Ko.Invoke("applyBindings", Globalres);
+                JSValue Globalres = GetKo().Invoke("MapToObservable", ihybridobject.JSValue, mapp, _Listener);
+                if (_IsFirst)
+                    _Globalres = Globalres;
             }
+        }
+
+        public void RegisterInSession()
+        {
+            GetKo().Invoke("applyBindings", _Globalres);
         }
 
         public void Dispose()

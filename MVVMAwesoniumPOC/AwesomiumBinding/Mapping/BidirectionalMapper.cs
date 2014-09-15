@@ -50,10 +50,10 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         private class JavascriptMapper : IJavascriptMapper
         {
-            private IJSCInjectableBridge _Root;
+            private IJSObservableBridge _Root;
             private BidirectionalMapper _LiveMapper;
             private TaskCompletionSource<object> _TCS = new TaskCompletionSource<object>();
-            public JavascriptMapper(IJSCInjectableBridge iRoot, BidirectionalMapper iFather)
+            public JavascriptMapper(IJSObservableBridge iRoot, BidirectionalMapper iFather)
             {
                 _LiveMapper = iFather;
                 _Root = iRoot;
@@ -87,23 +87,23 @@ namespace MVVMAwesonium.AwesomiumBinding
             return _FromJavascript[jsobject.RemoteId];
         }
 
-        private void Update(IJSCInjectableBridge ibo, JSObject jsobject)
+        private void Update(IJSObservableBridge ibo, JSObject jsobject)
         {
-            ibo.MappedJSValue = jsobject;
+            ibo.SetMappedJSValue( jsobject,this);
             _FromJavascript[jsobject.RemoteId] = ibo;
         }
 
         public void RegisterMapping(JSObject iFather, string att, JSObject iChild)
         {
             JSGenericObject jso = GetFromJavascript(iFather) as JSGenericObject;
-            Update(jso.Attributes[att] as IJSCInjectableBridge, iChild);
+            Update(jso.Attributes[att] as IJSObservableBridge, iChild);
         }
 
         public void RegisterCollectionMapping(JSObject iFather, string att, int index, JSObject iChild)
         {
             JSGenericObject jsof = GetFromJavascript(iFather) as JSGenericObject;
             JSArray jsos = jsof.Attributes[att] as JSArray;
-            Update(jsos.Items[index] as IJSCInjectableBridge, iChild);
+            Update(jsos.Items[index] as IJSObservableBridge, iChild);
         }
 
         #endregion
@@ -131,9 +131,13 @@ namespace MVVMAwesonium.AwesomiumBinding
                 return TaskHelper.FromResult<object>(null);
             }
 
-            var jvm = new JavascriptMapper(iroot as IJSCInjectableBridge, this);
-            _SessionInjector.Map(iroot, jvm, isroot);
-            return jvm.UpdateTask;
+            var jvm = new JavascriptMapper(iroot as IJSObservableBridge, this);
+            _SessionInjector.Map(iroot, jvm);
+            if (!isroot)
+                return jvm.UpdateTask;
+            else
+                return jvm.UpdateTask.ContinueWith(_ => _SessionInjector.RegisterInSession(), 
+                            TaskScheduler.FromCurrentSynchronizationContext()); 
         }
 
         private void OnJavaScriptChanges(JSObject objectchanged, string PropertyName, JSValue newValue)
@@ -294,6 +298,16 @@ namespace MVVMAwesonium.AwesomiumBinding
         {
             IJSCBridge res = null;
             _FromCSharp.TryGetValue(key, out res);
+            return res;
+        }
+
+
+        IJSCBridge ICSharpMapper.GetCached(JSObject key)
+        {
+            IJSCBridge res = null;
+            if (( key==null ) || (key.RemoteId == 0))
+                return res;
+            _FromJavascript.TryGetValue(key.RemoteId, out res);
             return res;
         }
     }

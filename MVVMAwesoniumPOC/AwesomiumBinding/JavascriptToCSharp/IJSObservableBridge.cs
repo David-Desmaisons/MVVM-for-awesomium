@@ -6,9 +6,10 @@ using System.Text;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
-    public interface IJSCInjectableBridge : IJSCBridge
+    public interface IJSObservableBridge : IJSCBridge
     {
-        JSValue MappedJSValue { get; set; }
+        JSValue MappedJSValue { get; }
+        void SetMappedJSValue(JSValue ijsobject, ICSharpMapper mapper);
     }
 
 }

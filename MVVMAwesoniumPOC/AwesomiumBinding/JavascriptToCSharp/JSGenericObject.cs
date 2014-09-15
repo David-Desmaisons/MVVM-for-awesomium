@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using Awesomium.Core;
 using System.Reflection;
+using System.Windows.Input;
+
+using MVVMAwesonium.Infra;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
-    public class JSGenericObject : IJSCInjectableBridge
+    public class JSGenericObject : IJSObservableBridge
     {
         public JSGenericObject(JSValue value, object icValue)
         {
@@ -24,9 +27,31 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         public IDictionary<string, IJSCBridge> Attributes { get { return _Attributes; } }
 
+
+        private Dictionary<string, ICommand> _Commands = new Dictionary<string, ICommand>();
+
+        public IDictionary<string, ICommand> Commands { get { return _Commands; } }
+
+
         public JSValue JSValue { get; private set; }
 
-        public JSValue MappedJSValue { get; set; }
+        private JSValue _MappedJSValue;
+
+        public JSValue MappedJSValue { get { return _MappedJSValue; } }
+
+        public void SetMappedJSValue(JSValue ijsobject, ICSharpMapper mapper)
+        {
+            _MappedJSValue = ijsobject;
+            _Commands.ForEach(kvp => ((JSObject)_MappedJSValue).Bind(kvp.Key, false, (o, e) => ExcecuteCommand(kvp.Value, e, mapper)));
+        }
+
+        private void ExcecuteCommand(ICommand icom, JavascriptMethodEventArgs e, ICSharpMapper mapper)
+        {
+            if (e.Arguments.Length == 0)
+                icom.Execute(null);
+            else
+                icom.Execute(mapper.GetCached(e.Arguments[0]));
+        }
 
         public object CValue { get; private set; }
 
@@ -47,6 +72,8 @@ namespace MVVMAwesonium.AwesomiumBinding
                 return;
 
             PropertyInfo propertyInfo = CValue.GetType().GetProperty(PropertyName, BindingFlags.Public | BindingFlags.Instance);
+            if (!propertyInfo.CanWrite)
+                return;
            
             _Attributes[PropertyName] = new JSBasicObject(newValue, simplevalue); 
             propertyInfo.SetValue(CValue, simplevalue, null);
@@ -55,7 +82,9 @@ namespace MVVMAwesonium.AwesomiumBinding
         public void Reroot(string PropertyName, IJSCBridge newValue)
         { 
             _Attributes[PropertyName]=newValue;
-            ((JSObject)MappedJSValue).Invoke(PropertyName, newValue.GetSessionValue() );    
+            ((JSObject)_MappedJSValue).Invoke(PropertyName, newValue.GetSessionValue());    
         }
+
+       
     }
 }
