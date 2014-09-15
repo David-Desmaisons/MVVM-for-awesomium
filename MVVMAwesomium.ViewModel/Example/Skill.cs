@@ -2,12 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
+using MVVMAwesomium.ViewModel.Infra;
 using MVVMAwesonium.ViewModel;
 
 namespace MVVMAwesonium.ViewModel.Example
 {
     public class Skill : ViewModelBase
     {
+        public Skill()
+        {
+            RemoveSkill = new RelayCommand<Skill>(s => Console.WriteLine(s));
+        }
         private string _Type;
         public string Type
         {
@@ -27,5 +33,7 @@ namespace MVVMAwesonium.ViewModel.Example
                 Set(ref _Name, value, "Name");
             }
         }
+
+        public ICommand RemoveSkill { get; private set; }
     }
 }

@@ -110,7 +110,7 @@
     <Content Include="javascript\index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="javascript\spec\MapToObservable.js">
+    <Content Include="javascript\spec\Spec_MapToObservable.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

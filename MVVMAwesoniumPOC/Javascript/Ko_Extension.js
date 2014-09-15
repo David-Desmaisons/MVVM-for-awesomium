@@ -24,7 +24,7 @@
             var tentative = MapToObservable.Cache[or._MappedId];
             if (tentative)
             {
-                if ((context === null) && (Mapper.End)) Mapper.End(res);
+                if ((context === null) && (Mapper.End)) Mapper.End(tentative);
                 return tentative;
             }
         }

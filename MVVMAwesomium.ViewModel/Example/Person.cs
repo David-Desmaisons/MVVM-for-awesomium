@@ -14,8 +14,12 @@ namespace MVVMAwesonium.ViewModel.Example
         public Person()
         {
             Skills = new ObservableCollection<Skill>();
-            Command = new RelayCommand(_Age => DoCommand());
+            Command = new RelayCommand(DoCommand);
+            RemoveSkill = new RelayCommand<Skill>(s=> this.Skills.Remove(s));
+            ChangeSkill = new RelayCommand<Skill>(s => MainSkill = (this.Skills.Count>0)?this.Skills[0] : null);
         }
+
+
 
 
         private void DoCommand()
@@ -70,8 +74,22 @@ namespace MVVMAwesonium.ViewModel.Example
             }
         }
 
+        private Skill _MainSkill;
+        public Skill MainSkill
+        {
+            get { return _MainSkill; }
+            set
+            {
+                Set(ref _MainSkill, value, "MainSkill");
+            }
+        }
+
         public IList<Skill> Skills { get; private set; }
 
         public ICommand Command { get; private set; }
+
+        public ICommand RemoveSkill { get; private set; }
+
+        public ICommand ChangeSkill { get; private set; }
     }
 }

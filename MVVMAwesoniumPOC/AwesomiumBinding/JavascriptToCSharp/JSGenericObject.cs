@@ -50,7 +50,10 @@ namespace MVVMAwesonium.AwesomiumBinding
             if (e.Arguments.Length == 0)
                 icom.Execute(null);
             else
-                icom.Execute(mapper.GetCached(e.Arguments[0]));
+            {
+                var found = mapper.GetCached(e.Arguments[0]);
+                icom.Execute((found!=null) ? found.CValue : null);
+            }
         }
 
         public object CValue { get; private set; }

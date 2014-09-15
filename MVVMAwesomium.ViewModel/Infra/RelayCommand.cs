@@ -38,4 +38,30 @@ namespace MVVMAwesomium.ViewModel.Infra
         { add { CommandManager.RequerySuggested += value; } remove { CommandManager.RequerySuggested -= value; } }
     }
 
+
+    public class RelayCommand<T> : ICommand where T:class
+    {
+        readonly Action<T> _execute;
+
+        public RelayCommand(Action<T> execute)
+        {
+            _execute = execute;
+        }
+
+        [DebuggerStepThrough]
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        [DebuggerStepThrough]
+        public void Execute(object parameter)
+        {
+            _execute(parameter as T);
+        }
+
+        public event EventHandler CanExecuteChanged
+        { add { CommandManager.RequerySuggested += value; } remove { CommandManager.RequerySuggested -= value; } }
+    }
+
 }
