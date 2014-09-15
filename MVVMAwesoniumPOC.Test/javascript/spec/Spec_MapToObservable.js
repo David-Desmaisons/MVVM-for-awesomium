@@ -141,6 +141,34 @@ describe("Map To Observable", function () {
          expect(mapper.End).toHaveBeenCalledWith(mapped0);
      });
 
+     it("should register TrackChanges", function () {
+         var Listener = { TrackChanges: function () { } };
+         spyOn(Listener, 'TrackChanges');
+
+         var mapped = ko.MapToObservable(basicmaped, null, Listener);
+
+         mapped.Name("Toto");
+         
+         expect(mapped.Name()).toEqual("Toto");
+         expect(Listener.TrackChanges).toHaveBeenCalled();
+         expect(Listener.TrackChanges.calls.count()).toEqual(1);
+         expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped,'Name','Toto');
+     });
+
+     it("should register nested TrackChanges", function () {
+         var Listener = { TrackChanges: function () { } };
+         spyOn(Listener, 'TrackChanges');
+
+         var mapped = ko.MapToObservable(basicmaped4, null, Listener);
+
+         mapped.One().Name("Titi");
+
+         expect(mapped.One().Name()).toEqual("Titi");
+         expect(Listener.TrackChanges).toHaveBeenCalled();
+         expect(Listener.TrackChanges.calls.count()).toEqual(1);
+         expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped.One(), 'Name', 'Titi');
+     });
+
  
 
  

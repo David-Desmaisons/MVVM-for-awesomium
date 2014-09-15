@@ -42,6 +42,11 @@ namespace MVVMAwesonium.AwesomiumBinding
             Items.Clear();
         }
 
+        public override string ToString()
+        {
+            return string.Format("[{0}]", string.Join(",", Items));
+        }
+
         public JSValue JSValue { get; private set; }
 
         public object CValue { get; private set; }

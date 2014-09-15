@@ -20,7 +20,7 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         public override string ToString()
         {
-            return string.Format("<Object C#:{0}>",CValue);
+            return "{ "+ string.Join(",", _Attributes.Select(kvp=>string.Format(@"""{0}"":{1}",kvp.Key,kvp.Value)))+" }";
         }
 
         private Dictionary<string, IJSCBridge> _Attributes = new Dictionary<string, IJSCBridge>();

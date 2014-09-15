@@ -12,7 +12,6 @@ namespace MVVMAwesonium.ViewModel.Example
     {
         public Skill()
         {
-            RemoveSkill = new RelayCommand<Skill>(s => Console.WriteLine(s));
         }
         private string _Type;
         public string Type
@@ -33,7 +32,5 @@ namespace MVVMAwesonium.ViewModel.Example
                 Set(ref _Name, value, "Name");
             }
         }
-
-        public ICommand RemoveSkill { get; private set; }
     }
 }

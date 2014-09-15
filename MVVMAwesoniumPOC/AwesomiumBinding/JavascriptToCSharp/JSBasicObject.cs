@@ -16,7 +16,13 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         public override string ToString()
         {
-            return string.Format("<Basic Object C#:{0}>",CValue);
+            if (CValue is string)
+            {
+                string s = CValue as string;
+                return string.Format(@"""{0}""", s.Replace(@"""",@"\"""));
+            }
+
+            return CValue.ToString();
         }
 
         public JSValue JSValue { get; private set; }
