@@ -9,5 +9,7 @@ namespace MVVMAwesonium.AwesomiumBinding
     public interface IJSOBuilder
     {
         JSObject CreateJSO();
+
+        JSValue CreateDate(DateTime dt);
     }  
 }

@@ -6,9 +6,13 @@ using Awesomium.Core;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
-    public class LocalBuilder : IJSOBuilder
+    public class LocalBuilder : JSOBuilderBase, IJSOBuilder
     {
-       private static int _MapCount = 0;         
+       private static int _MapCount = 0;    
+     
+       public LocalBuilder(IWebView iIWebView):base(iIWebView)
+       {
+       }
 
         public JSObject CreateJSO()
         {

@@ -79,6 +79,7 @@
     <Compile Include="AwesomiumBinding\JavascriptToCSharp\JSBasicObject.cs" />
     <Compile Include="AwesomiumBinding\JavascriptToCSharp\JSType.cs" />
     <Compile Include="AwesomiumBinding\Mapping\ICSharpMapper.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\JSOBuilderBase.cs" />
     <Compile Include="Infra\TaskExtension.cs" />
     <Compile Include="JavascriptBindingMode.cs" />
     <Compile Include="AwesomiumBinding\JavascriptToCSharp\IJSCBridgeExtender.cs" />

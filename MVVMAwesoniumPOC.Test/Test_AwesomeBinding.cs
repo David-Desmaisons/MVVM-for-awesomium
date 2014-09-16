@@ -38,40 +38,43 @@ namespace MVVMAwesonium.Test
         [Fact]
         public void Test_AwesomeBinding_Basic_OneWay()
         {
-            bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
-            isValidSynchronizationContext.Should().BeTrue();
+            using (Tester())
+            {
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
 
 
-            using (var mb = AwesomeBinding.Bind(_WebView, _DataContext,JavascriptBindingMode.OneWay).Result)
-            {  
-                var js = mb.JSRootObject;
-              
-                JSValue res = GetSafe(() => js.Invoke("Name"));
-                ((string)res).Should().Be("O Monstro");
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.OneWay).Result)
+                {
+                    var js = mb.JSRootObject;
 
-                JSValue res2 = GetSafe(() => js.Invoke("LastName"));
-                ((string)res2).Should().Be("Desmaisons");
+                    JSValue res = GetSafe(() => js.Invoke("Name"));
+                    ((string)res).Should().Be("O Monstro");
 
-                _DataContext.Name = "23";
+                    JSValue res2 = GetSafe(() => js.Invoke("LastName"));
+                    ((string)res2).Should().Be("Desmaisons");
 
-                JSValue res3 = GetSafe(() => js.Invoke("Name"));
-                ((string)res3).Should().Be("O Monstro");
+                    _DataContext.Name = "23";
 
-                JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
-                ((string)res4).Should().Be("Florianopolis");
+                    JSValue res3 = GetSafe(() => js.Invoke("Name"));
+                    ((string)res3).Should().Be("O Monstro");
 
-                _DataContext.Local.City = "Paris";
+                    JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
+                    ((string)res4).Should().Be("Florianopolis");
 
-                res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
-                ((string)res4).Should().Be("Florianopolis");
+                    _DataContext.Local.City = "Paris";
 
-                JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
-                ((string)res5).Should().Be("Langage");
+                    res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
+                    ((string)res4).Should().Be("Florianopolis");
 
-                _DataContext.Skills[0].Name = "Ling";
+                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    ((string)res5).Should().Be("Langage");
 
-                res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
-                ((string)res5).Should().Be("Langage");
+                    _DataContext.Skills[0].Name = "Ling";
+
+                    res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    ((string)res5).Should().Be("Langage");
+                }
             }
 
             //WebCore.Shutdown();
@@ -92,14 +95,18 @@ namespace MVVMAwesonium.Test
         [Fact]
         public void Test_AwesomeBinding_BasicAlreadyLoaded_OneWay()
         {
-            bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
-            isValidSynchronizationContext.Should().BeTrue();
-
-            WaitLoad(_WebView).Wait();
-
-            using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.OneWay).Result)
+            using (Tester())
             {
-                mb.Should().NotBeNull();
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                WaitLoad(_WebView).Wait();
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.OneWay).Result)
+                {
+                    mb.Should().NotBeNull();
+                }
             }
 
             //WebCore.Shutdown();
@@ -113,53 +120,57 @@ namespace MVVMAwesonium.Test
         [Fact]
         public void Test_AwesomeBinding_Basic_TwoWay()
         {
-            bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
-            isValidSynchronizationContext.Should().BeTrue();
-
-
-            using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+            using (Tester())
             {
-                //Teste One Way
-                var js = mb.JSRootObject;
 
-                JSValue res = GetSafe(()=> Get(js, "Name"));
-                ((string)res).Should().Be("O Monstro");
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
 
-                JSValue res2 = GetSafe(() => js.Invoke("LastName"));
-                ((string)res2).Should().Be("Desmaisons");
 
-                _DataContext.Name = "23";
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    //Teste One Way
+                    var js = mb.JSRootObject;
 
-                Thread.Sleep(50);
-                JSValue res3 = GetSafe(() => js.Invoke("Name"));
-                ((string)res3).Should().Be("23");
+                    JSValue res = GetSafe(() => Get(js, "Name"));
+                    ((string)res).Should().Be("O Monstro");
 
-                JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
-                ((string)res4).Should().Be("Florianopolis");
+                    JSValue res2 = GetSafe(() => js.Invoke("LastName"));
+                    ((string)res2).Should().Be("Desmaisons");
 
-                _DataContext.Local.City = "Paris";
-                Thread.Sleep(50);
+                    _DataContext.Name = "23";
 
-                res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
-                ((string)res4).Should().Be("Paris");
+                    Thread.Sleep(50);
+                    JSValue res3 = GetSafe(() => js.Invoke("Name"));
+                    ((string)res3).Should().Be("23");
 
-                JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
-                ((string)res5).Should().Be("Langage");
+                    JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
+                    ((string)res4).Should().Be("Florianopolis");
 
-                _DataContext.Skills[0].Name = "Ling";
-                Thread.Sleep(50);
+                    _DataContext.Local.City = "Paris";
+                    Thread.Sleep(50);
 
-                res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
-                ((string)res5).Should().Be("Ling");
+                    res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
+                    ((string)res4).Should().Be("Paris");
 
-                //Teste Two Way
-                this.DoSafe(() => mb.JSRootObject.Invoke("Name", "resName"));
-                JSValue resName = GetSafe(() => mb.JSRootObject.Invoke("Name"));
-                ((string)resName).Should().Be("resName");
+                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    ((string)res5).Should().Be("Langage");
 
-                Thread.Sleep(500);
+                    _DataContext.Skills[0].Name = "Ling";
+                    Thread.Sleep(50);
 
-                _DataContext.Name.Should().Be("resName");
+                    res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    ((string)res5).Should().Be("Ling");
+
+                    //Teste Two Way
+                    this.DoSafe(() => mb.JSRootObject.Invoke("Name", "resName"));
+                    JSValue resName = GetSafe(() => mb.JSRootObject.Invoke("Name"));
+                    ((string)resName).Should().Be("resName");
+
+                    Thread.Sleep(500);
+
+                    _DataContext.Name.Should().Be("resName");
+                }
             }
 
             //WebCore.Shutdown();

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
@@ -23,6 +24,25 @@ namespace MVVMAwesonium.AwesomiumBinding
                 return (double)@this;
 
             return null;
+        }
+
+        private static Task<T> EvaluateSafeAsync<T>(this IWebView iwb, Func<T> evaluate)
+        {
+            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
+            WebCore.QueueWork(iwb, () => tcs.SetResult(evaluate()));
+            return tcs.Task;
+        }
+
+        public static T EvaluateSafe<T>(this IWebView iwb, Func<T> evaluate)
+        {
+            try
+            {
+                return evaluate();
+            }
+            catch (InvalidOperationException)
+            {
+                return iwb.EvaluateSafeAsync(evaluate).Result;
+            }
         }
 
         //private class Comparer : IEqualityComparer<JSObject>

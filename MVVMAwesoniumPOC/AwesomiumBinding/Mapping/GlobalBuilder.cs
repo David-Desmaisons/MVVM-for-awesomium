@@ -7,36 +7,40 @@ using System.Threading.Tasks;
 
 namespace MVVMAwesonium.AwesomiumBinding
 {
-    public class GlobalBuilder : IJSOBuilder
+    public class GlobalBuilder : JSOBuilderBase, IJSOBuilder
     {
-        private IWebView _IWebView;
         private static int _Count = 0;
         private string _NameScape;
 
         public GlobalBuilder(IWebView iWebView, string iNameScape)
+            : base(iWebView)
         {
-            _IWebView = iWebView;
             _NameScape = iNameScape;
         }
 
-        private Task<T> GetTask<T>(IWebView iwb, Func<T> evaluate)
-        {
-            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-            WebCore.QueueWork(iwb, () => tcs.SetResult(evaluate()));
-            return tcs.Task;
-        }
+        //private Task<T> GetTask<T>(IWebView iwb, Func<T> evaluate)
+        //{
+        //    TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
+        //    WebCore.QueueWork(iwb, () => tcs.SetResult(evaluate()));
+        //    return tcs.Task;
+        //}
 
         public JSObject CreateJSO()
         {
             string Name = string.Format("{0}{1}", _NameScape, _Count++);
-            try
-            {
-                return _IWebView.CreateGlobalJavascriptObject(Name);
-            }
-            catch (InvalidOperationException)
-            {
-                return GetTask(_IWebView, () => _IWebView.CreateGlobalJavascriptObject(Name)).Result;
-            }
+            return _IWebView.EvaluateSafe(() => _IWebView.CreateGlobalJavascriptObject(Name));
+            //try
+            //{
+            //    return _IWebView.CreateGlobalJavascriptObject(Name);
+            //}
+            //catch (InvalidOperationException)
+            //{
+            //    return _IWebView.EvaluateSafe(() => _IWebView.CreateGlobalJavascriptObject(Name)).Result;
+            //    //return GetTask(_IWebView, ).Result;
+            //}
         }
+
+
+       
     }
 }

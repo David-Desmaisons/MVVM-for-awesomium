@@ -23,7 +23,7 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         internal BidirectionalMapper(object iRoot, IWebView iwebview, JavascriptBindingMode iMode)
         {
-            _JSObjectBuilder = new CSharpToJavascriptMapper(new LocalBuilder(), this);
+            _JSObjectBuilder = new CSharpToJavascriptMapper(new LocalBuilder(iwebview), this);
             _Root = _JSObjectBuilder.Map(iRoot);
             _BindingMode = iMode;
 
@@ -122,7 +122,7 @@ namespace MVVMAwesonium.AwesomiumBinding
                                      c => c.CollectionChanged -= CollectionChanged);
         }
 
-        public JSObject JSValueRoot { get { return _Root.JSValue; } }
+        public JSObject JSValueRoot { get { return _Root.GetSessionValue(); } }
 
         private Task InjectInHTLMSession(IJSCBridge iroot, bool isroot = false)
         {

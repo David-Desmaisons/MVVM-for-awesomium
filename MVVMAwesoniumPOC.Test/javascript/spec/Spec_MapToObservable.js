@@ -8,7 +8,7 @@
 
 
 describe("Map To Observable", function () {
-    var basicmaped, basicmaped2, basicmaped3, basicmaped4, basicmaped5;
+    var basicmaped, basicmaped2, basicmaped3, basicmaped4, basicmaped5, basicmapped6, basicmapped7;
 
 
     beforeEach(function() {
@@ -18,6 +18,7 @@ describe("Map To Observable", function () {
         basicmaped4 = { One: basicmaped, Two: basicmaped2 };
         basicmaped5 = { List: ['un', 'deux', 'trois'] };
         basicmaped6 = { List: [{ Name: '1' }, { Name: '2' }, { Name: '3' }] };
+        basicmapped7 = { When: new Date(1974, 2, 26) };
     });
 
     it("should map basic property", function () {
@@ -192,6 +193,25 @@ describe("Map To Observable", function () {
          expect(Listener.TrackChanges).toHaveBeenCalled();
          expect(Listener.TrackChanges.calls.count()).toEqual(1);
          expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped, 'Age', 10);
+     });
+
+     it("should register TrackChanges on Date", function () {
+         var Listener = { TrackChanges: function () { } };
+         spyOn(Listener, 'TrackChanges');
+
+         var original = new Date(1974, 2, 26);
+         var newDate = new Date(Date.now());
+
+         var mapped = ko.MapToObservable(basicmapped7, null, Listener);
+
+         expect(mapped.When()).toEqual(original);
+
+         mapped.When(newDate);
+
+       
+         expect(Listener.TrackChanges).toHaveBeenCalled();
+         expect(Listener.TrackChanges.calls.count()).toEqual(1);
+         expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped, 'When', newDate);
      });
 
      it("should register nested TrackChanges", function () {

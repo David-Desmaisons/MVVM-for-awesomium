@@ -108,7 +108,19 @@ namespace MVVMAwesonium.AwesomiumBinding
             return true;
         }
 
+        private bool BasicConvert(DateTime source, out JSValue res)
+        {
+            res = _IJSOBuilder.CreateDate(source);
+            return true;
+        }
+
         private bool Convert(object source, out IJSCBridge res)
+        {
+            res = null;
+            return false;
+        }
+
+        private bool Convert(DateTime source, out IJSCBridge res)
         {
             res = null;
             return false;

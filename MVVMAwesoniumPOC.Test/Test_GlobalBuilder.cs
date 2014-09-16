@@ -21,19 +21,22 @@ namespace MVVMAwesonium.Test
         [Fact]
         public void Test_GlobalBuilder_Basic()
         {
-            bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
-            isValidSynchronizationContext.Should().BeTrue();
+            using (Tester())
+            { 
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
 
 
-            var res0 = GetSafe(()=> _WebView.CreateGlobalJavascriptObject("teste"));
+                var res0 = GetSafe(()=> _WebView.CreateGlobalJavascriptObject("teste"));
 
-            GlobalBuilder gb = new GlobalBuilder(_WebView,"Test");
-            var res = gb.CreateJSO();
-            res.Should().NotBeNull();
-            string name = GetSafe( () => res.GlobalObjectName);
-            name.Should().Be("Test0");
-            var type = GetSafe(() => res.Type);
-            type.Should().Be(JSObjectType.RemoteGlobal);
+                GlobalBuilder gb = new GlobalBuilder(_WebView,"Test");
+                var res = gb.CreateJSO();
+                res.Should().NotBeNull();
+                string name = GetSafe( () => res.GlobalObjectName);
+                name.Should().Be("Test0");
+                var type = GetSafe(() => res.Type);
+                type.Should().Be(JSObjectType.RemoteGlobal);
+            }
         }
     }
 }

@@ -8,7 +8,7 @@
 
     function MapToObservable(or, context, Mapper, Listener) {
 
-        if (typeof or !== 'object') return or;
+        if ((typeof or !== 'object') || (or instanceof Date)) return or;
 
         if (!MapToObservable.Cache) {
             MapToObservable.Cache = {};
@@ -19,38 +19,40 @@
         if (!Listener) Listener = {};
 
         //not very clean, but must handle "read-only" object with predefined _MappedId
-        if (or._MappedId!==undefined)
-        {
+        if (or._MappedId !== undefined) {
             var tentative = MapToObservable.Cache[or._MappedId];
-            if (tentative)
-            {
+            if (tentative) {
                 if ((context === null) && (Mapper.End)) Mapper.End(tentative);
                 return tentative;
             }
         }
-        else
-        {
-            while (MapToObservable.Cache[MapToObservable._MappedId]) { MapToObservable._MappedId++;};
+        else {
+            while (MapToObservable.Cache[MapToObservable._MappedId]) { MapToObservable._MappedId++; };
             or._MappedId = MapToObservable._MappedId;
         }
 
-        var res = {};     
+        var res = {};
         MapToObservable.Cache[or._MappedId] = res;
         if (Mapper.Register) Mapper.Register(res, context);
 
         for (var att in or) {
-            if ((att!="_MappedId") && (or.hasOwnProperty(att))) {
+            if ((att != "_MappedId") && (or.hasOwnProperty(att))) {
                 var value = or[att];
                 if ((value !== null) && (typeof value === 'object')) {
                     if (!Array.isArray(value)) {
-                        res[att] = ko.observable(MapToObservable(value, {
+                        var comp = MapToObservable(value, {
                             object: res,
                             attribute: att
-                        }, Mapper, Listener));
+                        }, Mapper, Listener);
+                        res[att] = ko.observable(comp);
+                        if ((Listener.TrackChanges) && (comp instanceof Date)) {
+                            res[att].subscribe(PropertyListener(res, att, Listener));
+                        }
+
                     } else {
                         debugger;
                         var nar = [];
-                        for (var i=0; i<value.length; ++i) {
+                        for (var i = 0; i < value.length; ++i) {
                             nar.push(MapToObservable(value[i], {
                                 object: res,
                                 attribute: att,
@@ -101,4 +103,4 @@
             });
         }
     };
-} ());
+}());

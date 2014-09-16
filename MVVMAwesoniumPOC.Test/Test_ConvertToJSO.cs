@@ -40,7 +40,7 @@ namespace MVVMAwesonium.Test
         public Test_ConvertToJSO()
         { 
             _WebView = WebCore.CreateWebView(500, 500, WebViewType.Offscreen);
-            _IJSOBuilder = new LocalBuilder();
+            _IJSOBuilder = new LocalBuilder(_WebView);
             _ICSharpMapper = Substitute.For<ICSharpMapper>();
             _ICSharpMapper.GetCached(Arg.Any<object>()).Returns((IJSCBridge)null);
             _ConverTOJSO = new CSharpToJavascriptMapper(_IJSOBuilder, _ICSharpMapper);
@@ -201,5 +201,6 @@ namespace MVVMAwesonium.Test
 
             _ICSharpMapper.Received().Cache(_Test,Arg.Any<IJSCBridge>());
         }
+    
     }
 }
