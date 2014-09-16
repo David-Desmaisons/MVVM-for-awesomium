@@ -50,7 +50,7 @@
                     } else {
                         debugger;
                         var nar = [];
-                        for (var i in value) {
+                        for (var i=0; i<value.length; ++i) {
                             nar.push(MapToObservable(value[i], {
                                 object: res,
                                 attribute: att,
