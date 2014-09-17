@@ -167,7 +167,7 @@ describe("Map To Observable", function () {
          expect(mapper.End).toHaveBeenCalledWith(mapped0);
      });
 
-     it("should register TrackChanges on string", function () {
+     it("should listen TrackChanges on string", function () {
          var Listener = { TrackChanges: function () { } };
          spyOn(Listener, 'TrackChanges');
 
@@ -181,7 +181,7 @@ describe("Map To Observable", function () {
          expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped,'Name','Toto');
      });
 
-     it("should register TrackChanges on int", function () {
+     it("should listen TrackChanges on int", function () {
          var Listener = { TrackChanges: function () { } };
          spyOn(Listener, 'TrackChanges');
 
@@ -195,7 +195,7 @@ describe("Map To Observable", function () {
          expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped, 'Age', 10);
      });
 
-     it("should register TrackChanges on Date", function () {
+     it("should listen TrackChanges on Date", function () {
          var Listener = { TrackChanges: function () { } };
          spyOn(Listener, 'TrackChanges');
 
@@ -214,7 +214,7 @@ describe("Map To Observable", function () {
          expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped, 'When', newDate);
      });
 
-     it("should register nested TrackChanges", function () {
+     it("should listen nested TrackChanges", function () {
          var Listener = { TrackChanges: function () { } };
          spyOn(Listener, 'TrackChanges');
 
@@ -228,7 +228,7 @@ describe("Map To Observable", function () {
          expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped.One(), 'Name', 'Titi');
      });
 
-     it("should not register TrackChanges on nested object", function () {
+     it("should not listen TrackChanges on nested object", function () {
          var Listener = { TrackChanges: function () { } };
          spyOn(Listener, 'TrackChanges');
 
@@ -240,6 +240,19 @@ describe("Map To Observable", function () {
 
          expect(mapped.One()).toEqual(newone);
          expect(Listener.TrackChanges.calls.count()).toEqual(0);
+     });
+
+
+     it("should listen TrackCollectionChanges on collection", function () {
+         var Listener = { TrackCollectionChanges: function (o, v, c) { console.log(o); console.log(v); console.log(c); } };
+         spyOn(Listener, 'TrackCollectionChanges').and.callThrough();
+
+         var mapped = ko.MapToObservable(basicmaped6, null, Listener);
+
+         mapped.List.push({Name:"titi"});
+
+         expect(mapped.List().length).toEqual(4);
+         expect(Listener.TrackCollectionChanges.calls.count()).toEqual(1);
      });
 
 });

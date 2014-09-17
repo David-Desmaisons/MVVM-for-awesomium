@@ -6,6 +6,13 @@
         };
     }
 
+    function CollectionListener(object, listener) {
+        return function (changes) {
+            listener.TrackCollectionChanges(object, object(), changes);
+        };
+    }
+
+
     function MapToObservable(or, context, Mapper, Listener) {
 
         if ((typeof or !== 'object') || (or instanceof Date)) return or;
@@ -50,7 +57,6 @@
                         }
 
                     } else {
-                        debugger;
                         var nar = [];
                         for (var i = 0; i < value.length; ++i) {
                             nar.push(MapToObservable(value[i], {
@@ -65,6 +71,10 @@
                             object: res,
                             attribute: att
                         });
+                        if (Listener.TrackCollectionChanges) {
+                            res[att].subscribe(CollectionListener(res[att], Listener), null, 'arrayChange');
+                        }
+                        //
                     }
                 } else {
                     res[att] = ko.observable(value);
