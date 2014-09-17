@@ -65,13 +65,9 @@ namespace MVVMAwesonium.AwesomiumBinding
             return _Attributes.Values; 
         }
 
-        public void UpdateCSharpProperty(string PropertyName, JSValue newValue)
+        public void UpdateCSharpProperty(string PropertyName, JSValue newValue, object simplevalue)
         {
-            var simplevalue = newValue.GetSimpleValue();
-            if (simplevalue == null)
-                return;
-
-            if (Object.Equals(simplevalue, _Attributes[PropertyName].CValue))
+            if ((simplevalue == null) || (Object.Equals(simplevalue, _Attributes[PropertyName].CValue)))
                 return;
 
             PropertyInfo propertyInfo = CValue.GetType().GetProperty(PropertyName, BindingFlags.Public | BindingFlags.Instance);
@@ -86,8 +82,6 @@ namespace MVVMAwesonium.AwesomiumBinding
         { 
             _Attributes[PropertyName]=newValue;
             ((JSObject)_MappedJSValue).Invoke(PropertyName, newValue.GetSessionValue());    
-        }
-
-       
+        }     
     }
 }

@@ -11,50 +11,46 @@ using Awesomium.Core;
 
 namespace MVVMAwesonium.Test
 {
-    public class Test_AwesomiumHelper
+    public class Test_JavascriptToCSharpMapper_Simple
     {
+        private JavascriptToCSharpMapper _JavascriptToCSharpMapper;
+        public Test_JavascriptToCSharpMapper_Simple()
+        {
+            _JavascriptToCSharpMapper = new JavascriptToCSharpMapper(null);
+        }
+        
         [Fact]
         public void Test_GetSimpleValue_String()
         {
-            new JSValue("titi").GetSimpleValue().Should().Be("titi");
+            _JavascriptToCSharpMapper.GetSimpleValue( new JSValue("titi")).Should().Be("titi");
         }
 
         [Fact]
         public void Test_GetSimpleValue_Int()
         {
-            new JSValue(10).GetSimpleValue().Should().Be(10);
+           _JavascriptToCSharpMapper.GetSimpleValue(  new JSValue(10)).Should().Be(10);
         }
 
         [Fact]
         public void Test_GetSimpleValue_Bool()
         {
-            new JSValue(false).GetSimpleValue().Should().Be(false);
-            new JSValue(true).GetSimpleValue().Should().Be(true);
+           _JavascriptToCSharpMapper.GetSimpleValue(  new JSValue(false)).Should().Be(false);
+           _JavascriptToCSharpMapper.GetSimpleValue(  new JSValue(true)).Should().Be(true);
         }
 
         [Fact]
         public void Test_GetSimpleValue_Double()
         {
-            new JSValue(0.5).GetSimpleValue().Should().Be(0.5D);
+            _JavascriptToCSharpMapper.GetSimpleValue( new JSValue(0.5)).Should().Be(0.5D);
         }
 
         [Fact]
         public void Test_GetSimpleValue_Null()
         {
-            new JSValue().GetSimpleValue().Should().Be(null);
+           _JavascriptToCSharpMapper.GetSimpleValue(  new JSValue()).Should().Be(null);
         }
 
-        [Fact]
-        public void Test_GetSimpleValue_Object()
-        {
-            new JSValue(new JSObject()).GetSimpleValue().Should().Be(null);
-        }
-
-        [Fact]
-        public void Test_GetSimpleValue_Undefined()
-        {
-            new JSValue((JSObject)null).GetSimpleValue().Should().Be(null);
-        }
+      
 
         //[Fact]
         //public void Test_RemoteObjectComparer_OnlyForRemote_Equals()

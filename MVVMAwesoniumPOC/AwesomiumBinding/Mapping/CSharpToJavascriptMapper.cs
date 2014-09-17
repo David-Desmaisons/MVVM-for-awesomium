@@ -120,12 +120,6 @@ namespace MVVMAwesonium.AwesomiumBinding
             return false;
         }
 
-        private bool Convert(DateTime source, out IJSCBridge res)
-        {
-            res = null;
-            return false;
-        }
-
         private bool Convert<T>(IEnumerable<T> source, out IJSCBridge res)
         {
             res = new JSArray(source.Select(s => Map(s)), source);

@@ -58,8 +58,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Awesomium_Test_Base.cs" />
-    <Compile Include="DateTimeConvertion.cs" />
-    <Compile Include="Test_AwesomiumHelper.cs" />
+    <Compile Include="Test_DateTimeConvertion.cs" />
+    <Compile Include="Test_JavascriptToCSharpMapper_Simple.cs" />
     <Compile Include="Test_GlobalBuilder.cs" />
     <Compile Include="Test_AwesomeBinding.cs" />
     <Compile Include="Test_ConvertToJSO.cs" />

@@ -16,14 +16,20 @@ namespace MVVMAwesonium.AwesomiumBinding
     {
         private readonly JavascriptBindingMode _BindingMode;
         private readonly IJSCBridge _Root;
+        private readonly IWebView _IWebView;
+        
         private CSharpToJavascriptMapper _JSObjectBuilder;
         private JavascriptSessionInjector _SessionInjector;
+        private JavascriptToCSharpMapper _JavascriptToCSharpMapper;
+        
         private IDictionary<object, IJSCBridge> _FromCSharp = new Dictionary<object, IJSCBridge>();
         private IDictionary<uint, IJSCBridge> _FromJavascript = new Dictionary<uint, IJSCBridge>();
 
         internal BidirectionalMapper(object iRoot, IWebView iwebview, JavascriptBindingMode iMode)
         {
+            _IWebView = iwebview;
             _JSObjectBuilder = new CSharpToJavascriptMapper(new LocalBuilder(iwebview), this);
+            _JavascriptToCSharpMapper = new JavascriptToCSharpMapper(iwebview);
             _Root = _JSObjectBuilder.Map(iRoot);
             _BindingMode = iMode;
 
@@ -144,7 +150,7 @@ namespace MVVMAwesonium.AwesomiumBinding
         {
             var res = GetFromJavascript(objectchanged) as JSGenericObject;
             if (res != null)
-                res.UpdateCSharpProperty(PropertyName, newValue);
+                res.UpdateCSharpProperty(PropertyName, newValue, _JavascriptToCSharpMapper.GetSimpleValue(newValue));
         }
 
 

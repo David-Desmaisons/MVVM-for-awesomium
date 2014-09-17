@@ -80,6 +80,10 @@
         return res;
     }
 
+    ko.isDate = function (o) {
+        return o instanceof Date;
+    };
+
     //global ko
     ko.MapToObservable = function (o, mapper, listener) {
         return MapToObservable(o, null, mapper, listener);

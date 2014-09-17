@@ -242,7 +242,15 @@ describe("Map To Observable", function () {
          expect(Listener.TrackChanges.calls.count()).toEqual(0);
      });
 
- 
+});
 
- 
+describe("is Date function", function () {
+    it("should not register TrackChanges on nested object", function () {
+        var date = new Date(1, 1, 1);
+        expect(ko.isDate(date)).toBe(true);
+        expect(ko.isDate(null)).toBe(false);
+        expect(ko.isDate({})).toBe(false);
+        expect(ko.isDate(1)).toBe(false);
+    });
+    
 });

@@ -18,7 +18,7 @@ namespace MVVMAwesonium.AwesomiumBinding
         {
             return _IWebView.EvaluateSafe(() => 
                         _IWebView.ExecuteJavascriptWithResult(string.Format("new Date({0})",
-                        string.Join(",", dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, dt.Millisecond))));
+                        string.Join(",", dt.Year, dt.Month -1, dt.Day, dt.Hour, dt.Minute, dt.Second, dt.Millisecond))));
         }
     }
 }

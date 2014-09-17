@@ -33,7 +33,7 @@ namespace MVVMAwesonium.Test
                 var res = gb.CreateJSO();
                 res.Should().NotBeNull();
                 string name = GetSafe( () => res.GlobalObjectName);
-                name.Should().Be("Test0");
+                name.Should().Be("Test_0");
                 var type = GetSafe(() => res.Type);
                 type.Should().Be(JSObjectType.RemoteGlobal);
             }

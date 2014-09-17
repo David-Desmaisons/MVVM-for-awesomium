@@ -9,23 +9,6 @@ namespace MVVMAwesonium.AwesomiumBinding
 {
     public static class AwesomiumHelper
     {
-        public static object GetSimpleValue(this JSValue @this)
-        {
-            if (@this.IsString)
-                return (string)@this;
-
-            if (@this.IsInteger)
-                return (int)@this;
-
-            if (@this.IsBoolean)
-                return (bool)@this;
-
-            if (@this.IsDouble)
-                return (double)@this;
-
-            return null;
-        }
-
         private static Task<T> EvaluateSafeAsync<T>(this IWebView iwb, Func<T> evaluate)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();

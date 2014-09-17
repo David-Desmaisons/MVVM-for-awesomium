@@ -27,8 +27,6 @@ namespace MVVMAwesonium.AwesomiumBinding
             }
         }
 
-    
-
         private JSObject GetMapper(IJavascriptMapper iMapperListener)
         {
             var mapper = _GlobalBuilder.CreateJSO();
