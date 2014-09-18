@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Example\Couple.cs" />
+    <Compile Include="Example\DateInformation.cs" />
     <Compile Include="Example\Local.cs" />
     <Compile Include="Example\Person.cs" />
     <Compile Include="Example\Skill.cs" />
