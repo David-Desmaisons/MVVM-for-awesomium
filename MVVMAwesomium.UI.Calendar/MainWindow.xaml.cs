@@ -36,7 +36,7 @@ namespace MVVMAwesomium.UI.Calendar
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             IWebView f = this.WebControl.WebSession.Views.FirstOrDefault();
-            var datacontext = new DateInformation();
+            var datacontext = new DateInformation() { Date= new DateTime(1974,2,26) };
             
             AwesomeBinding.Bind(f, datacontext, JavascriptBindingMode.TwoWay);
 

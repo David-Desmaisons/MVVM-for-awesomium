@@ -128,7 +128,7 @@ namespace MVVMAwesonium.AwesomiumBinding
                                      c => c.CollectionChanged -= CollectionChanged);
         }
 
-        public JSObject JSValueRoot { get { return _Root.GetSessionValue(); } }
+        public IJSCBridge JSValueRoot { get { return _Root; } }
 
         private Task InjectInHTLMSession(IJSCBridge iroot, bool isroot = false)
         {
@@ -233,6 +233,14 @@ namespace MVVMAwesonium.AwesomiumBinding
         #endregion
 
         private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            WebCore.QueueWork(() =>
+                {
+                    UnsafeCollectionChanged(sender, e);
+                });
+        }
+
+        private void UnsafeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             JSArray arr = _FromCSharp[sender] as JSArray;
             if (arr == null)

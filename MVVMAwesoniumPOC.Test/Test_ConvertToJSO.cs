@@ -82,7 +82,9 @@ namespace MVVMAwesonium.Test
         [Fact]
         public void Test_List()
         {
-            JSValue[] resv = (JSValue[])_ConverTOJSO.Map(_Tests).JSValue;
+            var ibridgeresult = _ConverTOJSO.Map(_Tests);
+            ibridgeresult.Type.Should().Be(JSType.Array);
+            JSValue[] resv = (JSValue[])ibridgeresult.JSValue;
 
             resv.Should().NotBeNull();
             resv.Length.Should().Be(2);

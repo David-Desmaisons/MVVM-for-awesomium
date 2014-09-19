@@ -20,18 +20,16 @@ namespace MVVMAwesonium.AwesomiumBinding
 
         public override string ToString()
         {
-            return "{ "+ string.Join(",", _Attributes.Select(kvp=>string.Format(@"""{0}"":{1}",kvp.Key,kvp.Value)))+" }";
+            return "{"+ string.Join(",", _Attributes.Select(kvp=>string.Format(@"""{0}"":{1}",kvp.Key,kvp.Value)))+"}";
         }
 
         private Dictionary<string, IJSCBridge> _Attributes = new Dictionary<string, IJSCBridge>();
 
         public IDictionary<string, IJSCBridge> Attributes { get { return _Attributes; } }
 
-
         private Dictionary<string, ICommand> _Commands = new Dictionary<string, ICommand>();
 
         public IDictionary<string, ICommand> Commands { get { return _Commands; } }
-
 
         public JSValue JSValue { get; private set; }
 

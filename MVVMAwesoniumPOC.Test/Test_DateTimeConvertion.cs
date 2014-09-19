@@ -40,6 +40,7 @@ namespace MVVMAwesonium.Test
                 Init();
 
                 var mapped = _ConverTOJSO.Map(new DateTime(1974, 2, 26));
+                mapped.Type.Should().Be(JSType.Basic);
                 JSObject date = mapped.JSValue;
                 date.Should().NotBeNull();
 

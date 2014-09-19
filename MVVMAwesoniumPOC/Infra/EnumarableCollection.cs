@@ -16,5 +16,16 @@ namespace MVVMAwesonium.Infra
 
             return @this;
         }
+
+        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> @this, Action<T,int> ToDo)
+        {
+            int i=0;
+            foreach (T el in @this)
+            {
+                ToDo(el,i++);
+            }
+
+            return @this;
+        }
     }
 }

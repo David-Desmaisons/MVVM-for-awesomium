@@ -19,19 +19,10 @@ namespace MVVMAwesonium.ViewModel.Example
             ChangeSkill = new RelayCommand<Skill>(s => MainSkill = (this.Skills.Count>0)?this.Skills[0] : null);
         }
 
-
-
-
         private void DoCommand()
         {
             Local = new Local() { City = "Paris", Region = "IDF" };
             Skills.Insert(0, new Skill() { Name = "Info", Type = "javascript" });
-
-            //_FirstSkill.Name = "Lingua";
-            //_FirstSkill.Type = "Frances";
-            //_Person.Local.City = "ded";
-            //_Person.Skills.RemoveAt(_Person.Skills.Count-1);
-            //_Person.Skills[0]= new Skill() { Name = "Info", Type = "knockout" };
         }
 
         private string _LastName;
@@ -51,6 +42,16 @@ namespace MVVMAwesonium.ViewModel.Example
             set
             {
                 Set(ref _Name, value, "Name");
+            }
+        }
+
+        private DateTime _BirthDay;
+        public DateTime BirthDay
+        {
+            get { return _BirthDay; }
+            set
+            {
+                Set(ref _BirthDay, value, "BirthDay");
             }
         }
 

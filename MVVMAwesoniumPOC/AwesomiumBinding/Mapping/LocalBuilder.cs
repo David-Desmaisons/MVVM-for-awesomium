@@ -14,11 +14,16 @@ namespace MVVMAwesonium.AwesomiumBinding
        {
        }
 
-        public JSObject CreateJSO()
+        private JSObject UnsafeCreateJSO()
         {
             JSObject res =new JSObject();
             res["_MappedId"] = new JSValue(_MapCount++);
             return res;
+        }
+
+        public JSObject CreateJSO()
+        {
+            return _IWebView.EvaluateSafe(() => UnsafeCreateJSO());
         }
     }
 }
