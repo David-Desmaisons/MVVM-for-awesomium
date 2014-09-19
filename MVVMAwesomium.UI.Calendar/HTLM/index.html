@@ -2,23 +2,24 @@
 <html>
 <head>
     <title></title>
-    <script src="src/jquery.min.js"></script>
-    <script src="src/jquery.tmpl.js"></script>
+    <script src="src/jquery-1.7.1.min.js"></script>
     <script src="src/kendo.all.min.js"></script>
     <script src="src/knockout.js" type="text/javascript"></script>
     <script src="src/ko.bindinghandlers.kendodatepicker.js"></script>
     <script src="src/Ko_Extension.js" type="text/javascript"></script>
 
+    <link href="css/kendo.common.min.css" rel="stylesheet" />
+    <link href="css/kendo.default.min.css" rel="stylesheet" />
+
 </head>
 <body>
     <div id="example">
-        <input type="text" data-bind="kendoDatePicker: selectedItem" />
+        <input type="text" data-bind="kendoDatePicker: Date" />
 
         <hr />
 
-        <div data-bind="text: ko.toJSON(selectedItem)"></div>
+        <div data-bind="text: ko.toJSON(Date)"></div>
 
-        <button data-bind="click: resetDefault">Reset Default</button>
     </div>
 
 </body>
