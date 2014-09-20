@@ -23,6 +23,7 @@ namespace MVVMAwesomium.ViewModel.Example
         {
             Local = new Local() { City = "Paris", Region = "IDF" };
             Skills.Insert(0, new Skill() { Name = "Info", Type = "javascript" });
+            //Skills[0]=  new Skill() { Name = "Info", Type = "javascript" };
         }
 
         private string _LastName;

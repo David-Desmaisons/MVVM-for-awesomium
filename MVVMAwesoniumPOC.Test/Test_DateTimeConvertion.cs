@@ -14,7 +14,7 @@ namespace MVVMAwesomium.Test
     {
         private CSharpToJavascriptMapper _ConverTOJSO;
         private LocalBuilder _IJSOBuilder;
-        private ICSharpMapper _ICSharpMapper;
+        private IJSCBridgeCache _ICSharpMapper;
         private JavascriptToCSharpMapper _JavascriptToCSharpMapper;
 
 
@@ -22,7 +22,7 @@ namespace MVVMAwesomium.Test
         {
             _JavascriptToCSharpMapper = new JavascriptToCSharpMapper(_WebView);
             _IJSOBuilder = new LocalBuilder(_WebView);
-            _ICSharpMapper = Substitute.For<ICSharpMapper>();
+            _ICSharpMapper = Substitute.For<IJSCBridgeCache>();
             _ICSharpMapper.GetCached(Arg.Any<object>()).Returns((IJSCBridge)null);
             _ConverTOJSO = new CSharpToJavascriptMapper(_IJSOBuilder, _ICSharpMapper);
         }

@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MVVMAwesomium.Infra;
+using System.Collections;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
@@ -15,9 +17,55 @@ namespace MVVMAwesomium.AwesomiumBinding
             CValue = collection;
         }
 
+        private void ReplayChanges(IndividualCollectionChange change, IList ilist)
+        {
+            switch (change.CollectionChangeType)
+            {
+                case CollectionChangeType.Add:
+                    if (change.Index == ilist.Count)
+                    {
+                        ilist.Add(change.Object.CValue);
+                        Items.Add(change.Object);
+                    }
+                    else
+                    {
+                        ilist.Insert(change.Index, change.Object.CValue);
+                        Items.Insert(change.Index, change.Object);
+                    }
+                    break;
+
+                case CollectionChangeType.Remove:
+                    ilist.RemoveAt(change.Index);
+                    Items.RemoveAt(change.Index);
+                    break;
+            }
+        }
+
+
+        public void UpdateEventArgsFromJavascript(IEnumerable<IndividualCollectionChange> iChanges)
+        {
+            if (_UnderJavascriptUpdate>0)
+            {
+                _UnderJavascriptUpdate--;
+                return;
+            }
+
+            IList ilist = CValue as IList;
+            if (ilist == null) return;
+
+            var old = Items.ToList();
+
+            iChanges.Where(c => c.CollectionChangeType == CollectionChangeType.Remove).OrderByDescending(c => c.Index).ForEach(c => ReplayChanges(c, ilist));
+            iChanges.Where(c => c.CollectionChangeType == CollectionChangeType.Add).OrderBy(c => c.Index).ForEach(c => ReplayChanges(c, ilist));
+        }
+
+        private int _UnderJavascriptUpdate = 0;
+
         public void Add(IJSCBridge iIJSCBridge, int Index)
         {
-            ((JSObject)MappedJSValue).Invoke("splice", new JSValue(Index), new JSValue(0), iIJSCBridge.GetSessionValue());
+            _UnderJavascriptUpdate++;
+
+            ((JSObject)MappedJSValue).Invoke("splice", new JSValue(Index), new JSValue(0), iIJSCBridge.GetJSSessionValue());
             if (Index > Items.Count - 1)
                 Items.Add(iIJSCBridge);
             else
@@ -26,18 +74,24 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public void Insert(IJSCBridge iIJSCBridge, int Index)
         {
-            ((JSObject)MappedJSValue).Invoke("splice", new JSValue(Index), new JSValue(1), iIJSCBridge.GetSessionValue());
+            _UnderJavascriptUpdate++;
+
+            ((JSObject)MappedJSValue).Invoke("splice", new JSValue(Index), new JSValue(1), iIJSCBridge.GetJSSessionValue());
             Items[Index]=iIJSCBridge;
         }
 
         public void Remove( int Index)
         {
+            _UnderJavascriptUpdate++;
+
             ((JSObject)MappedJSValue).Invoke("splice", new JSValue(Index), new JSValue(1));
             Items.RemoveAt(Index);
         }
 
         public void Reset()
         {
+            _UnderJavascriptUpdate++;
+
             ((JSObject)MappedJSValue).Invoke("removeAll");
             Items.Clear();
         }
@@ -62,7 +116,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public JSValue MappedJSValue { get; private set; }
 
-        public void SetMappedJSValue(JSValue ijsobject, ICSharpMapper mapper)
+        public void SetMappedJSValue(JSValue ijsobject, IJSCBridgeCache mapper)
         {
             MappedJSValue = ijsobject;
         }

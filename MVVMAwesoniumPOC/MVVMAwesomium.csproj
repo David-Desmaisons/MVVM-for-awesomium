@@ -8,8 +8,8 @@
     <ProjectGuid>{9B18B122-A2FC-4537-AB68-5E1EC9959DB8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MVVMAwesonium</RootNamespace>
-    <AssemblyName>MVVMAwesonium</AssemblyName>
+    <RootNamespace>MVVMAwesomium</RootNamespace>
+    <AssemblyName>MVVMAwesomium</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -78,21 +78,25 @@
     <Compile Include="AwesomiumBinding\BridgeObjects\IJSObservableBridge.cs" />
     <Compile Include="AwesomiumBinding\BridgeObjects\JSBasicObject.cs" />
     <Compile Include="AwesomiumBinding\BridgeObjects\JSType.cs" />
-    <Compile Include="AwesomiumBinding\Mapping\ICSharpMapper.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\CollectionChanges\CollectionChangeType.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\CollectionChanges\CollectionChanges.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\CollectionChanges\IndividualCollectionChange.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\IJSCBridgeCache.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\IJavascriptListener.cs" />
     <Compile Include="AwesomiumBinding\Mapping\JavascriptToCSharpMapper.cs" />
-    <Compile Include="AwesomiumBinding\Mapping\JSOBuilderBase.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\JavascriptObjectBuilder\JSOBuilderBase.cs" />
     <Compile Include="Infra\TaskExtension.cs" />
     <Compile Include="JavascriptBindingMode.cs" />
     <Compile Include="AwesomiumBinding\BridgeObjects\IJSCBridgeExtender.cs" />
-    <Compile Include="AwesomiumBinding\Mapping\GlobalBuilder.cs" />
-    <Compile Include="AwesomiumBinding\Mapping\IJSOBuilder.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\JavascriptObjectBuilder\GlobalBuilder.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\JavascriptObjectBuilder\IJSOBuilder.cs" />
     <Compile Include="AwesomiumBinding\BridgeObjects\IJSCBridge.cs" />
     <Compile Include="AwesomiumBinding\Mapping\IJavascriptMapper.cs" />
     <Compile Include="AwesomiumBinding\Mapping\JavascriptSessionInjector.cs" />
     <Compile Include="AwesomiumBinding\BridgeObjects\JSArray.cs" />
     <Compile Include="AwesomiumBinding\BridgeObjects\JSGenericObject.cs" />
     <Compile Include="AwesomiumBinding\Mapping\BidirectionalMapper.cs" />
-    <Compile Include="AwesomiumBinding\Mapping\LocalBuilder.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\JavascriptObjectBuilder\LocalBuilder.cs" />
     <Compile Include="Infra\AssemblyExtension.cs" />
     <Compile Include="Infra\EnumarableCollection.cs" />
     <Compile Include="AwesomeBinding.cs" />

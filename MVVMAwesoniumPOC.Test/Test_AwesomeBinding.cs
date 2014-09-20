@@ -52,7 +52,7 @@ namespace MVVMAwesomium.Test
                 using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.OneWay).Result)
                 {
                     var jsbridge = mb.JSRootObject;
-                    var js = (JSObject)jsbridge.GetSessionValue();
+                    var js = (JSObject)jsbridge.GetJSSessionValue();
 
                     string JSON = JsonConvert.SerializeObject(_DataContext);
                     string alm = jsbridge.ToString();
@@ -141,7 +141,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetSessionValue();
+                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
 
                     JSValue res = GetSafe(() => Get(js, "Name"));
                     ((string)res).Should().Be("O Monstro");
@@ -196,9 +196,53 @@ namespace MVVMAwesomium.Test
              
         }
 
-        private class ViewModelTest
+        private class ViewModelTest : ViewModelBase
         {
             public ICommand Command{ get; set; }
+
+            public string Name { get { return "NameTest"; } }
+
+            public string UselessName { set { } }
+
+            public void InconsistentEventEmit()
+            {
+                this.OnPropertyChanged("NonProperty");
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_Property_Test()
+        {
+            using (Tester())
+            {
+                var command = Substitute.For<ICommand>();
+                var datacontexttest = new ViewModelTest() { Command = command };
+
+                using (var mb = AwesomeBinding.Bind(_WebView, datacontexttest, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+
+                    JSValue res = GetSafe(() => js.Invoke("Name"));
+                    res.Should().NotBeNull();
+                    ((string)res).Should().Be("NameTest");
+
+                    res = GetSafe(() => js.Invoke("Name","NewName"));
+                    res = GetSafe(() => js.Invoke("Name"));
+                    res.Should().NotBeNull();
+                    ((string)res).Should().Be("NewName");
+
+                    Thread.Sleep(100);
+                    datacontexttest.Name.Should().Be("NameTest");
+
+                    bool resf = GetSafe(() => js.HasProperty("UselessName"));
+                    resf.Should().BeFalse();
+
+                    Action Safe = () =>  datacontexttest.InconsistentEventEmit();
+
+                    Safe.ShouldNotThrow("Inconsistent Name in property should not throw exception");
+
+                }
+            }
         }
 
         [Fact]
@@ -211,7 +255,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetSessionValue();
+                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
 
                     JSValue res = GetSafe(() =>js.Invoke("Command"));
                     Thread.Sleep(100);
@@ -231,7 +275,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetSessionValue();
+                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
 
                     JSValue res = GetSafe(() => js.Invoke("Command",js));
                     Thread.Sleep(100);
@@ -252,7 +296,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetSessionValue();
+                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
 
                     JSValue res = GetSafe(() => js.Invoke("Command", null));
                     Thread.Sleep(100);
@@ -272,7 +316,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = mb.JSRootObject.GetSessionValue();
+                    var js = mb.JSRootObject.GetJSSessionValue();
 
                     JSValue res = GetSafe(() => Get(js, "Skills"));
                     res.Should().NotBeNull();
@@ -325,6 +369,66 @@ namespace MVVMAwesomium.Test
             }
         }
 
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Collection_FromJSUpdate()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var root = mb.JSRootObject as JSGenericObject;
+                    var js = root.GetJSSessionValue();
+
+                    JSValue res = GetSafe(() => Get(js, "Skills"));
+                    res.Should().NotBeNull();
+                    var col = ((JSValue[])res);
+                    col.Length.Should().Be(2);
+
+                    Check(col, _DataContext.Skills);
+
+                    JSObject coll = GetSafe(() => ((JSObject)js)["Skills"]);
+                    DoSafe(() => coll.Invoke("push", (root.Attributes["Skills"] as JSArray).Items[0].GetJSSessionValue()));
+
+                    Thread.Sleep(100);
+                    _DataContext.Skills.Should().HaveCount(3);
+                    _DataContext.Skills[2].Should().Be(_DataContext.Skills[0]);
+                    res = GetSafe(() => Get(js, "Skills"));
+                    res.Should().NotBeNull();
+                    Check((JSValue[])res, _DataContext.Skills);
+
+                    DoSafe(() => coll.Invoke("pop"));
+
+                    Thread.Sleep(100);
+                    _DataContext.Skills.Should().HaveCount(2);
+                    res = GetSafe(() => Get(js, "Skills"));
+                    res.Should().NotBeNull();
+                    Check((JSValue[])res, _DataContext.Skills);
+
+                    DoSafe(() => coll.Invoke("shift"));
+
+                    Thread.Sleep(100);
+                    _DataContext.Skills.Should().HaveCount(1);
+                    res = GetSafe(() => Get(js, "Skills"));
+                    res.Should().NotBeNull();
+                    Check((JSValue[])res, _DataContext.Skills);
+
+
+                    DoSafe(() => coll.Invoke("unshift",
+                        (root.Attributes["Skills"] as JSArray).Items[0].GetJSSessionValue()));
+                    
+                    Thread.Sleep(100);
+                    _DataContext.Skills.Should().HaveCount(2);
+                    res = GetSafe(() => Get(js, "Skills"));
+                    res.Should().NotBeNull();
+                    Check((JSValue[])res, _DataContext.Skills);
+                }
+            }
+        }
+
         private class VMWithList : ViewModelBase
         {
             public VMWithList()
@@ -360,7 +464,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = mb.JSRootObject.GetSessionValue();
+                    var js = mb.JSRootObject.GetJSSessionValue();
 
                     JSValue res = GetSafe(() => Get(js, "List"));
                     res.Should().NotBeNull();

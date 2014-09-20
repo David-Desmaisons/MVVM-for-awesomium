@@ -12,11 +12,14 @@
         </script>-->
         <!--, template: { name: 'skill-template'}-->
 
-        <select width="500" multiple="multiple"data-bind="options:Skills,  
+        <select  multiple="multiple"data-bind="options:Skills,  
                                                         optionsText: function(item) { return item.Type() + ' ' + item.Name()},selectedOptions:SelectedSkills"></select>
 
         <button data-bind="click: AddSkill">Add Skill</button>
 
+        <input data-bind="value:MainSkill().Type" placeholder="Type" />
+        <input data-bind="value:MainSkill().Name" placeholder="Name" />
+  
         <!--<button data-bind="click: MakeSelf">Click me</button>-->
 	</body>
         

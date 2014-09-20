@@ -12,18 +12,19 @@ namespace MVVMAwesomium.AwesomiumBinding
         private GlobalBuilder _GlobalBuilder;  
         private JSObject _Listener;
         private JSValue _Globalres;
-        private Action<JSObject, string, JSValue> _OnJavascriptObjecChanges;
+        private IJavascriptListener _IJavascriptListener;
 
-        internal JavascriptSessionInjector(IWebView iWebView, Action<JSObject, string, JSValue> OnJavascriptObjecChanges)
+        internal JavascriptSessionInjector(IWebView iWebView, IJavascriptListener iJavascriptListener)
         {
             _IWebView = iWebView;
             _GlobalBuilder = new GlobalBuilder(_IWebView, "MVVMGlue");
-            _OnJavascriptObjecChanges = OnJavascriptObjecChanges;
+            _IJavascriptListener = iJavascriptListener;
 
             _Listener = _GlobalBuilder.CreateJSO();
-            if (_OnJavascriptObjecChanges != null)
+            if (_IJavascriptListener != null)
             {
-                _Listener.Bind("TrackChanges", false, (o, e) => _OnJavascriptObjecChanges((JSObject)e.Arguments[0], (string)e.Arguments[1], e.Arguments[2]));
+                _Listener.Bind("TrackChanges", false, (o, e) => _IJavascriptListener.OnJavaScriptObjectChanges((JSObject)e.Arguments[0], (string)e.Arguments[1], e.Arguments[2]));
+                _Listener.Bind("TrackCollectionChanges", false, (o, e) => _IJavascriptListener.OnJavaScriptCollectionChanges((JSObject)e.Arguments[0], (JSValue[])e.Arguments[1], (JSValue[])e.Arguments[2]));
             }
         }
 

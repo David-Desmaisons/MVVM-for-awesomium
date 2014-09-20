@@ -14,8 +14,8 @@ namespace MVVMAwesomium.AwesomiumBinding
     internal class CSharpToJavascriptMapper 
     {
         private readonly IJSOBuilder _IJSOBuilder;
-        private readonly ICSharpMapper _Cacher;
-        public CSharpToJavascriptMapper(IJSOBuilder Builder, ICSharpMapper icacher)
+        private readonly IJSCBridgeCache _Cacher;
+        public CSharpToJavascriptMapper(IJSOBuilder Builder, IJSCBridgeCache icacher)
         {
             _IJSOBuilder = Builder;
             _Cacher = icacher;

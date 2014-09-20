@@ -37,13 +37,13 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public JSValue MappedJSValue { get { return _MappedJSValue; } }
 
-        public void SetMappedJSValue(JSValue ijsobject, ICSharpMapper mapper)
+        public void SetMappedJSValue(JSValue ijsobject, IJSCBridgeCache mapper)
         {
             _MappedJSValue = ijsobject;
             _Commands.ForEach(kvp => ((JSObject)_MappedJSValue).Bind(kvp.Key, false, (o, e) => ExcecuteCommand(kvp.Value, e, mapper)));
         }
 
-        private void ExcecuteCommand(ICommand icom, JavascriptMethodEventArgs e, ICSharpMapper mapper)
+        private void ExcecuteCommand(ICommand icom, JavascriptMethodEventArgs e, IJSCBridgeCache mapper)
         {
             if (e.Arguments.Length == 0)
                 icom.Execute(null);
@@ -79,7 +79,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         public void Reroot(string PropertyName, IJSCBridge newValue)
         { 
             _Attributes[PropertyName]=newValue;
-            ((JSObject)_MappedJSValue).Invoke(PropertyName, newValue.GetSessionValue());    
+            ((JSObject)_MappedJSValue).Invoke(PropertyName, newValue.GetJSSessionValue());    
         }     
     }
 }

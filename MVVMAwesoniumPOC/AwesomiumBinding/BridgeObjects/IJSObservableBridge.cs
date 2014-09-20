@@ -9,7 +9,7 @@ namespace MVVMAwesomium.AwesomiumBinding
     public interface IJSObservableBridge : IJSCBridge
     {
         JSValue MappedJSValue { get; }
-        void SetMappedJSValue(JSValue ijsobject, ICSharpMapper mapper);
+        void SetMappedJSValue(JSValue ijsobject, IJSCBridgeCache mapper);
     }
 
 }

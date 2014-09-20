@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
-    public interface ICSharpMapper
+    public interface IJSCBridgeCache
     {
         void Cache(object key, IJSCBridge value);
 
