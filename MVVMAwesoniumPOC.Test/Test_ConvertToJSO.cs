@@ -35,13 +35,13 @@ namespace MVVMAwesomium.Test
         private ArrayList _Tests_NG;
 
         private IWebView _WebView = null;
-        private ICSharpMapper _ICSharpMapper;
+        private IJSCBridgeCache _ICSharpMapper;
        
         public Test_ConvertToJSO()
         { 
             _WebView = WebCore.CreateWebView(500, 500, WebViewType.Offscreen);
             _IJSOBuilder = new LocalBuilder(_WebView);
-            _ICSharpMapper = Substitute.For<ICSharpMapper>();
+            _ICSharpMapper = Substitute.For<IJSCBridgeCache>();
             _ICSharpMapper.GetCached(Arg.Any<object>()).Returns((IJSCBridge)null);
             _ConverTOJSO = new CSharpToJavascriptMapper(_IJSOBuilder, _ICSharpMapper);
             _Test = new Test { S1 = "string", I1 = 25 };

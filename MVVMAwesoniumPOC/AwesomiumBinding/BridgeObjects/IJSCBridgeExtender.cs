@@ -27,7 +27,7 @@ namespace MVVMAwesomium.AwesomiumBinding
             }
         }
 
-        public static JSValue GetSessionValue(this IJSCBridge @this)
+        public static JSValue GetJSSessionValue(this IJSCBridge @this)
         {
             IJSObservableBridge inj = @this as IJSObservableBridge;
             return (inj!=null) ?  inj.MappedJSValue : @this.JSValue;    

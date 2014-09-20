@@ -12,7 +12,7 @@ using MVVMAwesomium.Infra;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
-    public class BidirectionalMapper : IDisposable, ICSharpMapper
+    public class BidirectionalMapper : IDisposable, IJSCBridgeCache, IJavascriptListener
     {
         private readonly JavascriptBindingMode _BindingMode;
         private readonly IJSCBridge _Root;
@@ -33,9 +33,9 @@ namespace MVVMAwesomium.AwesomiumBinding
             _Root = _JSObjectBuilder.Map(iRoot);
             _BindingMode = iMode;
 
-            Action<JSObject, string, JSValue> JavascriptObjecChanges = null;
+            IJavascriptListener JavascriptObjecChanges = null;
             if (iMode == JavascriptBindingMode.TwoWay)
-                JavascriptObjecChanges = OnJavaScriptChanges;
+                JavascriptObjecChanges = this;
 
             _SessionInjector = new JavascriptSessionInjector(iwebview, JavascriptObjecChanges);      
         }
@@ -146,11 +146,27 @@ namespace MVVMAwesomium.AwesomiumBinding
                             TaskScheduler.FromCurrentSynchronizationContext()); 
         }
 
-        private void OnJavaScriptChanges(JSObject objectchanged, string PropertyName, JSValue newValue)
+        public void OnJavaScriptObjectChanges(JSObject objectchanged, string PropertyName, JSValue newValue)
         {
             var res = GetFromJavascript(objectchanged) as JSGenericObject;
             if (res != null)
                 res.UpdateCSharpProperty(PropertyName, newValue, _JavascriptToCSharpMapper.GetSimpleValue(newValue));
+        }
+
+        public void OnJavaScriptCollectionChanges(JSObject collectionchanged, JSValue[] collectionvalue, JSValue[] changes)
+        {
+            var res = GetFromJavascript(collectionchanged) as JSArray;
+            if (res == null) return;
+
+            CollectionChanges cc = new CollectionChanges(this);
+
+            using (ReListen())
+            { 
+                INotifyCollectionChanged inc = res.CValue as INotifyCollectionChanged;
+                if (inc != null) inc.CollectionChanged -= CollectionChanged;
+                res.UpdateEventArgsFromJavascript(cc.GetIndividualChanges(changes));
+                if (inc != null) inc.CollectionChanged += CollectionChanged;
+            }
         }
 
 
@@ -243,26 +259,23 @@ namespace MVVMAwesomium.AwesomiumBinding
         private void UnsafeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             JSArray arr = _FromCSharp[sender] as JSArray;
-            if (arr == null)
-                return;
-
+            if (arr == null) return;
+                
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     IJSCBridge addvalue = _JSObjectBuilder.Map(e.NewItems[0]);
 
-                    if (addvalue == null)
-                        return;
-
+                    if (addvalue == null) return;
+                        
                     RegisterAndDo(addvalue, () => arr.Add(addvalue, e.NewStartingIndex));
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
                     IJSCBridge newvalue = _JSObjectBuilder.Map(e.NewItems[0]);
 
-                    if (newvalue == null)
-                        return;
-
+                    if (newvalue == null) return;
+                       
                     RegisterAndDo(newvalue, () => arr.Insert(newvalue, e.NewStartingIndex) );
                     break;
 
@@ -303,12 +316,12 @@ namespace MVVMAwesomium.AwesomiumBinding
             }
         }
 
-        void ICSharpMapper.Cache(object key, IJSCBridge value)
+        void IJSCBridgeCache.Cache(object key, IJSCBridge value)
         {
             _FromCSharp.Add(key, value);
         }
 
-        IJSCBridge ICSharpMapper.GetCached(object key)
+        IJSCBridge IJSCBridgeCache.GetCached(object key)
         {
             IJSCBridge res = null;
             _FromCSharp.TryGetValue(key, out res);
@@ -316,7 +329,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         }
 
 
-        IJSCBridge ICSharpMapper.GetCached(JSObject key)
+        IJSCBridge IJSCBridgeCache.GetCached(JSObject key)
         {
             IJSCBridge res = null;
             if (( key==null ) || (key.RemoteId == 0))
