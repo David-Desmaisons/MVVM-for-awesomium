@@ -14,11 +14,11 @@ using System.Windows.Shapes;
 using Awesomium.Core;
 using System.Reflection;
 
-using MVVMAwesonium.AwesomiumBinding;
-using MVVMAwesonium.Infra;
-using MVVMAwesonium.ViewModel.Example;
+using MVVMAwesomium.AwesomiumBinding;
+using MVVMAwesomium.Infra;
+using MVVMAwesomium.ViewModel.Example;
 
-namespace MVVMAwesonium.UI
+namespace MVVMAwesomium.UI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

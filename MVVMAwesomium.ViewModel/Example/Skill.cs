@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using MVVMAwesomium.ViewModel.Infra;
-using MVVMAwesonium.ViewModel;
+using MVVMAwesomium.ViewModel;
 
-namespace MVVMAwesonium.ViewModel.Example
+namespace MVVMAwesomium.ViewModel.Example
 {
     public class Skill : ViewModelBase
     {

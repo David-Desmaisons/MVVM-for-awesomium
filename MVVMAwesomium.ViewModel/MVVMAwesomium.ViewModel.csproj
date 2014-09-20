@@ -47,6 +47,7 @@
     <Compile Include="Example\Local.cs" />
     <Compile Include="Example\Person.cs" />
     <Compile Include="Example\Skill.cs" />
+    <Compile Include="Example\SkillsViewModel.cs" />
     <Compile Include="Infra\RelayCommand.cs" />
     <Compile Include="Infra\ViewModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

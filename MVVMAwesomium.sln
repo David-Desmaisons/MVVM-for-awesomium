@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.ViewModel", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.UI.Calendar", "MVVMAwesomium.UI.Calendar\MVVMAwesomium.UI.Calendar.csproj", "{C71C2BF7-52D2-4F69-AB7A-9B29EEA8DBB2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Windows", "Windows", "{0F0F34BE-CD06-4C13-967D-BB0760617486}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.UI.SelectedItems", "MVVMAwesomium.UI.SelectedItems\MVVMAwesomium.UI.SelectedItems.csproj", "{FEF389FD-A0B8-4BFD-9A8C-DE1203D6FAB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,8 +104,24 @@ Global
 		{C71C2BF7-52D2-4F69-AB7A-9B29EEA8DBB2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{C71C2BF7-52D2-4F69-AB7A-9B29EEA8DBB2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C71C2BF7-52D2-4F69-AB7A-9B29EEA8DBB2}.Release|x86.ActiveCfg = Release|Any CPU
+		{FEF389FD-A0B8-4BFD-9A8C-DE1203D6FAB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEF389FD-A0B8-4BFD-9A8C-DE1203D6FAB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEF389FD-A0B8-4BFD-9A8C-DE1203D6FAB0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FEF389FD-A0B8-4BFD-9A8C-DE1203D6FAB0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FEF389FD-A0B8-4BFD-9A8C-DE1203D6FAB0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FEF389FD-A0B8-4BFD-9A8C-DE1203D6FAB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEF389FD-A0B8-4BFD-9A8C-DE1203D6FAB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEF389FD-A0B8-4BFD-9A8C-DE1203D6FAB0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FEF389FD-A0B8-4BFD-9A8C-DE1203D6FAB0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{FEF389FD-A0B8-4BFD-9A8C-DE1203D6FAB0}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{83FD4663-5C46-4885-83DB-D65C99A1C9F0} = {0F0F34BE-CD06-4C13-967D-BB0760617486}
+		{C71C2BF7-52D2-4F69-AB7A-9B29EEA8DBB2} = {0F0F34BE-CD06-4C13-967D-BB0760617486}
+		{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D} = {0F0F34BE-CD06-4C13-967D-BB0760617486}
+		{FEF389FD-A0B8-4BFD-9A8C-DE1203D6FAB0} = {0F0F34BE-CD06-4C13-967D-BB0760617486}
 	EndGlobalSection
 EndGlobal

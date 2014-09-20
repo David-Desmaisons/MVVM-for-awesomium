@@ -8,9 +8,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MVVMAwesonium.Infra;
+using MVVMAwesomium.Infra;
 
-namespace MVVMAwesonium.AwesomiumBinding
+namespace MVVMAwesomium.AwesomiumBinding
 {
     public class BidirectionalMapper : IDisposable, ICSharpMapper
     {

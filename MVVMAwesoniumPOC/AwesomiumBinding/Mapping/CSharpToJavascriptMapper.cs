@@ -6,10 +6,10 @@ using Awesomium.Core;
 using System.Reflection;
 using System.Collections;
 
-using MVVMAwesonium.Infra;
+using MVVMAwesomium.Infra;
 using System.Windows.Input;
 
-namespace MVVMAwesonium.AwesomiumBinding
+namespace MVVMAwesomium.AwesomiumBinding
 {
     internal class CSharpToJavascriptMapper 
     {

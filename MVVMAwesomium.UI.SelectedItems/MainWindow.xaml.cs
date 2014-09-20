@@ -1,5 +1,7 @@
 ﻿using Awesomium.Core;
 using MVVMAwesomium.AwesomiumBinding;
+using MVVMAwesomium.Infra;
+using MVVMAwesomium.ViewModel.Example;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +17,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MVVMAwesomium.Infra;
-using MVVMAwesomium.ViewModel.Example;
 
-namespace MVVMAwesomium.UI2
+namespace MVVMAwesomium.UI.SelectedItems
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -28,22 +28,19 @@ namespace MVVMAwesomium.UI2
         public MainWindow()
         {
             InitializeComponent();
-            this.wcBrowser.Source = new Uri(string.Format("{0}\\HTMLUI\\index.html", Assembly.GetExecutingAssembly().GetPath()));
+            this.WebControl.Source = new Uri(string.Format("{0}\\HTMLUI\\index.html", Assembly.GetExecutingAssembly().GetPath()));
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            IWebView f = this.wcBrowser.WebSession.Views.FirstOrDefault();
-            var datacontext = new Couple();
-            datacontext.One =  new Person()
-            {
-                Name = "O Monstro",
-                LastName = "Desmaisons",
-                Local = new Local() { City = "Florianopolis", Region = "SC" }
-            };
-            //datacontext.Two = datacontext.One;
-            datacontext.Two = null;
+            var datacontext = new SkillsViewModel();
 
+            datacontext.Skills.Add(new Skill() {Name="knockout", Type="Info" });
+
+            datacontext.SelectedSkills.Add(datacontext.Skills[0]);
+
+            IWebView f = this.WebControl.WebSession.Views.FirstOrDefault();
+     
             AwesomeBinding.Bind(f, datacontext, JavascriptBindingMode.TwoWay);
 
             Window w = sender as Window;

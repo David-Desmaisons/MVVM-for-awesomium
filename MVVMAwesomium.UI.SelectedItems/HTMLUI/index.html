@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+	<head>
+        <title></title>
+        <script src="js/knockout.js" type="text/javascript"></script>
+        <script src="js/Ko_Extension.js" type="text/javascript"></script>
+	</head>
+	<body>
+
+        <!--<script type="text/html" id="skill-template">
+            <li><span data-bind="text:Type"></span>:<span data-bind="text:Name"></span><button data-bind="click: function (){$root.RemoveSkill($data)}">Remove skill</button></li>
+        </script>-->
+        <!--, template: { name: 'skill-template'}-->
+
+        <select width="500" multiple="multiple"data-bind="options:Skills,  
+                                                        optionsText: function(item) { return item.Type() + ' ' + item.Name()},selectedOptions:SelectedSkills"></select>
+
+        <button data-bind="click: AddSkill">Add Skill</button>
+
+        <!--<button data-bind="click: MakeSelf">Click me</button>-->
+	</body>
+        
+    
+</html>

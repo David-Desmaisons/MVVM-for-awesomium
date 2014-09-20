@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MVVMAwesonium.AwesomiumBinding
+namespace MVVMAwesomium.AwesomiumBinding
 {
     public interface IJSCBridge
     {

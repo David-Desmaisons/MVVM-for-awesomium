@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Awesomium.Core;
 
-namespace MVVMAwesonium.AwesomiumBinding
+namespace MVVMAwesomium.AwesomiumBinding
 {
     public abstract class JSOBuilderBase
     {

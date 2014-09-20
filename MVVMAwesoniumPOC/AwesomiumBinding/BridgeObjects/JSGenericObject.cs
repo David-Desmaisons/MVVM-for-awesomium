@@ -6,9 +6,9 @@ using Awesomium.Core;
 using System.Reflection;
 using System.Windows.Input;
 
-using MVVMAwesonium.Infra;
+using MVVMAwesomium.Infra;
 
-namespace MVVMAwesonium.AwesomiumBinding
+namespace MVVMAwesomium.AwesomiumBinding
 {
     public class JSGenericObject : IJSObservableBridge
     {

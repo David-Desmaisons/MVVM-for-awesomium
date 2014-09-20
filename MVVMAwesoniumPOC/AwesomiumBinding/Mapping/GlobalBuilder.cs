@@ -5,7 +5,7 @@ using System.Text;
 using Awesomium.Core;
 using System.Threading.Tasks;
 
-namespace MVVMAwesonium.AwesomiumBinding
+namespace MVVMAwesomium.AwesomiumBinding
 {
     public class GlobalBuilder : JSOBuilderBase, IJSOBuilder
     {

@@ -1,7 +1,7 @@
 ﻿using Awesomium.Core;
-using MVVMAwesonium.AwesomiumBinding;
-using MVVMAwesonium.ViewModel.Example;
-using MVVMAwesonium.Infra;
+using MVVMAwesomium.AwesomiumBinding;
+using MVVMAwesomium.ViewModel.Example;
+using MVVMAwesomium.Infra;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MVVMAwesomium.ViewModel.Example;
 
 namespace MVVMAwesomium.UI.Calendar
 {
@@ -30,7 +29,6 @@ namespace MVVMAwesomium.UI.Calendar
         {
             InitializeComponent();
             this.WebControl.Source = new Uri(string.Format("{0}\\HTLM\\index.html", Assembly.GetExecutingAssembly().GetPath()));
- 
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

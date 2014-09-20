@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MVVMAwesonium.ViewModel;
+using MVVMAwesomium.ViewModel;
 
-namespace MVVMAwesonium.ViewModel.Example
+namespace MVVMAwesomium.ViewModel.Example
 {
     public class Local : ViewModelBase
     {

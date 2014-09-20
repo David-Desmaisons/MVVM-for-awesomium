@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MVVMAwesonium.ViewModel;
+using MVVMAwesomium.ViewModel;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using MVVMAwesomium.ViewModel.Infra;
 
-namespace MVVMAwesonium.ViewModel.Example
+namespace MVVMAwesomium.ViewModel.Example
 {
     public class Person : ViewModelBase
     {

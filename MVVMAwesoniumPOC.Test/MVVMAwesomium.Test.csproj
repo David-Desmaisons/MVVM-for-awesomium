@@ -8,8 +8,8 @@
     <ProjectGuid>{84916CEB-FEF3-4A42-B1A0-7B43F3D88CCB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MVVMAwesonium.Test</RootNamespace>
-    <AssemblyName>MVVMAwesonium.Test</AssemblyName>
+    <RootNamespace>MVVMAwesomium.Test</RootNamespace>
+    <AssemblyName>MVVMAwesomium.Test</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

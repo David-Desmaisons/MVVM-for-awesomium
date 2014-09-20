@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 
-namespace MVVMAwesonium.Infra
+namespace MVVMAwesomium.Infra
 {
     public static class AssemblyExtension
     {

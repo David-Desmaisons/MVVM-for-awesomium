@@ -6,17 +6,19 @@ using Awesomium.Core;
 using Xunit;
 using NSubstitute;
 using FluentAssertions;
-using MVVMAwesonium.AwesomiumBinding;
-using MVVMAwesonium.Infra;
+using MVVMAwesomium.AwesomiumBinding;
+using MVVMAwesomium.Infra;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Threading;
 
-using MVVMAwesonium.ViewModel.Example;
+using MVVMAwesomium.ViewModel.Example;
 using Newtonsoft.Json;
 using System.Windows.Input;
+using MVVMAwesomium.ViewModel;
+using System.Collections.ObjectModel;
 
-namespace MVVMAwesonium.Test
+namespace MVVMAwesomium.Test
 {
     public class Test_AwesomeBinding : Awesomium_Test_Base
     {
@@ -238,6 +240,27 @@ namespace MVVMAwesonium.Test
             }
         }
 
+
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Command_With_Null_Parameter()
+        {
+            using (Tester())
+            {
+                var command = Substitute.For<ICommand>();
+                var test = new ViewModelTest() { Command = command };
+
+                using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = (JSObject)mb.JSRootObject.GetSessionValue();
+
+                    JSValue res = GetSafe(() => js.Invoke("Command", null));
+                    Thread.Sleep(100);
+                    command.Received().Execute(null);
+                }
+            }
+        }
+
         [Fact]
         public void Test_AwesomeBinding_Basic_TwoWay_Collection()
         {
@@ -266,7 +289,7 @@ namespace MVVMAwesonium.Test
                     Check((JSValue[])res, _DataContext.Skills);
 
 
-                    _DataContext.Skills.Insert(0,new Skill() { Name = "C#", Type = "Info" });
+                    _DataContext.Skills.Insert(0, new Skill() { Name = "C#", Type = "Info" });
                     Thread.Sleep(100);
                     res = GetSafe(() => Get(js, "Skills"));
                     res.Should().NotBeNull();
@@ -278,7 +301,7 @@ namespace MVVMAwesonium.Test
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
 
-                    _DataContext.Skills[0] = new Skill() { Name="HTML", Type="Info"};
+                    _DataContext.Skills[0] = new Skill() { Name = "HTML", Type = "Info" };
                     Thread.Sleep(100);
                     res = GetSafe(() => Get(js, "Skills"));
                     res.Should().NotBeNull();
@@ -297,6 +320,77 @@ namespace MVVMAwesonium.Test
                     res = GetSafe(() => Get(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
+
+                }
+            }
+        }
+
+        private class VMWithList : ViewModelBase
+        {
+            public VMWithList()
+            {
+                List = new ObservableCollection<string>();
+            }
+            public ObservableCollection<string> List { get; private set; }
+
+        }
+
+
+        private void Checkstring(JSValue[] coll, IList<string> iskill)
+        {
+            coll.Length.Should().Be(iskill.Count);
+            coll.ForEach((c, i) =>
+            {
+                (GetSafe(() => (string)c)).Should().Be(iskill[i]);
+               
+            });
+
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Collection_string()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                var datacontext = new VMWithList();
+
+                using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject.GetSessionValue();
+
+                    JSValue res = GetSafe(() => Get(js, "List"));
+                    res.Should().NotBeNull();
+                    var col = ((JSValue[])res);
+                    col.Length.Should().Be(0);
+
+                    Checkstring(col, datacontext.List);
+
+                    datacontext.List.Add("titi");
+
+                    Thread.Sleep(100);
+                    res = GetSafe(() => Get(js, "List"));
+                    col = ((JSValue[])res);
+
+                    Checkstring(col, datacontext.List);
+
+                    datacontext.List.Add("kiki");
+                    datacontext.List.Add("toto");
+
+                    Thread.Sleep(100);
+                    res = GetSafe(() => Get(js, "List"));
+                    col = ((JSValue[])res);
+
+                    Checkstring(col, datacontext.List);
+
+                    Thread.Sleep(100);
+                    res = GetSafe(() => Get(js, "List"));
+                    col = ((JSValue[])res);
+
+                    Checkstring(col, datacontext.List);
 
                 }
             }

@@ -1,12 +1,12 @@
 ﻿using MVVMAwesomium.ViewModel.Infra;
-using MVVMAwesonium.ViewModel;
+using MVVMAwesomium.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
 
-namespace MVVMAwesonium.ViewModel.Example
+namespace MVVMAwesomium.ViewModel.Example
 {
     public class Couple : ViewModelBase
     {

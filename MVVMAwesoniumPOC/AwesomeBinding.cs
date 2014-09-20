@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 using Awesomium.Core;
 
-using MVVMAwesonium.Infra;
+using MVVMAwesomium.Infra;
 using System.Collections;
 using System.Collections.Specialized;
 
-namespace MVVMAwesonium.AwesomiumBinding
+namespace MVVMAwesomium.AwesomiumBinding
 {
     public class AwesomeBinding : IDisposable
     {

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Awesomium.Core;
-using MVVMAwesonium.AwesomiumBinding;
+using MVVMAwesomium.AwesomiumBinding;
 using NSubstitute;
 using FluentAssertions;
 using Xunit;
 
-namespace MVVMAwesonium.Test
+namespace MVVMAwesomium.Test
 {
     public class Test_DateTimeConvertion : Awesomium_Test_Base
     {

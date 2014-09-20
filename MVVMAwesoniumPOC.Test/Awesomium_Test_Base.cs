@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using MVVMAwesonium.Infra;
+using MVVMAwesomium.Infra;
 
-namespace MVVMAwesonium.Test
+namespace MVVMAwesomium.Test
 {
     public class Awesomium_Test_Base
     {

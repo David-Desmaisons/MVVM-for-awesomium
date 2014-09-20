@@ -7,16 +7,14 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MVVMAwesomium")]
+[assembly: AssemblyTitle("MVVMAwesomium.UI.SelectedItems")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MVVMAwesomium")]
+[assembly: AssemblyProduct("MVVMAwesomium.UI.SelectedItems")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: InternalsVisibleTo("MVVMAwesomium.Test")]
-[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")] 
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 

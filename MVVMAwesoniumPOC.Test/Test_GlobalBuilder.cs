@@ -6,11 +6,11 @@ using System.Text;
 using Xunit;
 using FluentAssertions;
 using NSubstitute;
-using MVVMAwesonium.AwesomiumBinding;
+using MVVMAwesomium.AwesomiumBinding;
 using System.Threading;
 using Awesomium.Core;
 
-namespace MVVMAwesonium.Test
+namespace MVVMAwesomium.Test
 {
     public class Test_GlobalBuilder : Awesomium_Test_Base
     {
