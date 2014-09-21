@@ -4,17 +4,17 @@ MVVM for awesomium
 Description
 --------------
 This framework act as a glue between a C# ViewModel and a awesomium IWebView.
-This allows to reuse 100% of View Model written for WPF in a HTML UI(provided you implement correctly the INotifyPropertyChanged, INotifyCollectionChanged and ICommand patterns).
-On the javascript side, C# objects are converted to javascript objects and can be bound using knockoutjs fantastic library.
+This allows to reuse 100% of View Model written for WPF in a HTML UI(provided you implement correctly the INotifyPropertyChanged, INotifyCollectionChanged and ICommand patterns).  
+On the javascript side, C# objects are converted to javascript objects and can be bound using knockoutjs fantastic library.  
 All changes between View and ViewModel are propagate back and forth by MVVM for awesomium framework using knockoutjs subscribers and C# events.
-C# commands are mapped to javascript method and can be bind to click event using knockout.
+C# commands are mapped to javascript method and can be bind to click event using knockout.  
 This library can be used without having to write any javascript on your own as it will take care of all the mapping and plumbing for you!
 
 
 Usage - Example
 --------------
 
-h3. ViewModel (C#)
+**ViewModel (C#)**
 
 		public class ViewModelBase : INotifyPropertyChanged
 		{
@@ -83,7 +83,7 @@ h3. ViewModel (C#)
 		}
 		
 		
-h3. View
+**View (HTML)**
 
 	<!doctype html>
 	<html>
@@ -108,7 +108,7 @@ h3. View
 	</html>
 
 	
-h3. Set the binding
+**Set the binding (C#)**
 
 	IWebView mywebview = ...; //retrieve awesomium view wich loaded the HTML view
 	var datacontext = new Person();
