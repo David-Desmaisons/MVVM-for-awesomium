@@ -39,51 +39,50 @@ Usage - Example
 
 		public class Skill : ViewModelBase
 		{
-				private string _Type;
-				public string Type
-				{
-					get { return _Type; }
-					set { Set(ref _Type, value, "Type"); }
-				}
+			private string _Type;
+			public string Type
+			{
+				get { return _Type; }
+				set { Set(ref _Type, value, "Type"); }
+			}
 
-				private string _Name;
-				public string Name
-				{
-					get { return _Name; }
-					set { Set(ref _Name, value, "Name"); }
-				}
+			private string _Name;
+			public string Name
+			{
+				get { return _Name; }
+				set { Set(ref _Name, value, "Name"); }
 			}
 		}
 
 		public class Person: ViewModelBase
 		{
-				public Person()
-				{
-					Skills = new ObservableCollection<Skill>();
-					RemoveSkill = new RelayCommand<Skill>(s=> this.Skills.Remove(s));
-				}
+			public Person()
+			{
+				Skills = new ObservableCollection<Skill>();
+				RemoveSkill = new RelayCommand<Skill>(s=> this.Skills.Remove(s));
+			}
 		  
-				private string _LastName;
-				public string LastName
-				{
-					get { return _LastName; }
-					set { Set(ref _LastName, value, "LastName"); }
-				}
+			private string _LastName;
+			public string LastName
+			{
+				get { return _LastName; }
+				set { Set(ref _LastName, value, "LastName"); }
+			}
 
-				private string _Name;
-				public string Name
-				{
-					get { return _Name; }
-					set { Set(ref _Name, value, "Name"); }
-				}
+			private string _Name;
+			public string Name
+			{
+				get { return _Name; }
+				set { Set(ref _Name, value, "Name"); }
+			}
 		   
-				public IList<Skill> Skills { get; private set; }
+			public IList<Skill> Skills { get; private set; }
 
-				public ICommand RemoveSkill { get; private set; }
+			public ICommand RemoveSkill { get; private set; }
 		}
 		
 		
-**View (HTML)**
+**View (HTML) using knockout mark-up**
 
 	<!doctype html>
 	<html>
