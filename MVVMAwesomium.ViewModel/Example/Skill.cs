@@ -10,9 +10,6 @@ namespace MVVMAwesomium.ViewModel.Example
 {
     public class Skill : ViewModelBase
     {
-        public Skill()
-        {
-        }
         private string _Type;
         public string Type
         {

@@ -42,7 +42,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         }
 
 
-        public void UpdateEventArgsFromJavascript(IEnumerable<IndividualCollectionChange> iChanges)
+        public void UpdateEventArgsFromJavascript(IEnumerable<IndividualCollectionChange> iChanges, IEnumerable<IJSCBridge> Current)
         {
             if (_UnderJavascriptUpdate>0)
             {
@@ -57,6 +57,11 @@ namespace MVVMAwesomium.AwesomiumBinding
 
             iChanges.Where(c => c.CollectionChangeType == CollectionChangeType.Remove).OrderByDescending(c => c.Index).ForEach(c => ReplayChanges(c, ilist));
             iChanges.Where(c => c.CollectionChangeType == CollectionChangeType.Add).OrderBy(c => c.Index).ForEach(c => ReplayChanges(c, ilist));
+
+#if DEBUG
+            if (!ilist.Cast<object>().SequenceEqual(Current.Select(c => c.CValue)))
+                throw new Exception("Unable to track collection changes");
+#endif
         }
 
         private int _UnderJavascriptUpdate = 0;

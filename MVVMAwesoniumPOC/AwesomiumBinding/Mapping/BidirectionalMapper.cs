@@ -164,7 +164,7 @@ namespace MVVMAwesomium.AwesomiumBinding
             { 
                 INotifyCollectionChanged inc = res.CValue as INotifyCollectionChanged;
                 if (inc != null) inc.CollectionChanged -= CollectionChanged;
-                res.UpdateEventArgsFromJavascript(cc.GetIndividualChanges(changes));
+                res.UpdateEventArgsFromJavascript(cc.GetIndividualChanges(changes), collectionvalue.Select(cv => GetCached(cv)));
                 if (inc != null) inc.CollectionChanged += CollectionChanged;
             }
         }
@@ -329,7 +329,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         }
 
 
-        IJSCBridge IJSCBridgeCache.GetCached(JSObject key)
+        public IJSCBridge GetCached(JSObject key)
         {
             IJSCBridge res = null;
             if (( key==null ) || (key.RemoteId == 0))
