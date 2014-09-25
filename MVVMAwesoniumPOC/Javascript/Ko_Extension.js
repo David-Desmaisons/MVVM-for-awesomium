@@ -99,6 +99,15 @@
         return MapToObservable(o, null, mapper, listener);
     };
 
+    ko.bindingHandlers.command = {
+        preprocess: function (value, name, addBinding) {
+            debugger;
+            addBinding('enable', value + '().CanExecute($data)===undefined &&' + value + '().CanExecuteCount() &&' + value + '().CanExecuteValue()');
+            addBinding('click', 'function(){' + value + '().Execute($data);}');
+            return value;
+        }
+    };
+
     //global ko 
     ko.bindingHandlers.ExecuteOnEnter = {
         init: function (element, valueAccessor, allBindings, viewModel) {

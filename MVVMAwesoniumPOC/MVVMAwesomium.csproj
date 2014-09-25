@@ -74,6 +74,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AwesomiumBinding\BridgeObjects\JSCommand.cs" />
     <Compile Include="AwesomiumBinding\Helper\AwesomiumHelper.cs" />
     <Compile Include="AwesomiumBinding\BridgeObjects\IJSObservableBridge.cs" />
     <Compile Include="AwesomiumBinding\BridgeObjects\JSBasicObject.cs" />

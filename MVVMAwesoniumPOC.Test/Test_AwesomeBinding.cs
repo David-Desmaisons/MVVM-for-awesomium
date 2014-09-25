@@ -23,12 +23,14 @@ namespace MVVMAwesomium.Test
     public class Test_AwesomeBinding : Awesomium_Test_Base
     {
         private Person _DataContext;
+        private ICommand _ICommand;
 
 
         public Test_AwesomeBinding()
             : base()
         {
-            _DataContext = new Person()
+            _ICommand = Substitute.For<ICommand>();
+            _DataContext = new Person(_ICommand)
             {
                 Name = "O Monstro",
                 LastName = "Desmaisons",
@@ -246,6 +248,27 @@ namespace MVVMAwesomium.Test
         }
 
         [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Command_Basic()
+        {
+            using (Tester())
+            {
+                var command = Substitute.For<ICommand>();
+                var test = new ViewModelTest() { Command = command };
+
+                using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject as JSGenericObject;
+
+                    var mycommand = js.Attributes["Command"] as JSCommand;
+                    mycommand.Should().NotBeNull();
+                    mycommand.ToString().Should().Be("{}");
+                    mycommand.Type.Should().Be(JSType.Object);
+                    mycommand.MappedJSValue.Should().NotBeNull();
+                }
+            }
+        }
+
+        [Fact]
         public void Test_AwesomeBinding_Basic_TwoWay_Command()
         {
             using (Tester())
@@ -257,7 +280,8 @@ namespace MVVMAwesomium.Test
                 {
                     var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
 
-                    JSValue res = GetSafe(() =>js.Invoke("Command"));
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("Command"));
+                    JSValue res = GetSafe(() => mycommand.Invoke("Execute"));
                     Thread.Sleep(100);
                     command.Received().Execute(Arg.Any<object>());
                 }
@@ -277,11 +301,143 @@ namespace MVVMAwesomium.Test
                 {
                     var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
 
-                    JSValue res = GetSafe(() => js.Invoke("Command",js));
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("Command"));
+                    JSValue res = GetSafe(() => mycommand.Invoke("Execute", js));
                     Thread.Sleep(100);
                     command.Received().Execute(test);
                 }
             }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Command_CanExecute_False()
+        {
+            using (Tester())
+            {
+                var command = Substitute.For<ICommand>();
+                command.CanExecute(Arg.Any<object>()).Returns(false);
+                var test = new ViewModelTest() { Command = command };
+
+                using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("Command"));
+                    JSValue res = GetSafe(() => mycommand.Invoke("CanExecuteValue"));
+
+                    ((bool)res).Should().BeFalse();
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Command_CanExecute_True()
+        {
+            using (Tester())
+            {
+                var command = Substitute.For<ICommand>();
+                command.CanExecute(Arg.Any<object>()).Returns(true);
+                var test = new ViewModelTest() { Command = command };
+
+                using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("Command"));
+                    JSValue res = GetSafe(() => mycommand.Invoke("CanExecuteValue"));
+
+                    ((bool)res).Should().BeTrue();
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Command_CanExecute_Refresh_Ok()
+        {
+            using (Tester())
+            {
+                bool canexecute = true;
+                _ICommand.CanExecute(Arg.Any<object>()).ReturnsForAnyArgs(x => canexecute);
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("TestCommand"));
+                    JSValue res = GetSafe(() => mycommand.Invoke("CanExecuteValue"));
+
+                    ((bool)res).Should().BeTrue();
+
+                    canexecute = false;
+                    _ICommand.CanExecuteChanged += Raise.EventWith(_ICommand, new EventArgs());
+
+                    Thread.Sleep(100);
+
+                    res = GetSafe(() => GetValue(mycommand, "TestCommand"));
+                    ((bool)res).Should().BeFalse();
+                }
+            }
+        }
+        
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Command_CanExecute_Refresh_Ok_Argument()
+        {
+            using (Tester())
+            {
+                bool canexecute = true;
+                _ICommand.CanExecute(Arg.Any<object>()).ReturnsForAnyArgs(x => canexecute);
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("TestCommand"));
+                    JSValue res = GetSafe(() => mycommand.Invoke("CanExecuteValue"));
+                    ((bool)res).Should().BeTrue();
+
+                    _ICommand.Received().CanExecute(_DataContext);
+
+                    canexecute = false;
+                    _ICommand.ClearReceivedCalls();
+
+                    _ICommand.CanExecuteChanged += Raise.EventWith(_ICommand, new EventArgs());
+
+                    Thread.Sleep(100);
+
+                    _ICommand.Received().CanExecute(_DataContext);
+
+
+                    res = GetSafe(() => GetValue(mycommand, "TestCommand"));
+                    ((bool)res).Should().BeFalse();
+                }
+            }
+        }
+
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Command_CanExecute_Refresh_Ok_Argument_Exception()
+        {
+            using (Tester())
+            {
+                _ICommand.CanExecute(Arg.Any<object>()).Returns(x => {  if (x[0] == null) throw new Exception(); return false;  });
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    _ICommand.Received().CanExecute(Arg.Any<object>());
+                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("TestCommand"));
+                    JSValue res = GetSafe(() => mycommand.Invoke("CanExecuteValue"));
+                    ((bool)res).Should().BeFalse();
+
+                    _ICommand.Received().CanExecute(_DataContext);
+                }
+            }
+        }
+
+        private JSValue GetValue(JSObject jso, string pn)
+        {
+            return jso.Invoke(pn);
         }
 
 
@@ -298,7 +454,8 @@ namespace MVVMAwesomium.Test
                 {
                     var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
 
-                    JSValue res = GetSafe(() => js.Invoke("Command", null));
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("Command"));
+                    JSValue res = GetSafe(() => mycommand.Invoke("Execute",null));
                     Thread.Sleep(100);
                     command.Received().Execute(null);
                 }

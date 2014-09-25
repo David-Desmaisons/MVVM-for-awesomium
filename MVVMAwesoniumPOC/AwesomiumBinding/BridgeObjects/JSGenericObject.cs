@@ -27,10 +27,6 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public IDictionary<string, IJSCBridge> Attributes { get { return _Attributes; } }
 
-        private Dictionary<string, ICommand> _Commands = new Dictionary<string, ICommand>();
-
-        public IDictionary<string, ICommand> Commands { get { return _Commands; } }
-
         public JSValue JSValue { get; private set; }
 
         private JSValue _MappedJSValue;
@@ -40,18 +36,6 @@ namespace MVVMAwesomium.AwesomiumBinding
         public void SetMappedJSValue(JSValue ijsobject, IJSCBridgeCache mapper)
         {
             _MappedJSValue = ijsobject;
-            _Commands.ForEach(kvp => ((JSObject)_MappedJSValue).Bind(kvp.Key, false, (o, e) => ExcecuteCommand(kvp.Value, e, mapper)));
-        }
-
-        private void ExcecuteCommand(ICommand icom, JavascriptMethodEventArgs e, IJSCBridgeCache mapper)
-        {
-            if (e.Arguments.Length == 0)
-                icom.Execute(null);
-            else
-            {
-                var found = mapper.GetCached(e.Arguments[0]);
-                icom.Execute((found!=null) ? found.CValue : null);
-            }
         }
 
         public object CValue { get; private set; }

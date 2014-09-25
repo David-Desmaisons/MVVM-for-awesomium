@@ -55,16 +55,15 @@ namespace MVVMAwesomium.AwesomiumBinding
                 string pn = propertyInfo.Name;
                 var childvalue = propertyInfo.GetValue(ifrom, null);
 
+                IJSCBridge childres = null;
+ 
                 if (!(childvalue is ICommand))
-                { 
-                    var child = Map(childvalue);
-                    resobject[pn] = child.JSValue;
-                    gres.Attributes[pn]=child;
-                }
+                    childres = Map(childvalue);
                 else
-                {
-                    gres.Commands[pn] = childvalue as ICommand;
-                }
+                    childres = new JSCommand(_IJSOBuilder, childvalue as ICommand);
+
+                resobject[pn] = childres.JSValue;
+                gres.Attributes[pn] = childres;
             }
       
             _Cacher.Cache(ifrom, gres);

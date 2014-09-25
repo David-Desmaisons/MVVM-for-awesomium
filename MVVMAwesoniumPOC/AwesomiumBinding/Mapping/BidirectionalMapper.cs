@@ -179,6 +179,7 @@ namespace MVVMAwesomium.AwesomiumBinding
                 return;
 
             JSGenericObject currentfather = _FromCSharp[sender] as JSGenericObject;
+
             object nv = propertyInfo.GetValue(sender, null);
             IJSCBridge oldbridgedchild = currentfather.Attributes[pn];
 

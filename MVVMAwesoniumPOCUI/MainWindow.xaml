@@ -7,7 +7,7 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <!--Source="C:\Users\David\Documents\Visual Studio 2010\Projects\MVVMAwesoniumPOC\MVVMAwesoniumPOC\src\index.html"-->
+ 
         <awe:WebControl    x:Name="wcBrowser" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch">
             <awe:WebControl.ContextMenu>
                 <ContextMenu Visibility="Collapsed"/>
