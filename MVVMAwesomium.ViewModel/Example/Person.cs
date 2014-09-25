@@ -16,7 +16,7 @@ namespace MVVMAwesomium.ViewModel.Example
             Skills = new ObservableCollection<Skill>();
 
             TestCommand = ForTest;
-            Command = new RelayCommand(DoCommand);
+            Command = new ToogleRelayCommand(DoCommand);
             RemoveSkill = new RelayCommand<Skill>(s=> this.Skills.Remove(s));
             ChangeSkill = new RelayCommand<Skill>(s => MainSkill = (this.Skills.Count>0)?this.Skills[0] : null);
         }
@@ -25,7 +25,7 @@ namespace MVVMAwesomium.ViewModel.Example
         {
             Local = new Local() { City = "Paris", Region = "IDF" };
             Skills.Insert(0, new Skill() { Name = "Info", Type = "javascript" });
-            //Skills[0]=  new Skill() { Name = "Info", Type = "javascript" };
+            Command.ShouldExecute = false;
         }
 
         private string _LastName;
@@ -72,7 +72,7 @@ namespace MVVMAwesomium.ViewModel.Example
 
         public IList<Skill> Skills { get; private set; }
 
-        public ICommand Command { get; private set; }
+        public ToogleRelayCommand Command { get; private set; }
 
         public ICommand RemoveSkill { get; private set; }
 

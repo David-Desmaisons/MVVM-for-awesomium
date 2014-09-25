@@ -77,7 +77,6 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             bool res =_Command.CanExecute(GetArguments(mapper,e));
             ((JSObject)_MappedJSValue).Invoke("CanExecuteValue", new JSValue(res));
-            var updated = ((JSObject)_MappedJSValue).Invoke("CanExecuteValue");
         }
 
         private ICommand _Command;
