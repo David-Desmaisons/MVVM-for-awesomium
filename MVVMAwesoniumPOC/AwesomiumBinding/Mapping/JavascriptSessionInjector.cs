@@ -73,7 +73,10 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public void RegisterInSession()
         {
-            GetKo().Invoke("applyBindings", _Globalres);
+            var ko = GetKo();
+            if (ko.HasMethod("register"))
+                ko.Invoke("register", _Globalres);
+            ko.Invoke("applyBindings", _Globalres);
         }
 
         public void Dispose()

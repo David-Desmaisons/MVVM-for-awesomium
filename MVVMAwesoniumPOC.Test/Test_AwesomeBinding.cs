@@ -35,7 +35,6 @@ namespace MVVMAwesomium.Test
                 Name = "O Monstro",
                 LastName = "Desmaisons",
                 Local = new Local() { City = "Florianopolis", Region = "SC" },
-                //BirthDay = new DateTime(1974,2,26)
             };
 
             _DataContext.Skills.Add(new Skill() { Name = "Langage", Type = "French" });
@@ -91,9 +90,7 @@ namespace MVVMAwesomium.Test
                     ((string)res5).Should().Be("Langage");
                 }
             }
-
-            //WebCore.Shutdown();
-        }
+       }
 
         private Task WaitLoad(IWebView view)
         {
@@ -439,8 +436,6 @@ namespace MVVMAwesomium.Test
         {
             return jso.Invoke(pn);
         }
-
-
 
         [Fact]
         public void Test_AwesomeBinding_Basic_TwoWay_Command_With_Null_Parameter()
