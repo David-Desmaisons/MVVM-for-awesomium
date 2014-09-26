@@ -59,9 +59,9 @@ namespace MVVMAwesomium.Test
                     string JSON = JsonConvert.SerializeObject(_DataContext);
                     string alm = jsbridge.ToString();
 
-                    Person m = JsonConvert.DeserializeObject<Person>(jsbridge.ToString());
-                    m.LastName.Should().Be("Desmaisons");
-                    m.Name.Should().Be("O Monstro");
+                    //Person m = JsonConvert.DeserializeObject<Person>(jsbridge.ToString());
+                    //m.LastName.Should().Be("Desmaisons");
+                    //m.Name.Should().Be("O Monstro");
 
                     JSValue res = GetSafe(() => js.Invoke("Name"));
                     ((string)res).Should().Be("O Monstro");

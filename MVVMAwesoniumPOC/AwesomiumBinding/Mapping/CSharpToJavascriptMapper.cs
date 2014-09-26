@@ -26,12 +26,16 @@ namespace MVVMAwesomium.AwesomiumBinding
             if (ifrom == null)
                 return new JSGenericObject(_IJSOBuilder.CreateJSO(), ifrom);
 
+            if (ifrom is ICommand)
+                return new JSCommand(_IJSOBuilder, ifrom as ICommand);
+
             dynamic dfr = ifrom;
             JSValue value;
             if (BasicConvert(dfr, out value))
             {
                 return new JSBasicObject(value, ifrom);
             }
+
 
             IJSCBridge res = null;
             if (Convert(dfr, out res))
@@ -55,13 +59,8 @@ namespace MVVMAwesomium.AwesomiumBinding
                 string pn = propertyInfo.Name;
                 var childvalue = propertyInfo.GetValue(ifrom, null);
 
-                IJSCBridge childres = null;
+                IJSCBridge childres = Map(childvalue);
  
-                if (!(childvalue is ICommand))
-                    childres = Map(childvalue);
-                else
-                    childres = new JSCommand(_IJSOBuilder, childvalue as ICommand);
-
                 resobject[pn] = childres.JSValue;
                 gres.Attributes[pn] = childres;
             }

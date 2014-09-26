@@ -5,26 +5,25 @@
         <script src="js/bower_components/knockout/dist/knockout.js" type="text/javascript"></script>
         <script src="js/Ko_Extension.js" type="text/javascript"></script>
 	</head>
-	<body>
-            <input type="text" data-bind="value: Name, valueUpdate:'afterkeydown'" placeholder="First name" >
-            <ul data-bind="foreach: Skills">
-                <!--<li><span data-bind="text:Type"></span>:<span data-bind="text:Name"></span><button data-bind="click: function (){$root.RemoveSkill().Execute($data)}">Remove skill</button></li>-->
-                <li><span data-bind="text:Type"></span>:<span data-bind="text:Name"></span><button data-bind="command: $root.RemoveSkill">Remove skill</button></li> 
-             </ul>
-            <div>
-                <h2><span data-bind="text: Name"></span></h2>
-                 <h2><span data-bind="text: LastName"></span></h2>
-            </div>
-            <div id="Local">
-             <h2><span data-bind="text: Local().City"></span></h2>
-                <input type="text" data-bind="value: MainSkill().Type, valueUpdate:'afterkeydown'" placeholder="Main Skill Type">
-                <input type="text" data-bind="value: MainSkill().Name, valueUpdate:'afterkeydown'" placeholder="Main Skill">
-            </div>
-        <!--<button data-bind="click: function (){ $data.ChangeSkill().Execute()},enable: $data.ChangeSkill().CanExecute">Change skill</button>
-        <button data-bind="click: function (){ $data.Command().Execute()}">Add skill</button>-->
-        <button data-bind="command: $data.ChangeSkill">Change skill</button>
-        <button data-bind="command: $data.Command">Add skill</button>
-	</body>
+<body>
+    <input type="text" data-bind="value: Name, valueUpdate:'afterkeydown'" placeholder="First name">
+    <ul data-bind="foreach: Skills">
+        <!--<li><span data-bind="text:Type"></span>:<span data-bind="text:Name"></span><button data-bind="click: function (){$root.RemoveSkill().Execute($data)}">Remove skill</button></li>-->
+        <li><span data-bind="text:Type"></span>:<span data-bind="text:Name"></span><button data-bind="command: $root.RemoveSkill">Remove skill</button></li>
+    </ul>
+    <div>
+        <h2><span data-bind="text: Name"></span></h2>
+        <h2><span data-bind="text: LastName"></span></h2>
+    </div>
+    <div id="Local">
+        <h2><span data-bind="text: Local().City"></span></h2>
+        <input type="text" data-bind="value: MainSkill().Type, valueUpdate:'afterkeydown'" placeholder="Main Skill Type">
+        <input type="text" data-bind="value: MainSkill().Name, valueUpdate:'afterkeydown'" placeholder="Main Skill">
+    </div>
+
+    <button data-bind="command: $data.ChangeSkill">Change skill</button>
+    <button data-bind="command: $data.Command">Add skill</button>
+</body>
         
    
 </html>
