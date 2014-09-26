@@ -83,7 +83,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         private ICommand _Command;
         public object CValue { get { return _Command; } }
 
-        public JSType Type { get { return JSType.Object; } }
+        public JSBridgeType Type { get { return JSBridgeType.Command; } }
 
         public IEnumerable<IJSCBridge> GetChildren()
         {

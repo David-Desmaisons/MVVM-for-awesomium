@@ -78,7 +78,7 @@
     <Compile Include="AwesomiumBinding\Helper\AwesomiumHelper.cs" />
     <Compile Include="AwesomiumBinding\BridgeObjects\IJSObservableBridge.cs" />
     <Compile Include="AwesomiumBinding\BridgeObjects\JSBasicObject.cs" />
-    <Compile Include="AwesomiumBinding\BridgeObjects\JSType.cs" />
+    <Compile Include="AwesomiumBinding\BridgeObjects\JSBridgeType.cs" />
     <Compile Include="AwesomiumBinding\Mapping\CollectionChanges\CollectionChangeType.cs" />
     <Compile Include="AwesomiumBinding\Mapping\CollectionChanges\CollectionChanges.cs" />
     <Compile Include="AwesomiumBinding\Mapping\CollectionChanges\IndividualCollectionChange.cs" />

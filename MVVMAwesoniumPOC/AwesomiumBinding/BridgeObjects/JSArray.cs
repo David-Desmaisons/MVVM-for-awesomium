@@ -117,7 +117,7 @@ namespace MVVMAwesomium.AwesomiumBinding
             return Items;
         }
 
-        public JSType Type { get { return JSType.Array; } }
+        public JSBridgeType Type { get { return JSBridgeType.Array; } }
 
         public JSValue MappedJSValue { get; private set; }
 

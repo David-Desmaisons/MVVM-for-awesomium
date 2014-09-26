@@ -34,7 +34,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public object CValue { get; private set; }
 
-        public JSType Type { get { return JSType.Basic; } }
+        public JSBridgeType Type { get { return JSBridgeType.Basic; } }
 
         public IEnumerable<IJSCBridge> GetChildren()
         {

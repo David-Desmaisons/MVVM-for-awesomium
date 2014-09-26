@@ -5,10 +5,11 @@ using System.Text;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
-    public enum JSType
+    public enum JSBridgeType
     {
         Object,
         Basic,
-        Array
+        Array,
+        Command
     }
 }

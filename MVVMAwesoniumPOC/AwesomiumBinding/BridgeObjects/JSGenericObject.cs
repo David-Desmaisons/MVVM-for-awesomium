@@ -20,7 +20,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public override string ToString()
         {
-            return "{"+ string.Join(",", _Attributes.Select(kvp=>string.Format(@"""{0}"":{1}",kvp.Key,kvp.Value)))+"}";
+            return "{"+ string.Join(",", _Attributes.Where(kvp=>kvp.Value.Type!=JSBridgeType.Command).Select(kvp=>string.Format(@"""{0}"":{1}",kvp.Key,kvp.Value)))+"}";
         }
 
         private Dictionary<string, IJSCBridge> _Attributes = new Dictionary<string, IJSCBridge>();
@@ -40,7 +40,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public object CValue { get; private set; }
 
-        public JSType Type { get { return JSType.Object; } }
+        public JSBridgeType Type { get { return JSBridgeType.Object; } }
 
         public IEnumerable<IJSCBridge> GetChildren()
         {

@@ -132,7 +132,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         private Task InjectInHTLMSession(IJSCBridge iroot, bool isroot = false)
         {
-            if ((iroot==null) || (iroot.Type != JSType.Object))
+            if ((iroot==null) || (iroot.Type != JSBridgeType.Object))
             {
                 return TaskHelper.FromResult<object>(null);
             }

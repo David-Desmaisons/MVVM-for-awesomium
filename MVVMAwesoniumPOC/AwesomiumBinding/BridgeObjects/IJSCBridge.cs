@@ -10,7 +10,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         object CValue { get;}
 
-        JSType Type { get; }
+        JSBridgeType Type { get; }
 
         IEnumerable<IJSCBridge> GetChildren();
     }
