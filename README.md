@@ -26,7 +26,7 @@ Usage - Example
 				OnPropertyChanged(ipn);
 			}
 
-			protected virtual void OnPropertyChanged(string pn)
+			private void OnPropertyChanged(string pn)
 			{
 				if (PropertyChanged == null)
 					return;
@@ -95,14 +95,14 @@ Usage - Example
 			<input type="text" data-bind="value: Name, valueUpdate:'afterkeydown'" placeholder="First name" >
 			<ul data-bind="foreach: Skills">
 				<li><span data-bind="text:Type"></span>:<span data-bind="text:Name"></span>
-				<button data-bind="click: function (){$root.RemoveSkill($data)}">Remove skill</button></li>
+				<button data-bind="command: $root.RemoveSkill">Remove skill</button></li>
 			</ul>
 			<div>
 				<h2><span data-bind="text: Name"></span></h2>
 				<h2><span data-bind="text: LastName"></span></h2>
 			</div>
 
-			<button data-bind="click: ChangeSkill">Click me</button>
+			<button data-bind="command: ChangeSkill">Click me</button>
 		</body>
 	</html>
 

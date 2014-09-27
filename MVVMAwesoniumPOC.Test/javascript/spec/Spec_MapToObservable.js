@@ -8,7 +8,7 @@
 
 
 describe("Map To Observable", function () {
-    var basicmaped, basicmaped2, basicmaped3, basicmaped4, basicmaped5, basicmapped6, basicmapped7;
+    var basicmaped, basicmaped2, basicmaped3, basicmaped4, basicmaped5, basicmaped6, basicmapped7;
 
 
     beforeEach(function() {
@@ -236,7 +236,7 @@ describe("Map To Observable", function () {
 
          var newone = {Name:"Newman"};
 
-         mapped.One(newone)
+         mapped.One(newone);
 
          expect(mapped.One()).toEqual(newone);
          expect(Listener.TrackChanges.calls.count()).toEqual(0);

@@ -108,22 +108,13 @@
         }
     };
 
-    //global ko 
-    ko.bindingHandlers.ExecuteOnEnter = {
-        init: function (element, valueAccessor, allBindings, viewModel) {
-            try {
-                var value = valueAccessor();
-            }
-            catch (exception) {
-                console.log(exception);
-            }
-            $(element).keypress(function (event) {
-                var keycode = (event.which ? event.which : event.keyCode);
-                if (keycode === 13) {
-                    value.call(viewModel);
-                    return false;
-                }
-            });
+
+    ko.bindingHandlers.execute = {
+        preprocess: function (value, name, addBinding) {
+            debugger;
+            addBinding('click', 'function(){' + value + '().Execute($data);}');
+            return value;
         }
     };
+
 }());

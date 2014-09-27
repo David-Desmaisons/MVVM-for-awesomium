@@ -740,7 +740,18 @@
         name="JavascriptSessionInjector"
         isAbstract="false"
         isLeaf="false"
-        isActiveClass="false" />
+        isActiveClass="false">
+        <ownedOperationsInternal>
+          <operation
+            Id="e6ba140e-a594-4dbd-aa5d-ef944764981d"
+            name="Map"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+        </ownedOperationsInternal>
+      </class>
     </packageHasNamedElement>
     <packageHasNamedElement>
       <class
@@ -808,6 +819,34 @@
             isComposite="false" />
         </ownedAttributes>
       </Interface>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <class
+        Id="ce2eeb72-d2e0-4b91-98ae-ba940a6a8258"
+        name="JSCommand"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <suppliersInternal>
+          <interfaceRealization
+            Id="a6dd4ea7-543e-495d-9dfe-fb9913dc6cf2">
+            <interfaceMoniker
+              Id="30c7d5cd-5631-43d7-adbc-788aa11991ee"
+              LastKnownName="IBridgeObject"
+              LastKnownLocation="ModelingProject1.uml" />
+          </interfaceRealization>
+        </suppliersInternal>
+        <ownedOperationsInternal>
+          <operation
+            Id="570e6000-158d-478a-a3b3-1001f1cbad03"
+            name="GetChildren"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false" />
+        </ownedOperationsInternal>
+      </class>
     </packageHasNamedElement>
   </packagedElements>
   <primitiveType

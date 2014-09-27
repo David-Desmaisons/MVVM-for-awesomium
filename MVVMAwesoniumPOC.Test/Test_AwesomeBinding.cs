@@ -92,6 +92,28 @@ namespace MVVMAwesomium.Test
             }
        }
 
+        [Fact]
+        public void Test_AwesomeBinding_Basic_Regsiter_Additional_property()
+        {
+            using (Tester())
+            {
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.OneWay).Result)
+                {
+                    var jsbridge = mb.JSRootObject;
+                    var js = (JSObject)jsbridge.GetJSSessionValue();
+
+
+                    JSValue res = GetSafe(() => GetValue(js, "completeName"));
+                    ((string)res).Should().Be("O Monstro Desmaisons");
+                }
+            }
+        }
+
+
         private Task WaitLoad(IWebView view)
         {
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();

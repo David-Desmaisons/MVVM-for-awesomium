@@ -333,6 +333,11 @@
     <logicalClassDesignerModelHasTypes>
       <class Id="44b7284d-259a-4b55-a683-b3b81c6215ea" name="JavascriptSessionInjector" isAbstract="false" isLeaf="false" isActiveClass="false">
         <elementDefinition Id="4347f5c1-706f-4942-990d-f4fc588b8dfb" />
+        <ownedOperationsInternal>
+          <operation Id="daaacc2a-cd19-45ec-b3a0-deddf6ff6863" name="Map" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="e6ba140e-a594-4dbd-aa5d-ef944764981d" />
+          </operation>
+        </ownedOperationsInternal>
       </class>
     </logicalClassDesignerModelHasTypes>
     <logicalClassDesignerModelHasTypes>
@@ -366,6 +371,22 @@
           </property>
         </ownedAttributes>
       </Interface>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="88344cf0-bb32-4659-a4f5-cd033f3e2256" name="JSCommand" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="ce2eeb72-d2e0-4b91-98ae-ba940a6a8258" />
+        <suppliersInternal>
+          <interfaceRealization Id="2f10971e-008b-432c-9670-636a19c9eeb8">
+            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IBridgeObject" />
+            <elementDefinition Id="a6dd4ea7-543e-495d-9dfe-fb9913dc6cf2" />
+          </interfaceRealization>
+        </suppliersInternal>
+        <ownedOperationsInternal>
+          <operation Id="bdfa6ebe-dcbb-4238-b688-6045c6958891" name="GetChildren" isLeaf="false" isStatic="false" isAbstract="false" concurrency="Sequential" isQuery="false">
+            <elementDefinition Id="570e6000-158d-478a-a3b3-1001f1cbad03" />
+          </operation>
+        </ownedOperationsInternal>
+      </class>
     </logicalClassDesignerModelHasTypes>
   </packagedElements>
   <package Id="d2c7ea2a-7bec-4509-b663-4324b4197965" name="ModelingProject1">
