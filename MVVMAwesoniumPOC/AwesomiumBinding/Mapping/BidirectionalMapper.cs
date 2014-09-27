@@ -15,15 +15,15 @@ namespace MVVMAwesomium.AwesomiumBinding
     public class BidirectionalMapper : IDisposable, IJSCBridgeCache, IJavascriptListener
     {
         private readonly JavascriptBindingMode _BindingMode;
-        private readonly IJSCBridge _Root;
+        private readonly IJSCSGlue _Root;
         private readonly IWebView _IWebView;
         
         private CSharpToJavascriptMapper _JSObjectBuilder;
         private JavascriptSessionInjector _SessionInjector;
         private JavascriptToCSharpMapper _JavascriptToCSharpMapper;
         
-        private IDictionary<object, IJSCBridge> _FromCSharp = new Dictionary<object, IJSCBridge>();
-        private IDictionary<uint, IJSCBridge> _FromJavascript = new Dictionary<uint, IJSCBridge>();
+        private IDictionary<object, IJSCSGlue> _FromCSharp = new Dictionary<object, IJSCSGlue>();
+        private IDictionary<uint, IJSCSGlue> _FromJavascript = new Dictionary<uint, IJSCSGlue>();
 
         internal BidirectionalMapper(object iRoot, IWebView iwebview, JavascriptBindingMode iMode)
         {
@@ -88,7 +88,7 @@ namespace MVVMAwesomium.AwesomiumBinding
             }
         }
 
-        private IJSCBridge GetFromJavascript(JSObject jsobject)
+        private IJSCSGlue GetFromJavascript(JSObject jsobject)
         {
             return _FromJavascript[jsobject.RemoteId];
         }
@@ -116,23 +116,26 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public bool ListenToCSharp { get { return (_BindingMode != JavascriptBindingMode.OneTime); } }
 
-        private void ListenToCSharpChanges(IJSCBridge ibridge)
+        private void ListenToCSharpChanges(IJSCSGlue ibridge)
         {
-            _Root.ApplyOnListenable(n => n.PropertyChanged += Object_PropertyChanged,
-                                     c => c.CollectionChanged += CollectionChanged);
+            var list = new JSCBridgeListenableVisitor(n => n.PropertyChanged += Object_PropertyChanged,
+                                     c => c.CollectionChanged += CollectionChanged, co=>co.ListenChanges());
+            _Root.ApplyOnListenable(list);
         }
 
-        private void UnlistenToCSharpChanges(IJSCBridge ibridge)
+        private void UnlistenToCSharpChanges(IJSCSGlue ibridge)
         {
-            _Root.ApplyOnListenable(n => n.PropertyChanged -= Object_PropertyChanged,
-                                     c => c.CollectionChanged -= CollectionChanged);
+            var list = new JSCBridgeListenableVisitor(n => n.PropertyChanged -= Object_PropertyChanged,
+                           c => c.CollectionChanged -= CollectionChanged, co => co.UnListenChanges());
+ 
+            _Root.ApplyOnListenable(list);
         }
 
-        public IJSCBridge JSValueRoot { get { return _Root; } }
+        public IJSCSGlue JSValueRoot { get { return _Root; } }
 
-        private Task InjectInHTLMSession(IJSCBridge iroot, bool isroot = false)
+        private Task InjectInHTLMSession(IJSCSGlue iroot, bool isroot = false)
         {
-            if ((iroot==null) || (iroot.Type != JSBridgeType.Object))
+            if ((iroot==null) || (iroot.Type != JSCSGlueType.Object))
             {
                 return TaskHelper.FromResult<object>(null);
             }
@@ -181,12 +184,12 @@ namespace MVVMAwesomium.AwesomiumBinding
             JSGenericObject currentfather = _FromCSharp[sender] as JSGenericObject;
 
             object nv = propertyInfo.GetValue(sender, null);
-            IJSCBridge oldbridgedchild = currentfather.Attributes[pn];
+            IJSCSGlue oldbridgedchild = currentfather.Attributes[pn];
 
             if (Object.Equals(nv, oldbridgedchild.CValue))
                 return;
 
-            IJSCBridge newbridgedchild = _JSObjectBuilder.Map(nv);
+            IJSCSGlue newbridgedchild = _JSObjectBuilder.Map(nv);
 
             RegisterAndDo(newbridgedchild, () => currentfather.Reroot(pn, newbridgedchild));
         }
@@ -197,13 +200,18 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             private HashSet<INotifyPropertyChanged> _OldObject = new HashSet<INotifyPropertyChanged>();
             private HashSet<INotifyCollectionChanged> _OldCollections = new HashSet<INotifyCollectionChanged>();
+            private HashSet<JSCommand> _OldCommands = new HashSet<JSCommand>();
+     
             private int _Count = 1;
 
             private BidirectionalMapper _BidirectionalMapper;
             public ReListener(BidirectionalMapper iBidirectionalMapper)
             {
                 _BidirectionalMapper = iBidirectionalMapper;
-                _BidirectionalMapper._Root.ApplyOnListenable((e) => _OldObject.Add(e), (e) => _OldCollections.Add(e));
+                var list = new JSCBridgeListenableVisitor((e) => _OldObject.Add(e),
+                    (e) => _OldCollections.Add(e), e => _OldCommands.Add(e));
+
+                _BidirectionalMapper._Root.ApplyOnListenable(list);
             }
 
             public void AddRef()
@@ -223,14 +231,24 @@ namespace MVVMAwesomium.AwesomiumBinding
             {
                 var newObject = new HashSet<INotifyPropertyChanged>();
                 var new_Collections = new HashSet<INotifyCollectionChanged>();
+                var new_Commands = new HashSet<JSCommand>();
 
-                _BidirectionalMapper._Root.ApplyOnListenable((e) => newObject.Add(e), (e) => new_Collections.Add(e));
+                var list = new JSCBridgeListenableVisitor((e) => newObject.Add(e),
+                                (e) => new_Collections.Add(e), e => new_Commands.Add(e));
+
+
+                _BidirectionalMapper._Root.ApplyOnListenable(list);
 
                 _OldObject.Where(o => !newObject.Contains(o)).ForEach(o => o.PropertyChanged -= _BidirectionalMapper.Object_PropertyChanged);
                 newObject.Where(o => !_OldObject.Contains(o)).ForEach(o => o.PropertyChanged += _BidirectionalMapper.Object_PropertyChanged);
 
                 _OldCollections.Where(o => !new_Collections.Contains(o)).ForEach(o => o.CollectionChanged -= _BidirectionalMapper.CollectionChanged);
                 new_Collections.Where(o => !_OldCollections.Contains(o)).ForEach(o => o.CollectionChanged += _BidirectionalMapper.CollectionChanged);
+
+                _OldCommands.Where(o => !new_Commands.Contains(o)).ForEach(o => o.UnListenChanges());
+                new_Commands.Where(o => !_OldCommands.Contains(o)).ForEach(o => o.ListenChanges());
+
+
 
                 _BidirectionalMapper._ReListen = null;
             }
@@ -265,7 +283,7 @@ namespace MVVMAwesomium.AwesomiumBinding
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    IJSCBridge addvalue = _JSObjectBuilder.Map(e.NewItems[0]);
+                    IJSCSGlue addvalue = _JSObjectBuilder.Map(e.NewItems[0]);
 
                     if (addvalue == null) return;
                         
@@ -273,7 +291,7 @@ namespace MVVMAwesomium.AwesomiumBinding
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
-                    IJSCBridge newvalue = _JSObjectBuilder.Map(e.NewItems[0]);
+                    IJSCSGlue newvalue = _JSObjectBuilder.Map(e.NewItems[0]);
 
                     if (newvalue == null) return;
                        
@@ -290,7 +308,7 @@ namespace MVVMAwesomium.AwesomiumBinding
             }
         }
 
-        private void RegisterAndDo(IJSCBridge ivalue, Action Do)
+        private void RegisterAndDo(IJSCSGlue ivalue, Action Do)
         {
             var idisp = ReListen();
 
@@ -317,22 +335,22 @@ namespace MVVMAwesomium.AwesomiumBinding
             }
         }
 
-        void IJSCBridgeCache.Cache(object key, IJSCBridge value)
+        void IJSCBridgeCache.Cache(object key, IJSCSGlue value)
         {
             _FromCSharp.Add(key, value);
         }
 
-        IJSCBridge IJSCBridgeCache.GetCached(object key)
+        IJSCSGlue IJSCBridgeCache.GetCached(object key)
         {
-            IJSCBridge res = null;
+            IJSCSGlue res = null;
             _FromCSharp.TryGetValue(key, out res);
             return res;
         }
 
 
-        public IJSCBridge GetCached(JSObject key)
+        public IJSCSGlue GetCached(JSObject key)
         {
-            IJSCBridge res = null;
+            IJSCSGlue res = null;
             if (( key==null ) || (key.RemoteId == 0))
                 return res;
             _FromJavascript.TryGetValue(key.RemoteId, out res);

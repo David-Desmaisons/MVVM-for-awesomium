@@ -10,10 +10,10 @@ namespace MVVMAwesomium.AwesomiumBinding
 {
     internal class JSArray : IJSObservableBridge
     {
-        public JSArray(IEnumerable<IJSCBridge> values,object collection)
+        public JSArray(IEnumerable<IJSCSGlue> values,object collection)
         {
             JSValue = new JSValue(values.Select(v=>v.JSValue).ToArray());
-            Items = new List<IJSCBridge>(values);
+            Items = new List<IJSCSGlue>(values);
             CValue = collection;
         }
 
@@ -42,7 +42,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         }
 
 
-        public void UpdateEventArgsFromJavascript(IEnumerable<IndividualCollectionChange> iChanges, IEnumerable<IJSCBridge> Current)
+        public void UpdateEventArgsFromJavascript(IEnumerable<IndividualCollectionChange> iChanges, IEnumerable<IJSCSGlue> Current)
         {
             if (_UnderJavascriptUpdate>0)
             {
@@ -66,7 +66,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         private int _UnderJavascriptUpdate = 0;
 
-        public void Add(IJSCBridge iIJSCBridge, int Index)
+        public void Add(IJSCSGlue iIJSCBridge, int Index)
         {
             _UnderJavascriptUpdate++;
 
@@ -77,7 +77,7 @@ namespace MVVMAwesomium.AwesomiumBinding
                 Items.Insert(Index, iIJSCBridge);
         }
 
-        public void Insert(IJSCBridge iIJSCBridge, int Index)
+        public void Insert(IJSCSGlue iIJSCBridge, int Index)
         {
             _UnderJavascriptUpdate++;
 
@@ -110,14 +110,14 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public object CValue { get; private set; }
 
-        public IList<IJSCBridge> Items { get; private set; }
+        public IList<IJSCSGlue> Items { get; private set; }
 
-        public IEnumerable<IJSCBridge> GetChildren()
+        public IEnumerable<IJSCSGlue> GetChildren()
         {
             return Items;
         }
 
-        public JSBridgeType Type { get { return JSBridgeType.Array; } }
+        public JSCSGlueType Type { get { return JSCSGlueType.Array; } }
 
         public JSValue MappedJSValue { get; private set; }
 

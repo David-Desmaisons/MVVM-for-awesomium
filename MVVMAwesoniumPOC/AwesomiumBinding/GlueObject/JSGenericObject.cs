@@ -20,12 +20,12 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public override string ToString()
         {
-            return "{"+ string.Join(",", _Attributes.Where(kvp=>kvp.Value.Type!=JSBridgeType.Command).Select(kvp=>string.Format(@"""{0}"":{1}",kvp.Key,kvp.Value)))+"}";
+            return "{"+ string.Join(",", _Attributes.Where(kvp=>kvp.Value.Type!=JSCSGlueType.Command).Select(kvp=>string.Format(@"""{0}"":{1}",kvp.Key,kvp.Value)))+"}";
         }
 
-        private Dictionary<string, IJSCBridge> _Attributes = new Dictionary<string, IJSCBridge>();
+        private Dictionary<string, IJSCSGlue> _Attributes = new Dictionary<string, IJSCSGlue>();
 
-        public IDictionary<string, IJSCBridge> Attributes { get { return _Attributes; } }
+        public IDictionary<string, IJSCSGlue> Attributes { get { return _Attributes; } }
 
         public JSValue JSValue { get; private set; }
 
@@ -40,9 +40,9 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public object CValue { get; private set; }
 
-        public JSBridgeType Type { get { return JSBridgeType.Object; } }
+        public JSCSGlueType Type { get { return JSCSGlueType.Object; } }
 
-        public IEnumerable<IJSCBridge> GetChildren()
+        public IEnumerable<IJSCSGlue> GetChildren()
         {
             return _Attributes.Values; 
         }
@@ -60,7 +60,7 @@ namespace MVVMAwesomium.AwesomiumBinding
             propertyInfo.SetValue(CValue, simplevalue, null);
         }
 
-        public void Reroot(string PropertyName, IJSCBridge newValue)
+        public void Reroot(string PropertyName, IJSCSGlue newValue)
         { 
             _Attributes[PropertyName]=newValue;
             ((JSObject)_MappedJSValue).Invoke(PropertyName, newValue.GetJSSessionValue());    

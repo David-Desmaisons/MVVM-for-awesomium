@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
-    public enum JSBridgeType
+    public enum JSCSGlueType
     {
         Object,
         Basic,

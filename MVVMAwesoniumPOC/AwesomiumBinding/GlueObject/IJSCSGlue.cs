@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
-    public interface IJSCBridge
+    public interface IJSCSGlue
     {
         JSValue JSValue { get; }
 
         object CValue { get;}
 
-        JSBridgeType Type { get; }
+        JSCSGlueType Type { get; }
 
-        IEnumerable<IJSCBridge> GetChildren();
+        IEnumerable<IJSCSGlue> GetChildren();
     }
 }

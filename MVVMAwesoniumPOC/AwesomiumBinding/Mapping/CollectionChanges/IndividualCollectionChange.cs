@@ -7,7 +7,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 {
     public class IndividualCollectionChange
     {
-        public IndividualCollectionChange(CollectionChangeType iCollectionChange, int iIndex, IJSCBridge iObject)
+        public IndividualCollectionChange(CollectionChangeType iCollectionChange, int iIndex, IJSCSGlue iObject)
         {
             CollectionChangeType=iCollectionChange;
              Index=   iIndex;
@@ -18,6 +18,6 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public int Index { get; private set; }
 
-        public IJSCBridge Object { get; private set; }
+        public IJSCSGlue Object { get; private set; }
     }
 }

@@ -8,10 +8,10 @@ namespace MVVMAwesomium.AwesomiumBinding
 {
     public interface IJSCBridgeCache
     {
-        void Cache(object key, IJSCBridge value);
+        void Cache(object key, IJSCSGlue value);
 
-        IJSCBridge GetCached(object key);
+        IJSCSGlue GetCached(object key);
 
-        IJSCBridge GetCached(JSObject key);
+        IJSCSGlue GetCached(JSObject key);
     }
 }

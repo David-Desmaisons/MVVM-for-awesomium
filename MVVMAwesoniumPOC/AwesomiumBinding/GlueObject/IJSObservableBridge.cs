@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
-    public interface IJSObservableBridge : IJSCBridge
+    public interface IJSObservableBridge : IJSCSGlue
     {
         JSValue MappedJSValue { get; }
         void SetMappedJSValue(JSValue ijsobject, IJSCBridgeCache mapper);

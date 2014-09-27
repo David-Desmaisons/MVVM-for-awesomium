@@ -22,7 +22,7 @@ namespace MVVMAwesomium.AwesomiumBinding
             _BirectionalMapper = iConvertToJSO;
         }
 
-        internal IJSCBridge JSRootObject
+        internal IJSCSGlue JSRootObject
         {
             get { return _BirectionalMapper.JSValueRoot; }
         }

@@ -21,7 +21,7 @@ namespace MVVMAwesomium.AwesomiumBinding
             _Cacher = icacher;
         }
 
-        internal IJSCBridge Map(object ifrom)
+        internal IJSCSGlue Map(object ifrom)
         {
             if (ifrom == null)
                 return new JSGenericObject(_IJSOBuilder.CreateJSO(), ifrom);
@@ -37,7 +37,7 @@ namespace MVVMAwesomium.AwesomiumBinding
             }
 
 
-            IJSCBridge res = null;
+            IJSCSGlue res = null;
             if (Convert(dfr, out res))
             {
                 return res;
@@ -59,7 +59,7 @@ namespace MVVMAwesomium.AwesomiumBinding
                 string pn = propertyInfo.Name;
                 var childvalue = propertyInfo.GetValue(ifrom, null);
 
-                IJSCBridge childres = Map(childvalue);
+                IJSCSGlue childres = Map(childvalue);
  
                 resobject[pn] = childres.JSValue;
                 gres.Attributes[pn] = childres;
@@ -112,20 +112,20 @@ namespace MVVMAwesomium.AwesomiumBinding
             return true;
         }
 
-        private bool Convert(object source, out IJSCBridge res)
+        private bool Convert(object source, out IJSCSGlue res)
         {
             res = null;
             return false;
         }
 
-        private bool Convert<T>(IEnumerable<T> source, out IJSCBridge res)
+        private bool Convert<T>(IEnumerable<T> source, out IJSCSGlue res)
         {
             res = new JSArray(source.Select(s => Map(s)), source);
             _Cacher.Cache(source, res);
             return true;
         }
 
-        private bool Convert(IEnumerable source, out IJSCBridge res)
+        private bool Convert(IEnumerable source, out IJSCSGlue res)
         {
             return Convert(source.Cast<object>(), out  res);
         }

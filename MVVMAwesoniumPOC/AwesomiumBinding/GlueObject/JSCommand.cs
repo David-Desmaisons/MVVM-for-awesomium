@@ -13,8 +13,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         public JSCommand(IJSOBuilder builder,  ICommand  icValue)
         {
             _Command = icValue;
-            _Command.CanExecuteChanged += _Command_CanExecuteChanged;
-
+       
             bool canexecute = true;
             try
             {
@@ -26,6 +25,16 @@ namespace MVVMAwesomium.AwesomiumBinding
             res["CanExecuteValue"] = new JSValue(canexecute);
             res["CanExecuteCount"] = new JSValue(_Count);
             JSValue = res;       
+        }
+
+        public void ListenChanges()
+        {
+            _Command.CanExecuteChanged += _Command_CanExecuteChanged;
+        }
+
+        public void UnListenChanges()
+        {
+            _Command.CanExecuteChanged -= _Command_CanExecuteChanged;
         }
 
         private void _Command_CanExecuteChanged(object sender, EventArgs e)
@@ -82,11 +91,11 @@ namespace MVVMAwesomium.AwesomiumBinding
         private ICommand _Command;
         public object CValue { get { return _Command; } }
 
-        public JSBridgeType Type { get { return JSBridgeType.Command; } }
+        public JSCSGlueType Type { get { return JSCSGlueType.Command; } }
 
-        public IEnumerable<IJSCBridge> GetChildren()
+        public IEnumerable<IJSCSGlue> GetChildren()
         {
-            return Enumerable.Empty<IJSCBridge>();
+            return Enumerable.Empty<IJSCSGlue>();
         }
 
     }

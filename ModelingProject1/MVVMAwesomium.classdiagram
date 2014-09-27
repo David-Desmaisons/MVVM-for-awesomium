@@ -63,7 +63,7 @@
       </class>
     </logicalClassDesignerModelHasTypes>
     <logicalClassDesignerModelHasTypes>
-      <Interface Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" name="IBridgeObject" isAbstract="false" isLeaf="false">
+      <Interface Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" name="IJSCSGlue" isAbstract="false" isLeaf="false">
         <elementDefinition Id="30c7d5cd-5631-43d7-adbc-788aa11991ee" />
         <ownedAttributes>
           <property Id="f4c1b24b-1a88-4e29-832c-db1f0489478e" name="JSValue" isLeaf="false" isStatic="false" isReadOnly="false" isUnique="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
@@ -94,7 +94,7 @@
         </suppliersInternal>
         <targetEnds>
           <association Id="90a713ee-5401-40b7-9c6e-e68d27c6063b" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" name="Attributes" isAbstract="false">
-            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IBridgeObject" />
+            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IJSCSGlue" />
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
                 <memberEnd Id="8ab3c048-3c0d-481a-91fd-2500af48a6cd" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
@@ -153,7 +153,7 @@
         </suppliersInternal>
         <targetEnds>
           <association Id="b08f73a6-50a6-4f93-8443-fe78639fbc7e" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" name="Items" isAbstract="false">
-            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IBridgeObject" />
+            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IJSCSGlue" />
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
                 <memberEnd Id="ede49eec-a9da-4273-9b0e-4738be7b1332" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
@@ -223,7 +223,7 @@
             <elementDefinition Id="64761c54-8814-4e83-a211-8bfbdfa8318f" />
           </association>
           <association Id="b84caa5a-f939-403b-ade3-cd0bc3c630ff" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" name="FromCSharp" isAbstract="false">
-            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IBridgeObject" />
+            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IJSCSGlue" />
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
                 <memberEnd Id="39b2f62a-dab7-4811-9c05-b54f8f06bb08" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
@@ -249,7 +249,7 @@
             <elementDefinition Id="16f30c9c-859c-474f-bd07-b46012786d99" />
           </association>
           <association Id="859d7bff-57fd-4741-b0a1-5869ab436cde" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" name="Root" isAbstract="false">
-            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IBridgeObject" />
+            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IJSCSGlue" />
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
                 <memberEnd Id="58510738-3e55-4cbe-97dd-e8c4cbcdd6a5" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
@@ -281,7 +281,7 @@
             <elementDefinition Id="d4647140-b353-42c1-a484-a3edab5fab37" />
           </association>
           <association Id="a15f88e3-c228-4ddb-a06b-d79ee42a6a11" isDerived="false" sourceEndRoleName="" targetEndRoleName="" isLeaf="false" name="FromJavascript" isAbstract="false">
-            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IBridgeObject" />
+            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IJSCSGlue" />
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
                 <memberEnd Id="4f0391a1-5801-4dcd-9390-3f2daa4ff8c5" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
@@ -345,7 +345,7 @@
         <elementDefinition Id="66a51917-0a1d-4e42-912d-188414269b63" />
         <suppliersInternal>
           <interfaceRealization Id="80737a93-cb47-4d4b-aaf6-b08e2ce74cdf">
-            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IBridgeObject" />
+            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IJSCSGlue" />
             <elementDefinition Id="b1f4357f-3f46-4ba6-a7b9-ef309314142f" />
           </interfaceRealization>
         </suppliersInternal>
@@ -361,7 +361,7 @@
         <elementDefinition Id="41304816-6ca5-486e-bdb6-ba20b5563f4e" />
         <generalsInternal>
           <generalization Id="cb268514-3b51-40c5-aa89-a082b5b68925" isSubstitutable="false">
-            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IBridgeObject" />
+            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IJSCSGlue" />
             <elementDefinition Id="432e0284-10c4-4c69-a8f9-19de79c0ea42" />
           </generalization>
         </generalsInternal>
@@ -377,7 +377,7 @@
         <elementDefinition Id="ce2eeb72-d2e0-4b91-98ae-ba940a6a8258" />
         <suppliersInternal>
           <interfaceRealization Id="2f10971e-008b-432c-9670-636a19c9eeb8">
-            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IBridgeObject" />
+            <interfaceMoniker Id="760765ec-e5d3-494d-ad7d-510c3c877b6d" LastKnownName="IJSCSGlue" />
             <elementDefinition Id="a6dd4ea7-543e-495d-9dfe-fb9913dc6cf2" />
           </interfaceRealization>
         </suppliersInternal>

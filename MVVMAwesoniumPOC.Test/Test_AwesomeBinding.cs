@@ -281,7 +281,7 @@ namespace MVVMAwesomium.Test
                     var mycommand = js.Attributes["Command"] as JSCommand;
                     mycommand.Should().NotBeNull();
                     mycommand.ToString().Should().Be("{}");
-                    mycommand.Type.Should().Be(JSBridgeType.Command);
+                    mycommand.Type.Should().Be(JSCSGlueType.Command);
                     mycommand.MappedJSValue.Should().NotBeNull();
                 }
             }

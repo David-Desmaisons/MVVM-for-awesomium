@@ -42,7 +42,7 @@ namespace MVVMAwesomium.Test
             _WebView = WebCore.CreateWebView(500, 500, WebViewType.Offscreen);
             _IJSOBuilder = new LocalBuilder(_WebView);
             _ICSharpMapper = Substitute.For<IJSCBridgeCache>();
-            _ICSharpMapper.GetCached(Arg.Any<object>()).Returns((IJSCBridge)null);
+            _ICSharpMapper.GetCached(Arg.Any<object>()).Returns((IJSCSGlue)null);
             _ConverTOJSO = new CSharpToJavascriptMapper(_IJSOBuilder, _ICSharpMapper);
             _Test = new Test { S1 = "string", I1 = 25 };
             _Tests = new List<Test>();
@@ -83,7 +83,7 @@ namespace MVVMAwesomium.Test
         public void Test_List()
         {
             var ibridgeresult = _ConverTOJSO.Map(_Tests);
-            ibridgeresult.Type.Should().Be(JSBridgeType.Array);
+            ibridgeresult.Type.Should().Be(JSCSGlueType.Array);
             JSValue[] resv = (JSValue[])ibridgeresult.JSValue;
 
             resv.Should().NotBeNull();
@@ -201,7 +201,7 @@ namespace MVVMAwesomium.Test
             JSObject res = _ConverTOJSO.Map(_Test2).JSValue;
             res.Should().NotBeNull();
 
-            _ICSharpMapper.Received().Cache(_Test,Arg.Any<IJSCBridge>());
+            _ICSharpMapper.Received().Cache(_Test,Arg.Any<IJSCSGlue>());
         }
     
     }

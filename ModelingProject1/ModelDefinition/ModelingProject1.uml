@@ -142,7 +142,7 @@
     <packageHasNamedElement>
       <Interface
         Id="30c7d5cd-5631-43d7-adbc-788aa11991ee"
-        name="IBridgeObject"
+        name="IJSCSGlue"
         isAbstract="false"
         isLeaf="false">
         <ownedAttributes>
@@ -219,7 +219,7 @@
             isAbstract="false">
             <interfaceMoniker
               Id="30c7d5cd-5631-43d7-adbc-788aa11991ee"
-              LastKnownName="IBridgeObject"
+              LastKnownName="IJSCSGlue"
               LastKnownLocation="ModelingProject1.uml" />
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
@@ -326,7 +326,7 @@
             isAbstract="false">
             <interfaceMoniker
               Id="30c7d5cd-5631-43d7-adbc-788aa11991ee"
-              LastKnownName="IBridgeObject"
+              LastKnownName="IJSCSGlue"
               LastKnownLocation="ModelingProject1.uml" />
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
@@ -512,7 +512,7 @@
             isAbstract="false">
             <interfaceMoniker
               Id="30c7d5cd-5631-43d7-adbc-788aa11991ee"
-              LastKnownName="IBridgeObject"
+              LastKnownName="IJSCSGlue"
               LastKnownLocation="ModelingProject1.uml" />
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
@@ -563,7 +563,7 @@
             isAbstract="false">
             <interfaceMoniker
               Id="30c7d5cd-5631-43d7-adbc-788aa11991ee"
-              LastKnownName="IBridgeObject"
+              LastKnownName="IJSCSGlue"
               LastKnownLocation="ModelingProject1.uml" />
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
@@ -639,7 +639,7 @@
             isAbstract="false">
             <interfaceMoniker
               Id="30c7d5cd-5631-43d7-adbc-788aa11991ee"
-              LastKnownName="IBridgeObject"
+              LastKnownName="IJSCSGlue"
               LastKnownLocation="ModelingProject1.uml" />
             <relationshipOwnedElementsInternal>
               <associationHasOwnedEnds>
@@ -773,7 +773,7 @@
             Id="b1f4357f-3f46-4ba6-a7b9-ef309314142f">
             <interfaceMoniker
               Id="30c7d5cd-5631-43d7-adbc-788aa11991ee"
-              LastKnownName="IBridgeObject"
+              LastKnownName="IJSCSGlue"
               LastKnownLocation="ModelingProject1.uml" />
           </interfaceRealization>
         </suppliersInternal>
@@ -801,7 +801,7 @@
             isSubstitutable="false">
             <interfaceMoniker
               Id="30c7d5cd-5631-43d7-adbc-788aa11991ee"
-              LastKnownName="IBridgeObject"
+              LastKnownName="IJSCSGlue"
               LastKnownLocation="ModelingProject1.uml" />
           </generalization>
         </generalsInternal>
@@ -832,7 +832,7 @@
             Id="a6dd4ea7-543e-495d-9dfe-fb9913dc6cf2">
             <interfaceMoniker
               Id="30c7d5cd-5631-43d7-adbc-788aa11991ee"
-              LastKnownName="IBridgeObject"
+              LastKnownName="IJSCSGlue"
               LastKnownLocation="ModelingProject1.uml" />
           </interfaceRealization>
         </suppliersInternal>

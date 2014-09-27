@@ -74,11 +74,13 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AwesomiumBinding\BridgeObjects\JSCommand.cs" />
+    <Compile Include="AwesomiumBinding\GlueObject\IJSCSGlueListenableVisitor.cs" />
+    <Compile Include="AwesomiumBinding\GlueObject\JSCBridgeListenableVisitor.cs" />
+    <Compile Include="AwesomiumBinding\GlueObject\JSCommand.cs" />
     <Compile Include="AwesomiumBinding\Helper\AwesomiumHelper.cs" />
-    <Compile Include="AwesomiumBinding\BridgeObjects\IJSObservableBridge.cs" />
-    <Compile Include="AwesomiumBinding\BridgeObjects\JSBasicObject.cs" />
-    <Compile Include="AwesomiumBinding\BridgeObjects\JSBridgeType.cs" />
+    <Compile Include="AwesomiumBinding\GlueObject\IJSObservableBridge.cs" />
+    <Compile Include="AwesomiumBinding\GlueObject\JSBasicObject.cs" />
+    <Compile Include="AwesomiumBinding\GlueObject\JSCSGlueType.cs" />
     <Compile Include="AwesomiumBinding\Mapping\CollectionChanges\CollectionChangeType.cs" />
     <Compile Include="AwesomiumBinding\Mapping\CollectionChanges\CollectionChanges.cs" />
     <Compile Include="AwesomiumBinding\Mapping\CollectionChanges\IndividualCollectionChange.cs" />
@@ -88,14 +90,14 @@
     <Compile Include="AwesomiumBinding\Mapping\JavascriptObjectBuilder\JSOBuilderBase.cs" />
     <Compile Include="Infra\TaskExtension.cs" />
     <Compile Include="JavascriptBindingMode.cs" />
-    <Compile Include="AwesomiumBinding\BridgeObjects\IJSCBridgeExtender.cs" />
+    <Compile Include="AwesomiumBinding\GlueObject\IJSCSGlueExtender.cs" />
     <Compile Include="AwesomiumBinding\Mapping\JavascriptObjectBuilder\GlobalBuilder.cs" />
     <Compile Include="AwesomiumBinding\Mapping\JavascriptObjectBuilder\IJSOBuilder.cs" />
-    <Compile Include="AwesomiumBinding\BridgeObjects\IJSCBridge.cs" />
+    <Compile Include="AwesomiumBinding\GlueObject\IJSCSGlue.cs" />
     <Compile Include="AwesomiumBinding\Mapping\IJavascriptMapper.cs" />
     <Compile Include="AwesomiumBinding\Mapping\JavascriptSessionInjector.cs" />
-    <Compile Include="AwesomiumBinding\BridgeObjects\JSArray.cs" />
-    <Compile Include="AwesomiumBinding\BridgeObjects\JSGenericObject.cs" />
+    <Compile Include="AwesomiumBinding\GlueObject\JSArray.cs" />
+    <Compile Include="AwesomiumBinding\GlueObject\JSGenericObject.cs" />
     <Compile Include="AwesomiumBinding\Mapping\BidirectionalMapper.cs" />
     <Compile Include="AwesomiumBinding\Mapping\JavascriptObjectBuilder\LocalBuilder.cs" />
     <Compile Include="Infra\AssemblyExtension.cs" />

@@ -23,7 +23,7 @@ namespace MVVMAwesomium.Test
             _JavascriptToCSharpMapper = new JavascriptToCSharpMapper(_WebView);
             _IJSOBuilder = new LocalBuilder(_WebView);
             _ICSharpMapper = Substitute.For<IJSCBridgeCache>();
-            _ICSharpMapper.GetCached(Arg.Any<object>()).Returns((IJSCBridge)null);
+            _ICSharpMapper.GetCached(Arg.Any<object>()).Returns((IJSCSGlue)null);
             _ConverTOJSO = new CSharpToJavascriptMapper(_IJSOBuilder, _ICSharpMapper);
         }
     
@@ -40,7 +40,7 @@ namespace MVVMAwesomium.Test
                 Init();
 
                 var mapped = _ConverTOJSO.Map(new DateTime(1974, 2, 26));
-                mapped.Type.Should().Be(JSBridgeType.Basic);
+                mapped.Type.Should().Be(JSCSGlueType.Basic);
                 JSObject date = mapped.JSValue;
                 date.Should().NotBeNull();
 

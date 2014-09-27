@@ -6,7 +6,7 @@ using Awesomium.Core;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
-    internal class JSBasicObject : IJSCBridge
+    internal class JSBasicObject : IJSCSGlue
     {
         internal JSBasicObject(JSValue value, object icValue)
         {
@@ -34,11 +34,11 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public object CValue { get; private set; }
 
-        public JSBridgeType Type { get { return JSBridgeType.Basic; } }
+        public JSCSGlueType Type { get { return JSCSGlueType.Basic; } }
 
-        public IEnumerable<IJSCBridge> GetChildren()
+        public IEnumerable<IJSCSGlue> GetChildren()
         {
-            return Enumerable.Empty<IJSCBridge>();
+            return Enumerable.Empty<IJSCSGlue>();
         }
     }
 }

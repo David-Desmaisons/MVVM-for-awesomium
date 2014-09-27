@@ -61,7 +61,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         }
 
         private bool _IsFirst=true;
-        public void Map(IJSCBridge ihybridobject, IJavascriptMapper ijvm)
+        public void Map(IJSCSGlue ihybridobject, IJavascriptMapper ijvm)
         {
             using (var mapp = GetMapper(ijvm))
             {
