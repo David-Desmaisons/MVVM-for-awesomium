@@ -115,3 +115,5 @@ Usage - Example
 
 
 That's it!
+
+[Link to nuget here.](https://www.nuget.org/packages/MVVM.awesomium/)
