@@ -673,6 +673,62 @@ namespace MVVMAwesomium.Test
                 }
             }
         }
+
+        [Fact]
+        public void Test_AwesomeBinding_Factory_TwoWay()
+        {
+            using (Tester())
+            {
+                var fact = new AwesomiumBindingFactory() { InjectionTimeOut = 5000, ManageWebSession = true };
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                using (var mb = fact.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+
+                    JSValue res = GetSafe(() => Get(js, "Name"));
+                    ((string)res).Should().Be("O Monstro");
+
+                    JSValue res2 = GetSafe(() => js.Invoke("LastName"));
+                    ((string)res2).Should().Be("Desmaisons");
+
+                    _DataContext.Name = "23";
+
+                    Thread.Sleep(50);
+                    JSValue res3 = GetSafe(() => js.Invoke("Name"));
+                    ((string)res3).Should().Be("23");
+
+                    JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
+                    ((string)res4).Should().Be("Florianopolis");
+
+                    _DataContext.Local.City = "Paris";
+                    Thread.Sleep(50);
+
+                    res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
+                    ((string)res4).Should().Be("Paris");
+
+                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    ((string)res5).Should().Be("Langage");
+
+                    _DataContext.Skills[0].Name = "Ling";
+                    Thread.Sleep(50);
+
+                    res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    ((string)res5).Should().Be("Ling");
+
+                    //Teste Two Way
+                    this.DoSafe(() => js.Invoke("Name", "resName"));
+                    JSValue resName = GetSafe(() => js.Invoke("Name"));
+                    ((string)resName).Should().Be("resName");
+
+                    Thread.Sleep(500);
+
+                    _DataContext.Name.Should().Be("resName");
+                }
+            }
+        }
     }
 };
 

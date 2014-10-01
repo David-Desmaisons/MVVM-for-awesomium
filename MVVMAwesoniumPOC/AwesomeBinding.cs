@@ -4,25 +4,28 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Collections;
+using System.Collections.Specialized;
 
 using Awesomium.Core;
 
 using MVVMAwesomium.Infra;
-using System.Collections;
-using System.Collections.Specialized;
+using MVVMAwesomium.AwesomiumBinding;
 
-namespace MVVMAwesomium.AwesomiumBinding
+namespace MVVMAwesomium
 {
-    public class AwesomeBinding : IDisposable
+    public class AwesomeBinding : IDisposable, IAwesomeBinding
     {
         private BidirectionalMapper _BirectionalMapper;
+        private Action _CleanUp;
 
-        private AwesomeBinding(BidirectionalMapper iConvertToJSO)
+        private AwesomeBinding(BidirectionalMapper iConvertToJSO, Action CleanUp=null)
         {
             _BirectionalMapper = iConvertToJSO;
+            _CleanUp = CleanUp;
         }
 
-        internal IJSCSGlue JSRootObject
+        public IJSCSGlue JSRootObject
         {
             get { return _BirectionalMapper.JSValueRoot; }
         }
@@ -31,16 +34,26 @@ namespace MVVMAwesomium.AwesomiumBinding
         public void Dispose()
         {
             _BirectionalMapper.Dispose();
+            if (_CleanUp!=null)
+            {
+                WebCore.QueueWork(() =>
+                    {
+                        _CleanUp();
+                        _CleanUp = null;
+                    }
+                );
+            }
         }
 
-        public static Task<AwesomeBinding> Bind(IWebView view, object iViewModel, JavascriptBindingMode iMode)
+        internal static Task<IAwesomeBinding> Bind(IWebView view, object iViewModel, JavascriptBindingMode iMode, Action First, Action CleanUp)
         {
-            TaskCompletionSource<AwesomeBinding> tcs = new TaskCompletionSource<AwesomeBinding>();
+            TaskCompletionSource<IAwesomeBinding> tcs = new TaskCompletionSource<IAwesomeBinding>();
 
             Action ToBeApply = () =>
                     {
+                        if (First!=null) First();
                         var mapper = new BidirectionalMapper(iViewModel, view, iMode);
-                        mapper.Init().ContinueWith(_ => tcs.SetResult(new AwesomeBinding(mapper)));
+                        mapper.Init().ContinueWith(_ => tcs.SetResult(new AwesomeBinding(mapper, CleanUp)));
                     };
 
             if (view.IsDocumentReady)
@@ -55,6 +68,11 @@ namespace MVVMAwesomium.AwesomiumBinding
             }
 
             return tcs.Task;
+        }
+
+        public static Task<IAwesomeBinding> Bind(IWebView view, object iViewModel, JavascriptBindingMode iMode) 
+        {
+            return Bind(view, iViewModel, iMode,null,null);
         }
     }
 }

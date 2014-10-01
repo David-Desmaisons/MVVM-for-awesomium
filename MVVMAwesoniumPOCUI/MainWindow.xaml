@@ -1,14 +1,14 @@
 ﻿<Window x:Class="MVVMAwesomium.UI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="HTLM5 vs WPF" Loaded="Window_Loaded" Height="350" Width="525" xmlns:awe="http://schemas.awesomium.com/winfx">
+        Title="HTML5 vs WPF" Loaded="Window_Loaded" Height="350" Width="525" xmlns:awe="http://schemas.awesomium.com/winfx">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
  
-        <awe:WebControl    x:Name="wcBrowser" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch">
+        <awe:WebControl x:Name="wcBrowser" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch">
             <awe:WebControl.ContextMenu>
                 <ContextMenu Visibility="Collapsed"/>
             </awe:WebControl.ContextMenu>

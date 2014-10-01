@@ -78,6 +78,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AwesomiumBindingFactory.cs" />
     <Compile Include="AwesomiumBinding\GlueObject\IJSCSGlueListenableVisitor.cs" />
     <Compile Include="AwesomiumBinding\GlueObject\JSCBridgeListenableVisitor.cs" />
     <Compile Include="AwesomiumBinding\GlueObject\JSCommand.cs" />
@@ -92,6 +93,8 @@
     <Compile Include="AwesomiumBinding\Mapping\IJavascriptListener.cs" />
     <Compile Include="AwesomiumBinding\Mapping\JavascriptToCSharpMapper.cs" />
     <Compile Include="AwesomiumBinding\Mapping\JavascriptObjectBuilder\JSOBuilderBase.cs" />
+    <Compile Include="IAwesomeBinding.cs" />
+    <Compile Include="IAwesomiumBindingFactory.cs" />
     <Compile Include="Infra\TaskExtension.cs" />
     <Compile Include="JavascriptBindingMode.cs" />
     <Compile Include="AwesomiumBinding\GlueObject\IJSCSGlueExtender.cs" />
