@@ -8,16 +8,17 @@ namespace MVVMAwesomium.AwesomiumBinding
 {
     internal class JavascriptSessionInjector : IDisposable
     {
-        private IWebView _IWebView;    
-        private GlobalBuilder _GlobalBuilder;  
+        private IWebView _IWebView;
+        private IJSOBuilder _GlobalBuilder;  
         private JSObject _Listener;
         private JSValue _Globalres;
         private IJavascriptListener _IJavascriptListener;
 
-        internal JavascriptSessionInjector(IWebView iWebView, IJavascriptListener iJavascriptListener)
+
+        internal JavascriptSessionInjector(IWebView iWebView, IJSOBuilder iGlobalBuilder, IJavascriptListener iJavascriptListener)
         {
             _IWebView = iWebView;
-            _GlobalBuilder = new GlobalBuilder(_IWebView, "MVVMGlue");
+            _GlobalBuilder = iGlobalBuilder;
             _IJavascriptListener = iJavascriptListener;
 
             _Listener = _GlobalBuilder.CreateJSO();

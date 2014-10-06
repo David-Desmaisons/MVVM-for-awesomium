@@ -41,7 +41,8 @@ namespace MVVMAwesomium.UI
                 {
                     Name = "O Monstro",
                     LastName = "Desmaisons",
-                    Local = new Local() { City = "Florianopolis", Region = "SC" }
+                    Local = new Local() { City = "Florianopolis", Region = "SC" },
+                    PersonalState = PersonalState.Married
                 };
 
             _FirstSkill = new Skill() { Name = "Langage", Type = "French" };

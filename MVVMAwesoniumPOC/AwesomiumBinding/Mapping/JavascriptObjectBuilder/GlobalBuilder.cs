@@ -23,5 +23,18 @@ namespace MVVMAwesomium.AwesomiumBinding
             string Name = string.Format("{0}_{1}", _NameScape, _Count++);
             return _IWebView.EvaluateSafe(() => _IWebView.CreateGlobalJavascriptObject(Name));
         }
+
+
+        public uint GetID(JSObject iJSObject)
+        {
+            return iJSObject.RemoteId;
+        }
+
+
+        public bool HasRelevantId(JSObject iJSObject)
+        {
+            return ((iJSObject!=null) && ( iJSObject.RemoteId != 0));
+        }
+
     }
 }

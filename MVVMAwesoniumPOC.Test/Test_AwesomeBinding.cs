@@ -35,10 +35,37 @@ namespace MVVMAwesomium.Test
                 Name = "O Monstro",
                 LastName = "Desmaisons",
                 Local = new Local() { City = "Florianopolis", Region = "SC" },
+                PersonalState = PersonalState.Married
             };
 
             _DataContext.Skills.Add(new Skill() { Name = "Langage", Type = "French" });
             _DataContext.Skills.Add(new Skill() { Name = "Info", Type = "C++" });
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_OneWay_JSON_ToString()
+        {
+            using (Tester())
+            {
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.OneWay).Result)
+                {
+                    var jsbridge = mb.JSRootObject;
+                    var js = (JSObject)jsbridge.GetJSSessionValue();
+
+                    string JSON = JsonConvert.SerializeObject(_DataContext);
+                    string alm = jsbridge.ToString();
+
+                    dynamic m = JsonConvert.DeserializeObject<dynamic>(jsbridge.ToString());
+                    ((string)m.LastName).Should().Be("Desmaisons");
+                    ((string)m.Name).Should().Be("O Monstro");
+
+                    mb.ToString().Should().Be(alm);
+                }
+            }
         }
 
         [Fact]
@@ -58,10 +85,7 @@ namespace MVVMAwesomium.Test
                     string JSON = JsonConvert.SerializeObject(_DataContext);
                     string alm = jsbridge.ToString();
 
-                    Person m = JsonConvert.DeserializeObject<Person>(jsbridge.ToString());
-                    m.LastName.Should().Be("Desmaisons");
-                    m.Name.Should().Be("O Monstro");
-
+               
                     JSValue res = GetSafe(() => js.Invoke("Name"));
                     ((string)res).Should().Be("O Monstro");
 
@@ -202,6 +226,116 @@ namespace MVVMAwesomium.Test
                     Thread.Sleep(500);
 
                     _DataContext.Name.Should().Be("resName");
+                }
+            }
+        }
+
+
+        [Fact]
+        public void Test_AwesomeBinding_TwoWay_Enum()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+                _DataContext.Name = "totot";
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+
+                    JSValue res = GetSafe(() => Get(js, "PersonalState"));
+                    JSValue dres = GetSafe(() => ((JSObject)res)["displayName"]);
+                    ((string)dres).Should().Be("Married");
+
+                    _DataContext.PersonalState = PersonalState.Single;
+                    Thread.Sleep(50);
+
+                    res = GetSafe(() => Get(js, "PersonalState"));
+                    dres = GetSafe(() => ((JSObject)res)["displayName"]);
+                    ((string)dres).Should().Be("Single");
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_TwoWay_Enum_Round_Trip()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+                _DataContext.Name = "toto";
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+
+                    JSValue res = GetSafe(() => Get(js, "PersonalState"));
+                    JSValue dres = GetSafe(() => ((JSObject)res)["displayName"]);
+                    ((string)dres).Should().Be("Married");
+
+                    _DataContext.PersonalState = PersonalState.Single;
+                    Thread.Sleep(50);
+
+                    res = GetSafe(() => Get(js, "PersonalState"));
+                    dres = GetSafe(() => ((JSObject)res)["displayName"]);
+                    ((string)dres).Should().Be("Single");
+                    
+                    var othervalue = GetSafe(() => Get(js, "States"));
+                    JSValue[] coll = (JSValue[])othervalue;
+                    JSValue di = coll[2];
+                    var name = GetSafe(() => ((JSObject)di)["displayName"]);
+                    ((string)name).Should().Be("Divorced");
+
+
+                    this.DoSafe(() => js.Invoke("PersonalState", di));
+                    Thread.Sleep(100);
+
+                    _DataContext.PersonalState.Should().Be(PersonalState.Divorced);
+
+                }
+            }
+        }
+
+        private class SimplePerson : ViewModelBase
+        {
+            private PersonalState _PersonalState;
+            public PersonalState PersonalState
+            {
+                get { return _PersonalState; }
+                set { Set(ref _PersonalState, value, "PersonalState"); }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_TwoWay_Enum_NotMapped()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                var datacontext = new SimplePerson();
+                datacontext.PersonalState = PersonalState.Single;
+
+                using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+
+                    JSValue res = GetSafe(() => Get(js, "PersonalState"));
+                    JSValue dres = GetSafe(() => ((JSObject)res)["displayName"]);
+                    ((string)dres).Should().Be("Single");
+
+                    datacontext.PersonalState = PersonalState.Married;
+                    Thread.Sleep(50);
+
+                    res = GetSafe(() => Get(js, "PersonalState"));
+                    dres = GetSafe(() => ((JSObject)res)["displayName"]);
+                    ((string)dres).Should().Be("Married");
                 }
             }
         }

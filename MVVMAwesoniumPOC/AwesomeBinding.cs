@@ -30,6 +30,10 @@ namespace MVVMAwesomium
             get { return _BirectionalMapper.JSValueRoot; }
         }
 
+        public override string ToString()
+        {
+            return _BirectionalMapper.JSValueRoot.ToString();
+        }
 
         public void Dispose()
         {

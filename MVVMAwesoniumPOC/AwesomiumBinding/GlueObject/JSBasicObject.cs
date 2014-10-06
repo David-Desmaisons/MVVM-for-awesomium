@@ -27,6 +27,11 @@ namespace MVVMAwesomium.AwesomiumBinding
                 return string.Format(@"""{0:0000}-{1:00}-{2:00}T{3:00}:{4:00}:{5:00}.{6:000}Z""", dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, dt.Millisecond);
             }
 
+            if (CValue is Enum)
+            {
+                return string.Format(@"""{0}""", CValue.ToString());
+            }
+
             return CValue.ToString();
         }
 

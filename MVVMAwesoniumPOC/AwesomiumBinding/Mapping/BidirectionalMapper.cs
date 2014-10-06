@@ -21,14 +21,20 @@ namespace MVVMAwesomium.AwesomiumBinding
         private CSharpToJavascriptMapper _JSObjectBuilder;
         private JavascriptSessionInjector _SessionInjector;
         private JavascriptToCSharpMapper _JavascriptToCSharpMapper;
+
+        private IJSOLocalBuilder _LocalBuilder;
+        private IJSOBuilder _GlobalBuilder;
+
         
         private IDictionary<object, IJSCSGlue> _FromCSharp = new Dictionary<object, IJSCSGlue>();
-        private IDictionary<uint, IJSCSGlue> _FromJavascript = new Dictionary<uint, IJSCSGlue>();
+        private IDictionary<uint, IJSCSGlue> _FromJavascript_Global = new Dictionary<uint, IJSCSGlue>();
+        private IDictionary<uint, IJSCSGlue> _FromJavascript_Local = new Dictionary<uint, IJSCSGlue>();
 
         internal BidirectionalMapper(object iRoot, IWebView iwebview, JavascriptBindingMode iMode)
         {
             _IWebView = iwebview;
-            _JSObjectBuilder = new CSharpToJavascriptMapper(new LocalBuilder(iwebview), this);
+            _LocalBuilder = new LocalBuilder(iwebview);
+            _JSObjectBuilder = new CSharpToJavascriptMapper(_LocalBuilder, this);
             _JavascriptToCSharpMapper = new JavascriptToCSharpMapper(iwebview);
             _Root = _JSObjectBuilder.Map(iRoot);
             _BindingMode = iMode;
@@ -37,7 +43,9 @@ namespace MVVMAwesomium.AwesomiumBinding
             if (iMode == JavascriptBindingMode.TwoWay)
                 JavascriptObjecChanges = this;
 
-            _SessionInjector = new JavascriptSessionInjector(iwebview, JavascriptObjecChanges);      
+            _GlobalBuilder = new GlobalBuilder(_IWebView, "MVVMGlue");
+
+            _SessionInjector = new JavascriptSessionInjector(iwebview, _GlobalBuilder, JavascriptObjecChanges);      
         }
 
         internal Task Init()
@@ -90,13 +98,13 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         private IJSCSGlue GetFromJavascript(JSObject jsobject)
         {
-            return _FromJavascript[jsobject.RemoteId];
+            return _FromJavascript_Global[_GlobalBuilder.GetID(jsobject)];
         }
 
         private void Update(IJSObservableBridge ibo, JSObject jsobject)
         {
             ibo.SetMappedJSValue( jsobject,this);
-            _FromJavascript[jsobject.RemoteId] = ibo;
+            _FromJavascript_Global[_GlobalBuilder.GetID(jsobject)] = ibo;
         }
 
         public void RegisterMapping(JSObject iFather, string att, JSObject iChild)
@@ -152,8 +160,12 @@ namespace MVVMAwesomium.AwesomiumBinding
         public void OnJavaScriptObjectChanges(JSObject objectchanged, string PropertyName, JSValue newValue)
         {
             var res = GetFromJavascript(objectchanged) as JSGenericObject;
+            IJSCSGlue glue = GetCachedLocal(newValue); 
+            object ores = (glue!=null) ? glue.CValue : 
+                        _JavascriptToCSharpMapper.GetSimpleValue(newValue);
+
             if (res != null)
-                res.UpdateCSharpProperty(PropertyName, newValue, _JavascriptToCSharpMapper.GetSimpleValue(newValue));
+                res.UpdateCSharpProperty(PropertyName, newValue, ores);
         }
 
         public void OnJavaScriptCollectionChanges(JSObject collectionchanged, JSValue[] collectionvalue, JSValue[] changes)
@@ -340,6 +352,12 @@ namespace MVVMAwesomium.AwesomiumBinding
             _FromCSharp.Add(key, value);
         }
 
+        void IJSCBridgeCache.CacheLocal(object key, IJSCSGlue value)
+        {
+            _FromCSharp.Add(key, value);
+            _FromJavascript_Local.Add(_LocalBuilder.GetID(value.JSValue), value);
+        }
+
         IJSCSGlue IJSCBridgeCache.GetCached(object key)
         {
             IJSCSGlue res = null;
@@ -347,14 +365,25 @@ namespace MVVMAwesomium.AwesomiumBinding
             return res;
         }
 
+        public IJSCSGlue GetCached(JSObject globalkey)
+        {          
+            if (!_GlobalBuilder.HasRelevantId(globalkey))
+                return null;
 
-        public IJSCSGlue GetCached(JSObject key)
-        {
             IJSCSGlue res = null;
-            if (( key==null ) || (key.RemoteId == 0))
-                return res;
-            _FromJavascript.TryGetValue(key.RemoteId, out res);
+            _FromJavascript_Global.TryGetValue(_GlobalBuilder.GetID(globalkey), out res);
             return res;
         }
+
+        private IJSCSGlue GetCachedLocal(JSObject localkey)
+        {
+            if (!_LocalBuilder.HasRelevantId(localkey))
+                return null;
+
+            IJSCSGlue res = null;
+            _FromJavascript_Local.TryGetValue(_LocalBuilder.GetID(localkey), out res);               
+            return res;
+        }
+
     }
 }

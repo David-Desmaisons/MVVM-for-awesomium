@@ -5,7 +5,9 @@ using System.Text;
 using MVVMAwesomium.ViewModel;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+
 using MVVMAwesomium.ViewModel.Infra;
+using MVVMAwesomium.Infra;
 
 namespace MVVMAwesomium.ViewModel.Example
 {
@@ -49,6 +51,13 @@ namespace MVVMAwesomium.ViewModel.Example
             set { Set(ref _BirthDay, value, "BirthDay"); }
         }
 
+        private PersonalState _PersonalState;
+        public PersonalState PersonalState
+        {
+            get { return _PersonalState; }
+            set { Set(ref _PersonalState, value, "PersonalState"); }
+        }
+
         private int _Age;
         public int Age
         {
@@ -68,6 +77,11 @@ namespace MVVMAwesomium.ViewModel.Example
         {
             get { return _MainSkill; }
             set { Set(ref _MainSkill, value, "MainSkill"); }
+        }
+
+        public IEnumerable<PersonalState> States
+        {
+            get { return EnumExtender.GetEnums<PersonalState>(); }
         }
 
         public IList<Skill> Skills { get; private set; }

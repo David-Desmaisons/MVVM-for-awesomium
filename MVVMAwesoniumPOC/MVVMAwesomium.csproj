@@ -91,10 +91,12 @@
     <Compile Include="AwesomiumBinding\Mapping\CollectionChanges\IndividualCollectionChange.cs" />
     <Compile Include="AwesomiumBinding\Mapping\IJSCBridgeCache.cs" />
     <Compile Include="AwesomiumBinding\Mapping\IJavascriptListener.cs" />
+    <Compile Include="AwesomiumBinding\Mapping\JavascriptObjectBuilder\IJSOLocalBuilder.cs" />
     <Compile Include="AwesomiumBinding\Mapping\JavascriptToCSharpMapper.cs" />
     <Compile Include="AwesomiumBinding\Mapping\JavascriptObjectBuilder\JSOBuilderBase.cs" />
     <Compile Include="IAwesomeBinding.cs" />
     <Compile Include="IAwesomiumBindingFactory.cs" />
+    <Compile Include="Infra\EnumExtender.cs" />
     <Compile Include="Infra\TaskExtension.cs" />
     <Compile Include="JavascriptBindingMode.cs" />
     <Compile Include="AwesomiumBinding\GlueObject\IJSCSGlueExtender.cs" />

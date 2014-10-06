@@ -1,3 +1,8 @@
+function Enum(intValue, displayName) {
+    this.intValue = intValue;
+    this.displayName = displayName;
+}
+
 (function () {
 
     function PropertyListener(object, propertyname, listener) {
@@ -15,7 +20,7 @@
 
     function MapToObservable(or, context, Mapper, Listener) {
 
-        if ((typeof or !== 'object') || (or instanceof Date)) return or;
+        if ((typeof or !== 'object') || (or instanceof Date) || (or instanceof Enum)) return or;
 
         if (!MapToObservable.Cache) {
             MapToObservable.Cache = {};
@@ -25,7 +30,8 @@
         if (!Mapper) Mapper = {};
         if (!Listener) Listener = {};
 
-        //not very clean, but must handle "read-only" object with predefined _MappedId
+        //Look in cache
+        //not very clean implementation, but must handle "read-only" object with predefined _MappedId
         if (or._MappedId !== undefined) {
             var tentative = MapToObservable.Cache[or._MappedId];
             if (tentative) {
@@ -34,7 +40,7 @@
             }
         }
         else {
-            while (MapToObservable.Cache[MapToObservable._MappedId]) { MapToObservable._MappedId++; };
+            while (MapToObservable.Cache[MapToObservable._MappedId]) { MapToObservable._MappedId++; }
             or._MappedId = MapToObservable._MappedId;
         }
 
@@ -43,7 +49,7 @@
         if (Mapper.Register) Mapper.Register(res, context);
 
         for (var att in or) {
-            if ((att != "_MappedId") && (or.hasOwnProperty(att))) {
+            if ((att !== "_MappedId") && (or.hasOwnProperty(att))) {
                 var value = or[att];
                 if ((value !== null) && (typeof value === 'object')) {
                     if (!Array.isArray(value)) {
@@ -52,7 +58,7 @@
                             attribute: att
                         }, Mapper, Listener);
                         res[att] = ko.observable(comp);
-                        if ((Listener.TrackChanges) && (comp instanceof Date)) {
+                        if ((Listener.TrackChanges) && ((comp instanceof Date) || comp instanceof Enum)) {
                             res[att].subscribe(PropertyListener(res, att, Listener));
                         }
 
@@ -74,7 +80,6 @@
                         if (Listener.TrackCollectionChanges) {
                             res[att].subscribe(CollectionListener(res[att], Listener), null, 'arrayChange');
                         }
-                        //
                     }
                 } else {
                     res[att] = ko.observable(value);

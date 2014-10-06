@@ -13,9 +13,9 @@ namespace MVVMAwesomium.AwesomiumBinding
 {
     internal class CSharpToJavascriptMapper 
     {
-        private readonly IJSOBuilder _IJSOBuilder;
+        private readonly IJSOLocalBuilder _IJSOBuilder;
         private readonly IJSCBridgeCache _Cacher;
-        public CSharpToJavascriptMapper(IJSOBuilder Builder, IJSCBridgeCache icacher)
+        public CSharpToJavascriptMapper(IJSOLocalBuilder Builder, IJSCBridgeCache icacher)
         {
             _IJSOBuilder = Builder;
             _Cacher = icacher;
@@ -25,6 +25,13 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             if (ifrom == null)
                 return new JSGenericObject(_IJSOBuilder.CreateJSO(), ifrom);
+
+            IJSCSGlue res = null;
+            res = _Cacher.GetCached(ifrom);
+            if (res != null)
+            {
+                return res;
+            }
 
             if (ifrom is ICommand)
                 return new JSCommand(_IJSOBuilder, ifrom as ICommand);
@@ -36,15 +43,14 @@ namespace MVVMAwesomium.AwesomiumBinding
                 return new JSBasicObject(value, ifrom);
             }
 
-
-            IJSCSGlue res = null;
-            if (Convert(dfr, out res))
+            if (ConvertWithCahe(dfr, out value))
             {
-                return res;
+                var trueres = new JSBasicObject(value, ifrom);
+                _Cacher.CacheLocal(ifrom, trueres);
+                return trueres;
             }
-
-            res = _Cacher.GetCached(ifrom);
-            if (res!=null)
+          
+            if (Convert(dfr, out res))
             {
                 return res;
             }
@@ -110,6 +116,18 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             res = _IJSOBuilder.CreateDate(source);
             return true;
+        }
+
+        private bool ConvertWithCahe(Enum source, out JSValue res)
+        {
+            res = _IJSOBuilder.CreateEnum(source);
+            return true;
+        }
+
+        private bool ConvertWithCahe(object source, out JSValue res)
+        {
+            res = new JSValue();
+            return false;
         }
 
         private bool Convert(object source, out IJSCSGlue res)

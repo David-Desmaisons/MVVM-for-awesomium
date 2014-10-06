@@ -10,6 +10,8 @@ namespace MVVMAwesomium.AwesomiumBinding
     {
         JSObject CreateJSO();
 
-        JSValue CreateDate(DateTime dt);
+        uint GetID(JSObject iJSObject);
+
+        bool HasRelevantId(JSObject iJSObject);
     }  
 }

@@ -8,7 +8,8 @@
 
 
 describe("Map To Observable", function () {
-    var basicmaped, basicmaped2, basicmaped3, basicmaped4, basicmaped5, basicmaped6, basicmapped7;
+    var basicmaped, basicmaped2, basicmaped3, basicmaped4,
+        basicmaped5, basicmaped6, basicmapped7, mapwithenum;
 
 
     beforeEach(function() {
@@ -19,6 +20,7 @@ describe("Map To Observable", function () {
         basicmaped5 = { List: ['un', 'deux', 'trois'] };
         basicmaped6 = { List: [{ Name: '1' }, { Name: '2' }, { Name: '3' }] };
         basicmapped7 = { When: new Date(1974, 2, 26) };
+        mapwithenum = { Enum : new Enum(0,'34') };
     });
 
     it("should map basic property", function () {
@@ -214,9 +216,33 @@ describe("Map To Observable", function () {
          expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped, 'When', newDate);
      });
 
-     it("should listen nested TrackChanges", function () {
+     it("should map Enum", function () {
          var Listener = { TrackChanges: function () { } };
          spyOn(Listener, 'TrackChanges');
+
+         var original = mapwithenum.Enum;
+         var newEnum = new Enum(1,'One');
+
+         var mapped = ko.MapToObservable(mapwithenum, null, Listener);
+
+         expect(mapped.Enum()).toEqual(original);
+
+         mapped.Enum(newEnum);
+
+
+         expect(Listener.TrackChanges).toHaveBeenCalled();
+         expect(Listener.TrackChanges.calls.count()).toEqual(1);
+         expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped, 'Enum', newEnum);
+     });
+
+     
+
+     it("should listen nested TrackChanges", function () {
+         var Listener = {
+             TrackChanges: function (who, property, value)
+             { console.log('who :'+who+' property '+property+'value'+value); }
+         };
+          spyOn(Listener, 'TrackChanges').and.callThrough();;
 
          var mapped = ko.MapToObservable(basicmaped4, null, Listener);
 
