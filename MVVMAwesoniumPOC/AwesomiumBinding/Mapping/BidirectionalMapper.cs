@@ -149,11 +149,11 @@ namespace MVVMAwesomium.AwesomiumBinding
             }
 
             var jvm = new JavascriptMapper(iroot as IJSObservableBridge, this);
-            _SessionInjector.Map(iroot, jvm);
+            var res = _SessionInjector.Map(iroot, jvm);
             if (!isroot)
                 return jvm.UpdateTask;
             else
-                return jvm.UpdateTask.ContinueWith(_ => _SessionInjector.RegisterInSession(), 
+                return jvm.UpdateTask.ContinueWith(_ => _SessionInjector.RegisterInSession(res), 
                             TaskScheduler.FromCurrentSynchronizationContext()); 
         }
 

@@ -11,7 +11,6 @@ namespace MVVMAwesomium.AwesomiumBinding
         private IWebView _IWebView;
         private IJSOBuilder _GlobalBuilder;  
         private JSObject _Listener;
-        private JSValue _Globalres;
         private IJavascriptListener _IJavascriptListener;
 
 
@@ -61,23 +60,21 @@ namespace MVVMAwesomium.AwesomiumBinding
             return _IWebView.ExecuteJavascriptWithResult("ko");
         }
 
-        private bool _IsFirst=true;
-        public void Map(IJSCSGlue ihybridobject, IJavascriptMapper ijvm)
+
+        public JSObject Map(IJSCSGlue ihybridobject, IJavascriptMapper ijvm)
         {
             using (var mapp = GetMapper(ijvm))
             {
-                JSValue Globalres = GetKo().Invoke("MapToObservable", ihybridobject.JSValue, mapp, _Listener);
-                if (_IsFirst)
-                    _Globalres = Globalres;
+                return GetKo().Invoke("MapToObservable", ihybridobject.JSValue, mapp, _Listener);
             }
         }
 
-        public void RegisterInSession()
+        public void RegisterInSession(JSObject iJSObject)
         {
             var ko = GetKo();
             if (ko.HasMethod("register"))
-                ko.Invoke("register", _Globalres);
-            ko.Invoke("applyBindings", _Globalres);
+                ko.Invoke("register", iJSObject);
+            ko.Invoke("applyBindings", iJSObject);
         }
 
         public void Dispose()
