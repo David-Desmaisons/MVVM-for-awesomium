@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MVVMAwesomium
 {
-    public class AwesomiumBindingFactory : MVVMAwesomium.IAwesomiumBindingFactory
+    public class AwesomiumBindingFactory : IAwesomiumBindingFactory
     {
         public AwesomiumBindingFactory()
         {
@@ -16,21 +16,38 @@ namespace MVVMAwesomium
             ManageWebSession = false;
         }
 
+        private Action GetFirst(IWebView view)
+        {
+            if (InjectionTimeOut != -1)
+                return () => view.SynchronousMessageTimeout = InjectionTimeOut;
+
+            return null;
+        }
+
+        private Action GetLast(IWebView view)
+        {
+            if (ManageWebSession) 
+                return () => view.Dispose();
+
+            return null;
+        }
+
         public Task<IAwesomeBinding> Bind(IWebView view, object iViewModel, JavascriptBindingMode iMode)
         {
-            Action First = null;
-            if (InjectionTimeOut != -1)
-                First = () => view.SynchronousMessageTimeout = InjectionTimeOut;
+            return AwesomeBinding.Bind(view, iViewModel, iMode, GetFirst(view), GetLast(view));
+        }
 
-            Action doclean = null;
-            if (ManageWebSession) doclean = () => view.Dispose();
-
-            return AwesomeBinding.Bind(view, iViewModel, iMode, First, doclean);
+        public Task<IAwesomeBinding> Bind(IWebView view, string json)
+        {
+            return StringBinding.Bind(view, json, GetFirst(view), GetLast(view));
         }
 
 
         public int InjectionTimeOut { get;set;}
 
         public bool ManageWebSession { get; set; }
+
+
+     
     }
 }

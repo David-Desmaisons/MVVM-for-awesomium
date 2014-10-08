@@ -52,6 +52,9 @@ namespace MVVMAwesomium.UI
 
             AwesomeBinding.Bind(f, datacontext, JavascriptBindingMode.TwoWay);
 
+            //StringBinding.Bind(f, "{\"LastName\":\"Desmaisons\",\"Name\":\"O Monstro\",\"BirthDay\":\"0001-01-01T00:00:00.000Z\",\"PersonalState\":\"Married\",\"Age\":0,\"Local\":{\"City\":\"Florianopolis\",\"Region\":\"SC\"},\"MainSkill\":{},\"States\":[\"Single\",\"Married\",\"Divorced\"],\"Skills\":[{\"Type\":\"French\",\"Name\":\"Langage\"},{\"Type\":\"C++\",\"Name\":\"Info\"}]}");
+
+
             Window w = sender as Window;
             w.DataContext = datacontext;
             _Person = datacontext;

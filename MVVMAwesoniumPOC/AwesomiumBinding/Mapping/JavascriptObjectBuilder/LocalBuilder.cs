@@ -8,12 +8,14 @@ using MVVMAwesomium.Infra;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
-    public class LocalBuilder : JSOBuilderBase, IJSOLocalBuilder
+    public class LocalBuilder : IJSOLocalBuilder
     {
-       private static int _MapCount = 0;    
+       private static int _MapCount = 0;
+       private IWebView _IWebView;
      
-       public LocalBuilder(IWebView iIWebView):base(iIWebView)
+       public LocalBuilder(IWebView iIWebView)
        {
+           _IWebView = iIWebView;
        }
 
         private JSObject UnsafeCreateJSO()

@@ -20,19 +20,21 @@ namespace MVVMAwesomium.AwesomiumBinding
             _GlobalBuilder = iGlobalBuilder;
             _IJavascriptListener = iJavascriptListener;
 
-            _Listener = _GlobalBuilder.CreateJSO();
+
             if (_IJavascriptListener != null)
             {
                 _Listener = _GlobalBuilder.CreateJSO();
                 _Listener.Bind("TrackChanges", false, (o, e) => _IJavascriptListener.OnJavaScriptObjectChanges((JSObject)e.Arguments[0], (string)e.Arguments[1], e.Arguments[2]));
                 _Listener.Bind("TrackCollectionChanges", false, (o, e) => _IJavascriptListener.OnJavaScriptCollectionChanges((JSObject)e.Arguments[0], (JSValue[])e.Arguments[1], (JSValue[])e.Arguments[2]));
             }
+            else
+                _Listener = new JSObject();
         }
 
         private JSObject GetMapper(IJavascriptMapper iMapperListener)
         {
             if (iMapperListener == null)
-                return null;
+                return new JSObject();
 
             var mapper = _GlobalBuilder.CreateJSO();
 
@@ -65,11 +67,11 @@ namespace MVVMAwesomium.AwesomiumBinding
         }
 
 
-        public JSObject Map(IJSCSGlue ihybridobject, IJavascriptMapper ijvm)
+        public JSObject Map(JSValue ihybridobject, IJavascriptMapper ijvm)
         {
             using (var mapp = GetMapper(ijvm))
             {
-                return GetKo().Invoke("MapToObservable", ihybridobject.JSValue, mapp, _Listener);
+                return GetKo().Invoke("MapToObservable", ihybridobject, mapp, _Listener);
             }
         }
 

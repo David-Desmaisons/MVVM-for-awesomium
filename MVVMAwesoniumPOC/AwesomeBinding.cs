@@ -19,13 +19,18 @@ namespace MVVMAwesomium
         private BidirectionalMapper _BirectionalMapper;
         private Action _CleanUp;
 
-        private AwesomeBinding(BidirectionalMapper iConvertToJSO, Action CleanUp=null)
+        private AwesomeBinding(BidirectionalMapper iConvertToJSO, Action CleanUp = null)
         {
             _BirectionalMapper = iConvertToJSO;
             _CleanUp = CleanUp;
         }
 
-        public IJSCSGlue JSRootObject
+        public JSObject JSRootObject
+        {
+            get { return _BirectionalMapper.JSValueRoot.GetJSSessionValue(); }
+        }
+
+        public IJSCSGlue JSBrideRootObject
         {
             get { return _BirectionalMapper.JSValueRoot; }
         }
@@ -38,7 +43,7 @@ namespace MVVMAwesomium
         public void Dispose()
         {
             _BirectionalMapper.Dispose();
-            if (_CleanUp!=null)
+            if (_CleanUp != null)
             {
                 WebCore.QueueWork(() =>
                     {
@@ -53,30 +58,19 @@ namespace MVVMAwesomium
         {
             TaskCompletionSource<IAwesomeBinding> tcs = new TaskCompletionSource<IAwesomeBinding>();
 
-            Action ToBeApply = () =>
+            view.ExecuteWhenReady(() =>
                     {
-                        if (First!=null) First();
+                        if (First != null) First();
                         var mapper = new BidirectionalMapper(iViewModel, view, iMode);
                         mapper.Init().ContinueWith(_ => tcs.SetResult(new AwesomeBinding(mapper, CleanUp)));
-                    };
-
-            if (view.IsDocumentReady)
-            {
-                WebCore.QueueWork(() => ToBeApply());
-            }
-            else
-            {
-                UrlEventHandler ea = null;
-                ea = (o, e) => { ToBeApply(); view.DocumentReady -= ea; };
-                view.DocumentReady += ea;
-            }
+                    });
 
             return tcs.Task;
         }
 
-        public static Task<IAwesomeBinding> Bind(IWebView view, object iViewModel, JavascriptBindingMode iMode) 
+        public static Task<IAwesomeBinding> Bind(IWebView view, object iViewModel, JavascriptBindingMode iMode)
         {
-            return Bind(view, iViewModel, iMode,null,null);
+            return Bind(view, iViewModel, iMode, null, null);
         }
     }
 }

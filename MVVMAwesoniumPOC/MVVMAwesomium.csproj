@@ -93,7 +93,6 @@
     <Compile Include="AwesomiumBinding\Mapping\IJavascriptListener.cs" />
     <Compile Include="AwesomiumBinding\Mapping\JavascriptObjectBuilder\IJSOLocalBuilder.cs" />
     <Compile Include="AwesomiumBinding\Mapping\JavascriptToCSharpMapper.cs" />
-    <Compile Include="AwesomiumBinding\Mapping\JavascriptObjectBuilder\JSOBuilderBase.cs" />
     <Compile Include="IAwesomeBinding.cs" />
     <Compile Include="IAwesomiumBindingFactory.cs" />
     <Compile Include="Infra\EnumExtender.cs" />
@@ -113,6 +112,7 @@
     <Compile Include="Infra\EnumarableCollection.cs" />
     <Compile Include="AwesomeBinding.cs" />
     <Compile Include="AwesomiumBinding\Mapping\CSharpToJavascriptMapper.cs" />
+    <Compile Include="StringBinding.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

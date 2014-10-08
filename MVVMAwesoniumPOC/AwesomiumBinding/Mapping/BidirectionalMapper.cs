@@ -149,7 +149,7 @@ namespace MVVMAwesomium.AwesomiumBinding
             }
 
             var jvm = new JavascriptMapper(iroot as IJSObservableBridge, this);
-            var res = _SessionInjector.Map(iroot, jvm);
+            var res = _SessionInjector.Map(iroot.JSValue, jvm);
             if (!isroot)
                 return jvm.UpdateTask;
             else

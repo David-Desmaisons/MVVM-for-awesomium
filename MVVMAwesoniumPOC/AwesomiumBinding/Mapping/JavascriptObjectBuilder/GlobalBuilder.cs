@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
-    public class GlobalBuilder : JSOBuilderBase, IJSOBuilder
+    public class GlobalBuilder :  IJSOBuilder
     {
         private static int _Count = 0;
         private string _NameScape;
+        private IWebView _IWebView;
 
         public GlobalBuilder(IWebView iWebView, string iNameScape)
-            : base(iWebView)
         {
+            _IWebView = iWebView;
             _NameScape = iNameScape;
         }
 

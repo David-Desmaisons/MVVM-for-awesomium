@@ -53,8 +53,8 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.OneWay).Result)
                 {
-                    var jsbridge = mb.JSRootObject;
-                    var js = (JSObject)jsbridge.GetJSSessionValue();
+                    var jsbridge = (mb as AwesomeBinding).JSBrideRootObject;
+                    var js = mb.JSRootObject;
 
                     string JSON = JsonConvert.SerializeObject(_DataContext);
                     string alm = jsbridge.ToString();
@@ -79,8 +79,8 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.OneWay).Result)
                 {
-                    var jsbridge = mb.JSRootObject;
-                    var js = (JSObject)jsbridge.GetJSSessionValue();
+                    var jsbridge = (mb as AwesomeBinding).JSBrideRootObject;
+                    var js = mb.JSRootObject;
 
                     string JSON = JsonConvert.SerializeObject(_DataContext);
                     string alm = jsbridge.ToString();
@@ -127,9 +127,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.OneWay).Result)
                 {
-                    var jsbridge = mb.JSRootObject;
-                    var js = (JSObject)jsbridge.GetJSSessionValue();
-
+                    var js = mb.JSRootObject;
 
                     JSValue res = GetSafe(() => GetValue(js, "completeName"));
                     ((string)res).Should().Be("O Monstro Desmaisons");
@@ -186,7 +184,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+                    var js = mb.JSRootObject;
 
                     JSValue res = GetSafe(() => Get(js, "Name"));
                     ((string)res).Should().Be("O Monstro");
@@ -243,7 +241,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+                    var js = mb.JSRootObject;
 
                     JSValue res = GetSafe(() => Get(js, "PersonalState"));
                     JSValue dres = GetSafe(() => ((JSObject)res)["displayName"]);
@@ -271,7 +269,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+                    var js = mb.JSRootObject;
 
                     JSValue res = GetSafe(() => Get(js, "PersonalState"));
                     JSValue dres = GetSafe(() => ((JSObject)res)["displayName"]);
@@ -324,7 +322,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+                    var js = mb.JSRootObject;
 
                     JSValue res = GetSafe(() => Get(js, "PersonalState"));
                     JSValue dres = GetSafe(() => ((JSObject)res)["displayName"]);
@@ -375,7 +373,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, datacontexttest, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+                    var js = mb.JSRootObject;
 
                     JSValue res = GetSafe(() => js.Invoke("Name"));
                     res.Should().NotBeNull();
@@ -410,7 +408,8 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = mb.JSRootObject as JSGenericObject;
+
+                    var js = (mb as AwesomeBinding).JSBrideRootObject as JSGenericObject;
 
                     var mycommand = js.Attributes["Command"] as JSCommand;
                     mycommand.Should().NotBeNull();
@@ -431,7 +430,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+                    var js = mb.JSRootObject;
 
                     JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("Command"));
                     JSValue res = GetSafe(() => mycommand.Invoke("Execute"));
@@ -452,7 +451,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+                    var js = mb.JSRootObject;
 
                     JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("Command"));
                     JSValue res = GetSafe(() => mycommand.Invoke("Execute", js));
@@ -473,7 +472,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+                    var js = mb.JSRootObject;
 
                     JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("Command"));
                     JSValue res = GetSafe(() => mycommand.Invoke("CanExecuteValue"));
@@ -494,7 +493,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+                    var js = mb.JSRootObject;
 
                     JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("Command"));
                     JSValue res = GetSafe(() => mycommand.Invoke("CanExecuteValue"));
@@ -514,7 +513,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+                    var js = mb.JSRootObject;
 
                     JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("TestCommand"));
                     JSValue res = GetSafe(() => mycommand.Invoke("CanExecuteValue"));
@@ -542,7 +541,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+                    var js = mb.JSRootObject;
 
                     JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("TestCommand"));
                     JSValue res = GetSafe(() => mycommand.Invoke("CanExecuteValue"));
@@ -577,7 +576,7 @@ namespace MVVMAwesomium.Test
                 using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
                 {
                     _ICommand.Received().CanExecute(Arg.Any<object>());
-                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+                    var js = mb.JSRootObject;
 
                     JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("TestCommand"));
                     JSValue res = GetSafe(() => mycommand.Invoke("CanExecuteValue"));
@@ -603,7 +602,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+                    var js = mb.JSRootObject;
 
                     JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("Command"));
                     JSValue res = GetSafe(() => mycommand.Invoke("Execute",null));
@@ -624,7 +623,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = mb.JSRootObject.GetJSSessionValue();
+                    var js = mb.JSRootObject;
 
                     JSValue res = GetSafe(() => Get(js, "Skills"));
                     res.Should().NotBeNull();
@@ -688,8 +687,8 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var root = mb.JSRootObject as JSGenericObject;
-                    var js = root.GetJSSessionValue();
+                    var root = (mb as AwesomeBinding).JSBrideRootObject as JSGenericObject;
+                    var js = mb.JSRootObject;
 
                     JSValue res = GetSafe(() => Get(js, "Skills"));
                     res.Should().NotBeNull();
@@ -772,7 +771,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = mb.JSRootObject.GetJSSessionValue();
+                    var js = mb.JSRootObject;
 
                     JSValue res = GetSafe(() => Get(js, "List"));
                     res.Should().NotBeNull();
@@ -820,7 +819,7 @@ namespace MVVMAwesomium.Test
 
                 using (var mb = fact.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
                 {
-                    var js = (JSObject)mb.JSRootObject.GetJSSessionValue();
+                    var js = mb.JSRootObject;
 
                     JSValue res = GetSafe(() => Get(js, "Name"));
                     ((string)res).Should().Be("O Monstro");
@@ -860,6 +859,97 @@ namespace MVVMAwesomium.Test
                     Thread.Sleep(500);
 
                     _DataContext.Name.Should().Be("resName");
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_stringBinding()
+        {
+            using (Tester())
+            {
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+
+                using (var mb = StringBinding.Bind(_WebView, "{\"LastName\":\"Desmaisons\",\"Name\":\"O Monstro\",\"BirthDay\":\"0001-01-01T00:00:00.000Z\",\"PersonalState\":\"Married\",\"Age\":0,\"Local\":{\"City\":\"Florianopolis\",\"Region\":\"SC\"},\"MainSkill\":{},\"States\":[\"Single\",\"Married\",\"Divorced\"],\"Skills\":[{\"Type\":\"French\",\"Name\":\"Langage\"},{\"Type\":\"C++\",\"Name\":\"Info\"}]}").Result)
+                {
+                    var js = mb.JSRootObject;
+
+
+                    JSValue res = GetSafe(() => js.Invoke("Name"));
+                    ((string)res).Should().Be("O Monstro");
+
+                    JSValue res2 = GetSafe(() => js.Invoke("LastName"));
+                    ((string)res2).Should().Be("Desmaisons");
+
+
+                    JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
+                    ((string)res4).Should().Be("Florianopolis");
+
+
+                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    ((string)res5).Should().Be("Langage");
+                }
+            }
+        }
+
+
+        [Fact]
+        public void Test_AwesomeBinding_Factory_stringBinding()
+        {
+            using (Tester())
+            {
+                var fact = new AwesomiumBindingFactory() { InjectionTimeOut = 5000, ManageWebSession = true };
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                using (var mb = fact.Bind(_WebView, "{\"LastName\":\"Desmaisons\",\"Name\":\"O Monstro\",\"BirthDay\":\"0001-01-01T00:00:00.000Z\",\"PersonalState\":\"Married\",\"Age\":0,\"Local\":{\"City\":\"Florianopolis\",\"Region\":\"SC\"},\"MainSkill\":{},\"States\":[\"Single\",\"Married\",\"Divorced\"],\"Skills\":[{\"Type\":\"French\",\"Name\":\"Langage\"},{\"Type\":\"C++\",\"Name\":\"Info\"}]}").Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSValue res = GetSafe(() => Get(js, "Name"));
+                    ((string)res).Should().Be("O Monstro");
+
+                    JSValue res2 = GetSafe(() => js.Invoke("LastName"));
+                    ((string)res2).Should().Be("Desmaisons");
+                  
+                    JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
+                    ((string)res4).Should().Be("Florianopolis");
+                
+                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    ((string)res5).Should().Be("Langage");
+                }
+            }
+        }
+
+
+        [Fact]
+        public void Test_AwesomeBinding_Factory_Custo_Options()
+        {
+            using (Tester())
+            {
+                var fact = new AwesomiumBindingFactory() { InjectionTimeOut = -1, ManageWebSession = false };
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                using (var mb = fact.Bind(_WebView, "{\"LastName\":\"Desmaisons\",\"Name\":\"O Monstro\",\"BirthDay\":\"0001-01-01T00:00:00.000Z\",\"PersonalState\":\"Married\",\"Age\":0,\"Local\":{\"City\":\"Florianopolis\",\"Region\":\"SC\"},\"MainSkill\":{},\"States\":[\"Single\",\"Married\",\"Divorced\"],\"Skills\":[{\"Type\":\"French\",\"Name\":\"Langage\"},{\"Type\":\"C++\",\"Name\":\"Info\"}]}").Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSValue res = GetSafe(() => Get(js, "Name"));
+                    ((string)res).Should().Be("O Monstro");
+
+                    JSValue res2 = GetSafe(() => js.Invoke("LastName"));
+                    ((string)res2).Should().Be("Desmaisons");
+
+                    JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
+                    ((string)res4).Should().Be("Florianopolis");
+
+                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    ((string)res5).Should().Be("Langage");
                 }
             }
         }
