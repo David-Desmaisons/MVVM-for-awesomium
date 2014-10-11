@@ -116,4 +116,6 @@ Usage - Example
 
 That's it!
 
+[Documentation (wiki) here.](https://github.com/David-Desmaisons/MVVM-for-awesomium/wiki/)
+
 [Link to nuget here.](https://www.nuget.org/packages/MVVM.awesomium/)
