@@ -106,7 +106,6 @@ function Enum(intValue, displayName) {
 
     ko.bindingHandlers.command = {
         preprocess: function (value, name, addBinding) {
-            debugger;
             addBinding('enable', value + '().CanExecute($data)===undefined &&' + value + '().CanExecuteCount() &&' + value + '().CanExecuteValue()');
             addBinding('click', 'function(){' + value + '().Execute($data);}');
             return value;
@@ -116,7 +115,6 @@ function Enum(intValue, displayName) {
 
     ko.bindingHandlers.execute = {
         preprocess: function (value, name, addBinding) {
-            debugger;
             addBinding('click', 'function(){' + value + '().Execute($data);}');
             return value;
         }
