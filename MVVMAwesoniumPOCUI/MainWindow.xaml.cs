@@ -27,6 +27,11 @@ namespace MVVMAwesomium.UI
     {
         public MainWindow()
         {
+            WebConfig webC = new WebConfig();
+            webC.RemoteDebuggingPort = 8001;
+            webC.RemoteDebuggingHost = "127.0.0.1";
+            WebCore.Initialize(webC);
+
             InitializeComponent();
             this.wcBrowser.Source = new Uri(string.Format("{0}\\src\\index.html", Assembly.GetExecutingAssembly().GetPath()));
         }
@@ -36,7 +41,6 @@ namespace MVVMAwesomium.UI
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            IWebView f = this.wcBrowser.WebSession.Views.FirstOrDefault();
             var datacontext = new Person()
                 {
                     Name = "O Monstro",
@@ -50,14 +54,34 @@ namespace MVVMAwesomium.UI
             datacontext.Skills.Add(_FirstSkill);
             datacontext.Skills.Add(new Skill() { Name = "Info", Type = "C++" });
 
-            AwesomeBinding.Bind(f, datacontext, JavascriptBindingMode.TwoWay);
-
-            //StringBinding.Bind(f, "{\"LastName\":\"Desmaisons\",\"Name\":\"O Monstro\",\"BirthDay\":\"0001-01-01T00:00:00.000Z\",\"PersonalState\":\"Married\",\"Age\":0,\"Local\":{\"City\":\"Florianopolis\",\"Region\":\"SC\"},\"MainSkill\":{},\"States\":[\"Single\",\"Married\",\"Divorced\"],\"Skills\":[{\"Type\":\"French\",\"Name\":\"Langage\"},{\"Type\":\"C++\",\"Name\":\"Info\"}]}");
-
+            AwesomeBinding.Bind(this.wcBrowser, datacontext, JavascriptBindingMode.TwoWay);
 
             Window w = sender as Window;
             w.DataContext = datacontext;
             _Person = datacontext;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            string target = string.Format("{0}\\src\\index.html", Assembly.GetExecutingAssembly().GetPath());
+            if (target == this.wcBrowser.Source.LocalPath)
+                return;
+
+            this.wcBrowser.Source = new Uri(target);
+            this.wcBrowser.AddressChanged += wcBrowser_AddressChanged;
+           
+   
+        }
+
+        void wcBrowser_AddressChanged(object sender, UrlEventArgs e)
+        {
+            AwesomeBinding.Bind(this.wcBrowser, _Person, JavascriptBindingMode.TwoWay);
+            this.wcBrowser.AddressChanged -= wcBrowser_AddressChanged;
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            this.wcBrowser.Source = new Uri(@"https://www.google.com.br/");
         }
 
       
