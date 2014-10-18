@@ -1,0 +1,12 @@
+﻿<Window x:Class="MVVMAwesomium.UI.Navigation.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:awe="http://schemas.awesomium.com/winfx"
+        Title="HTML" Height="350" Width="525">
+    <Grid>
+
+        <awe:WebControl x:Name="WC" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch">
+         </awe:WebControl>
+
+    </Grid>
+</Window>
