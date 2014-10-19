@@ -25,8 +25,8 @@ namespace MVVMAwesomium.UI.Navigation
 
         private void SetUpRoute(INavigationBuilder iNavigationBuilder)
         {
-            iNavigationBuilder.Register<MVVMAwesomium.ViewModel.Example.ForNavigation.Person>("\\HTMLUI\\index_one.html");
-            iNavigationBuilder.Register<MVVMAwesomium.ViewModel.Example.ForNavigation.Couple>("\\HTMLUI\\index_couple.html");
+            iNavigationBuilder.Register<MVVMAwesomium.ViewModel.Example.ForNavigation.Person>("HTMLUI\\index_one.html");
+            iNavigationBuilder.Register<MVVMAwesomium.ViewModel.Example.ForNavigation.Couple>("HTMLUI\\index_couple.html");
         }
 
 
@@ -34,10 +34,10 @@ namespace MVVMAwesomium.UI.Navigation
         {
             InitializeComponent();
 
-            WPFBrowserNavigator bn = new WPFBrowserNavigator(this.WC){UseINavigable = true};
-            SetUpRoute(bn);
-       
-
+            var nb = new NavigationBuilder();
+            SetUpRoute(nb);
+            WPFBrowserNavigator bn = new WPFBrowserNavigator(this.WC, nb){UseINavigable = true};
+          
             var datacontext = new MVVMAwesomium.ViewModel.Example.ForNavigation.Couple();
             var my = new MVVMAwesomium.ViewModel.Example.ForNavigation.Person()         
             {

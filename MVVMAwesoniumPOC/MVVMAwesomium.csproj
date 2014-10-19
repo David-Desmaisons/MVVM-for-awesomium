@@ -120,7 +120,9 @@
     <Compile Include="Binding\StringBinding.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Navigation\IUrlSolver.cs" />
     <Compile Include="Navigation\NavigationEvent.cs" />
+    <Compile Include="Navigation\NavigationBuilder.cs" />
     <Compile Include="Navigation\WPFBrowserNavigator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
