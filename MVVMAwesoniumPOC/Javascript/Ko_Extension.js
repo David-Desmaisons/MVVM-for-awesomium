@@ -1,6 +1,7 @@
-function Enum(intValue, displayName) {
+function Enum(Type, intValue, displayName) {
     this.intValue = intValue;
     this.displayName = displayName;
+    this.Type = Type;
 }
 
 (function () {
@@ -119,5 +120,7 @@ function Enum(intValue, displayName) {
             return value;
         }
     };
+
+
 
 }());

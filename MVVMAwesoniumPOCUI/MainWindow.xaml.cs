@@ -61,31 +61,6 @@ namespace MVVMAwesomium.UI
             _Person = datacontext;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            string target = string.Format("{0}\\src\\index.html", Assembly.GetExecutingAssembly().GetPath());
-            if (target == this.wcBrowser.Source.LocalPath)
-                return;
-
-            this.wcBrowser.Source = new Uri(target);
-            this.wcBrowser.AddressChanged += wcBrowser_AddressChanged;
-           
-   
-        }
-
-        void wcBrowser_AddressChanged(object sender, UrlEventArgs e)
-        {
-            AwesomeBinding.Bind(this.wcBrowser, _Person, JavascriptBindingMode.TwoWay);
-            this.wcBrowser.AddressChanged -= wcBrowser_AddressChanged;
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            this.wcBrowser.Source = new Uri(@"https://www.google.com.br/");
-        }
-
-      
-
   //LastName:"Desmaisons",
  //   Local:{ City:'Florianopolis', Region:'SC'},
  //   Skills: [{Type:'Langage', Name:'French'},{Type:'Info', Name:'C++'}
