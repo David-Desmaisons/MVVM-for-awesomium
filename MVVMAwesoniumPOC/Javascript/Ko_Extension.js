@@ -1,7 +1,7 @@
 function Enum(Type, intValue, displayName) {
     this.intValue = intValue;
     this.displayName = displayName;
-    this.Type = Type;
+    this.type = Type;
 }
 
 (function () {
@@ -119,6 +119,23 @@ function Enum(Type, intValue, displayName) {
             addBinding('click', 'function(){' + value + '().Execute($data);}');
             return value;
         }
+    };
+
+    ko.Getimage = function (Enumvalue) {
+        if (!Enumvalue instanceof Enum)
+            return null;
+
+        var ec = ko.EnumImages[Enumvalue.type];
+        return ec ? ec[Enumvalue.intValue] : null;
+    };
+
+    ko.bindingHandlers.enumimage = {
+        preprocess: function (value, name, addBinding) {
+            addBinding('attr', '{src: ko.Getimage('+value+')}');
+            return value;
+        }
+
+
     };
 
 
