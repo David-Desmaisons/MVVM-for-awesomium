@@ -130,11 +130,15 @@ function Enum(Type, intValue, name, displayName) {
         return ec ? ec[Enumvalue.name] : null;
     };
 
+    ko.images = function (enumtype) {
+        return (!!ko.Enumimages) ? ko.Enumimages[enumtype] : null;
+    };
+
     ko.bindingHandlers.enumimage = {
         update: function (element, valueAccessor) {
             var v = ko.utils.unwrapObservable(valueAccessor());
-            var imagepath =ko.getimage(v);
-            if (imagepath) $(element).attr('src', imagepath);
+            var imagepath = ko.getimage(v);
+            if (imagepath) element.src=imagepath;
         }
     };
 
