@@ -58,6 +58,13 @@ namespace MVVMAwesomium.ViewModel.Example
             set { Set(ref _PersonalState, value, "PersonalState"); }
         }
 
+        private Sex _Sex;
+        public Sex Sex
+        {
+            get { return _Sex; }
+            set { Set(ref _Sex, value, "Sex"); }
+        }
+
         private int _Age;
         public int Age
         {
@@ -82,6 +89,11 @@ namespace MVVMAwesomium.ViewModel.Example
         public IEnumerable<PersonalState> States
         {
             get { return EnumExtender.GetEnums<PersonalState>(); }
+        }
+
+        public IEnumerable<Sex> Sexes
+        {
+            get { return EnumExtender.GetEnums<Sex>(); }
         }
 
         public IList<Skill> Skills { get; private set; }

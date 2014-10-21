@@ -68,6 +68,7 @@
     <Compile Include="Example\Local.cs" />
     <Compile Include="Example\Person.cs" />
     <Compile Include="Example\PersonalState.cs" />
+    <Compile Include="Example\Sex.cs" />
     <Compile Include="Example\Skill.cs" />
     <Compile Include="Example\SkillsViewModel.cs" />
     <Compile Include="Infra\RelayCommand.cs" />
