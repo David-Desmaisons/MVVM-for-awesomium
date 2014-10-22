@@ -1,8 +1,6 @@
-(function(){
-    ko.EnumImages ={
-            Sex:{
-                Male:"images/boy.png",
-                Female:"images/girl.png"
-            }
-        };
-})();
+﻿(function () {
+    ko.Enumimages = { Sex: { Male: 'images/male.png', Female: 'images/sem%20t%c3%adtulo.png' } };
+}());
+
+
+

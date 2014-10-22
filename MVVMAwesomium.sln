@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{B3321797-0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVM.Awesomium.UI.Navigation", "MVVM.Awesomium.UI.Navigation\MVVM.Awesomium.UI.Navigation.csproj", "{129B5DE2-523B-48EA-8676-1291D9A4DE0C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMUI.Navigation2", "MVVMUI.Navigation\MVVMUI.Navigation2.csproj", "{D5879219-DD5F-4CD0-9EF1-8EA901113638}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -142,6 +144,17 @@ Global
 		{129B5DE2-523B-48EA-8676-1291D9A4DE0C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{129B5DE2-523B-48EA-8676-1291D9A4DE0C}.Release|x86.ActiveCfg = Release|x86
 		{129B5DE2-523B-48EA-8676-1291D9A4DE0C}.Release|x86.Build.0 = Release|x86
+		{D5879219-DD5F-4CD0-9EF1-8EA901113638}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5879219-DD5F-4CD0-9EF1-8EA901113638}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5879219-DD5F-4CD0-9EF1-8EA901113638}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D5879219-DD5F-4CD0-9EF1-8EA901113638}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D5879219-DD5F-4CD0-9EF1-8EA901113638}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D5879219-DD5F-4CD0-9EF1-8EA901113638}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5879219-DD5F-4CD0-9EF1-8EA901113638}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5879219-DD5F-4CD0-9EF1-8EA901113638}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D5879219-DD5F-4CD0-9EF1-8EA901113638}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D5879219-DD5F-4CD0-9EF1-8EA901113638}.Release|x86.ActiveCfg = Release|x86
+		{D5879219-DD5F-4CD0-9EF1-8EA901113638}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -154,5 +167,6 @@ Global
 		{C71C2BF7-52D2-4F69-AB7A-9B29EEA8DBB2} = {0F0F34BE-CD06-4C13-967D-BB0760617486}
 		{FEF389FD-A0B8-4BFD-9A8C-DE1203D6FAB0} = {0F0F34BE-CD06-4C13-967D-BB0760617486}
 		{129B5DE2-523B-48EA-8676-1291D9A4DE0C} = {0F0F34BE-CD06-4C13-967D-BB0760617486}
+		{D5879219-DD5F-4CD0-9EF1-8EA901113638} = {0F0F34BE-CD06-4C13-967D-BB0760617486}
 	EndGlobalSection
 EndGlobal

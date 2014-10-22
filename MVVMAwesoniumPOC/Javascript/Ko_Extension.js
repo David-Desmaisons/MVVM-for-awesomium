@@ -1,7 +1,7 @@
-function Enum(Type, intValue, Name, displayName) {
+function Enum(Type, intValue, name, displayName) {
     this.intValue = intValue;
-    this.Name = Name;
     this.displayName = displayName;
+    this.name = name;
     this.type = Type;
 }
 
@@ -123,22 +123,24 @@ function Enum(Type, intValue, Name, displayName) {
     };
 
     ko.getimage = function (Enumvalue) {
-        if (!Enumvalue instanceof Enum)
+        if ((!Enumvalue instanceof Enum) || (!ko.Enumimages))
             return null;
 
-        var ec = ko.EnumImages[Enumvalue.type];
-        return ec ? ec[Enumvalue.Name] : null;
+        var ec = ko.Enumimages[Enumvalue.type];
+        return ec ? ec[Enumvalue.name] : null;
     };
 
-    ko.enumHasImage = function (Enumtype) {
-        return ko.EnumImages[Enumtype];
-   };
+    ko.images = function (enumtype) {
+        return (!!ko.Enumimages) ? ko.Enumimages[enumtype] : null;
+    };
 
     ko.bindingHandlers.enumimage = {
-        preprocess: function (value, name, addBinding) {
-            addBinding('attr', '{src: ko.getimage('+value+')}');
-            return value;
+        update: function (element, valueAccessor) {
+            var v = ko.utils.unwrapObservable(valueAccessor());
+            var imagepath = ko.getimage(v);
+            if (imagepath) element.src=imagepath;
         }
     };
+
 
 }());

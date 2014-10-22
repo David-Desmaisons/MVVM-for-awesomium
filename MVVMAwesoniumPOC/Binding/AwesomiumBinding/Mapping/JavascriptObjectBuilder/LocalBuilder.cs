@@ -61,7 +61,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             return _IWebView.EvaluateSafe(() =>
                 UpdateObject(_IWebView.ExecuteJavascriptWithResult(string.Format("new Enum('{0}',{1},'{2}','{3}')",
-                                ienum.GetType().Name,Convert.ToInt32(ienum), ienum.ToString(), ienum.GetDescription()))));
+                                ienum.GetType().Name, Convert.ToInt32(ienum), ienum.ToString(), ienum.GetDescription()))));
         }
     }
 }
