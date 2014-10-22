@@ -32,6 +32,7 @@ namespace MVVM.Navigation2
         {
             InitializeComponent();
 
+
             var nb = new NavigationBuilder();
             SetUpRoute(nb);
             WPFDoubleBrowserNavigator bn = new WPFDoubleBrowserNavigator(this.First, this.Second, nb) { UseINavigable = true };
