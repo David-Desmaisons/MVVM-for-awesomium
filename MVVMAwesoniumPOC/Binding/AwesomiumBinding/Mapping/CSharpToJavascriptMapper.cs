@@ -21,7 +21,7 @@ namespace MVVMAwesomium.AwesomiumBinding
             _Cacher = icacher;
         }
 
-        internal IJSCSGlue Map(object ifrom)
+        internal IJSCSGlue Map(object ifrom, object iadditional=null)
         {
             if (ifrom == null)
                 return new JSGenericObject(_IJSOBuilder.CreateJSO(), ifrom);
@@ -60,19 +60,30 @@ namespace MVVMAwesomium.AwesomiumBinding
             JSGenericObject gres = new JSGenericObject(new JSValue(resobject), ifrom);
             _Cacher.Cache(ifrom, gres);
 
-            PropertyInfo[] propertyInfos = ifrom.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            MappNested(ifrom, resobject,gres);
+            MappNested(iadditional, resobject, gres);
+
+            return gres;
+        }
+
+        private JSGenericObject MappNested(object ifrom, JSObject resobject, JSGenericObject gres)
+        {
+            if (ifrom == null)
+                return gres;
+
+            IEnumerable<PropertyInfo> propertyInfos = ifrom.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
             foreach (PropertyInfo propertyInfo in propertyInfos.Where(p => p.CanRead))
             {
                 string pn = propertyInfo.Name;
                 var childvalue = propertyInfo.GetValue(ifrom, null);
 
                 IJSCSGlue childres = Map(childvalue);
- 
+
                 resobject[pn] = childres.JSValue;
                 gres.Attributes[pn] = childres;
             }
-      
-            //_Cacher.Cache(ifrom, gres);
+
             return gres;
         }
 

@@ -54,11 +54,20 @@ namespace MVVMAwesomium.UI
             datacontext.Skills.Add(_FirstSkill);
             datacontext.Skills.Add(new Skill() { Name = "Info", Type = "C++" });
 
-            AwesomeBinding.Bind(this.wcBrowser, datacontext, JavascriptBindingMode.TwoWay);
+            AwesomeBinding.Bind(this.wcBrowser, datacontext, new Test(){_IsAnimatedClosing_=true}, JavascriptBindingMode.TwoWay);
 
             Window w = sender as Window;
             w.DataContext = datacontext;
             _Person = datacontext;
+        }
+
+        private class Test
+        {
+            public bool _IsClosing_ { get; set; }
+
+            public bool _IsAnimatedClosing_ { get; set; }
+
+            public bool _IsAnimatedClosed_ { get; set; }
         }
 
   //LastName:"Desmaisons",

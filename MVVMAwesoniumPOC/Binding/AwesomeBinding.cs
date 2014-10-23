@@ -54,14 +54,15 @@ namespace MVVMAwesomium
             }
         }
 
-        internal static Task<IAwesomeBinding> Bind(IWebView view, object iViewModel, JavascriptBindingMode iMode, Action First, Action CleanUp)
+        internal static Task<IAwesomeBinding> Bind(IWebView view, object iViewModel, object additional, JavascriptBindingMode iMode,
+                                                    Action First, Action CleanUp)
         {
             TaskCompletionSource<IAwesomeBinding> tcs = new TaskCompletionSource<IAwesomeBinding>();
 
             view.ExecuteWhenReady(() =>
                     {
                         if (First != null) First();
-                        var mapper = new BidirectionalMapper(iViewModel, view, iMode);
+                        var mapper = new BidirectionalMapper(iViewModel, view, iMode, additional);
                         mapper.Init().ContinueWith(_ => tcs.SetResult(new AwesomeBinding(mapper, CleanUp)));
                     });
 
@@ -70,7 +71,12 @@ namespace MVVMAwesomium
 
         public static Task<IAwesomeBinding> Bind(IWebView view, object iViewModel, JavascriptBindingMode iMode)
         {
-            return Bind(view, iViewModel, iMode, null, null);
+            return Bind(view, iViewModel, null, iMode, null, null);
+        }
+
+        public static Task<IAwesomeBinding> Bind(IWebView view, object iViewModel, object add, JavascriptBindingMode iMode)
+        {
+            return Bind(view, iViewModel, add, iMode, null, null);
         }
     }
 }
