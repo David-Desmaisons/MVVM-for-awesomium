@@ -20,7 +20,8 @@ describe("Map To Observable", function () {
         basicmaped5 = { List: ['un', 'deux', 'trois'] };
         basicmaped6 = { List: [{ Name: '1' }, { Name: '2' }, { Name: '3' }] };
         basicmapped7 = { When: new Date(1974, 2, 26) };
-        mapwithenum = { Enum : new Enum(0,'34') };
+        mapwithenum = { Enum: new Enum(0, '34') };
+        mapwithnull = { sar: new Null_reference(), cop:new Null_reference()};
     });
 
     it("should map basic property", function () {
@@ -129,6 +130,18 @@ describe("Map To Observable", function () {
 
 
         expect(mapper.Register.calls.count()).toEqual(5);
+    });
+
+    it("should map null reference acording to Null_reference", function () {
+        //mapwithnull = { sar: new Null_reference(), cop: new Null_reference() };
+
+        var mapped = ko.MapToObservable(mapwithnull);
+
+        expect(mapped.sar).not.toBeNull();
+        expect(mapped.cop).not.toBeNull();
+
+        expect(mapped.sar()).toBe(null);
+        expect(mapped.cop()).toBe(null);
     });
 
 

@@ -69,6 +69,62 @@ namespace MVVMAwesomium.Test
         }
 
         [Fact]
+        public void Test_AwesomeBinding_Basic_OneTime()
+        {
+            using (Tester())
+            {
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.OneTime).Result)
+                {
+                    var jsbridge = (mb as AwesomeBinding).JSBrideRootObject;
+                    var js = mb.JSRootObject;
+
+                    string JSON = JsonConvert.SerializeObject(_DataContext);
+                    string alm = jsbridge.ToString();
+
+               
+                    JSValue res = GetSafe(() => js.Invoke("Name"));
+                    ((string)res).Should().Be("O Monstro");
+
+                    JSValue res2 = GetSafe(() => js.Invoke("LastName"));
+                    ((string)res2).Should().Be("Desmaisons");
+
+                    _DataContext.Name = "23";
+                    Thread.Sleep(200);
+
+                    JSValue res3 = GetSafe(() => js.Invoke("Name"));
+                    ((string)res3).Should().Be("O Monstro");
+
+                    JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
+                    ((string)res4).Should().Be("Florianopolis");
+
+                    _DataContext.Local.City = "Paris";
+                    Thread.Sleep(200);
+
+                    res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
+                    ((string)res4).Should().Be("Florianopolis");
+
+                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    ((string)res5).Should().Be("Langage");
+
+                    _DataContext.Skills[0].Name = "Ling";
+                    Thread.Sleep(200);
+
+                    res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    ((string)res5).Should().Be("Langage");
+
+                    this.DoSafe(() => js.Invoke("Name", "resName"));
+                    Thread.Sleep(200);
+                    _DataContext.Name.Should().Be("23");
+                }
+            }
+       }
+
+
+        [Fact]
         public void Test_AwesomeBinding_Basic_OneWay()
         {
             using (Tester())
@@ -85,7 +141,7 @@ namespace MVVMAwesomium.Test
                     string JSON = JsonConvert.SerializeObject(_DataContext);
                     string alm = jsbridge.ToString();
 
-               
+
                     JSValue res = GetSafe(() => js.Invoke("Name"));
                     ((string)res).Should().Be("O Monstro");
 
@@ -93,28 +149,36 @@ namespace MVVMAwesomium.Test
                     ((string)res2).Should().Be("Desmaisons");
 
                     _DataContext.Name = "23";
+                    Thread.Sleep(200);
 
                     JSValue res3 = GetSafe(() => js.Invoke("Name"));
-                    ((string)res3).Should().Be("O Monstro");
+                    ((string)res3).Should().Be("23");
 
                     JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
                     ((string)res4).Should().Be("Florianopolis");
 
                     _DataContext.Local.City = "Paris";
+                    Thread.Sleep(200);
 
                     res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
-                    ((string)res4).Should().Be("Florianopolis");
+                    ((string)res4).Should().Be("Paris");
 
                     JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
                     ((string)res5).Should().Be("Langage");
 
                     _DataContext.Skills[0].Name = "Ling";
+                    Thread.Sleep(200);
 
                     res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
-                    ((string)res5).Should().Be("Langage");
+                    ((string)res5).Should().Be("Ling");
+
+
+                    this.DoSafe(() => js.Invoke("Name", "resName"));
+                    Thread.Sleep(200);
+                    _DataContext.Name.Should().Be("23");
                 }
             }
-       }
+        }
 
         [Fact]
         public void Test_AwesomeBinding_Basic_Regsiter_Additional_property()

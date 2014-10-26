@@ -17,8 +17,8 @@
     </div>
     <div id="Local">
         <h2><span data-bind="text: Local().City"></span></h2>
-        <input type="text" data-bind="value: MainSkill().Type, valueUpdate:'afterkeydown'" placeholder="Main Skill Type">
-        <input type="text" data-bind="value: MainSkill().Name, valueUpdate:'afterkeydown'" placeholder="Main Skill">
+        <input type="text" data-bind="value: $data.MainSkill()!==null ? $data.MainSkill().Type : '', valueUpdate:'afterkeydown'" placeholder="Main Skill Type">
+        <input type="text" data-bind="value: $data.MainSkill()!==null ? $data.MainSkill().Name : ''.Name, valueUpdate:'afterkeydown'" placeholder="Main Skill">
     </div>
     <div>
         <!--<td>-->

@@ -5,6 +5,10 @@ function Enum(Type, intValue, name, displayName) {
     this.type = Type;
 }
 
+//to bypass awesomium limitations
+function Null_reference() {
+}
+
 (function () {
 
     function PropertyListener(object, propertyname, listener) {
@@ -23,6 +27,9 @@ function Enum(Type, intValue, name, displayName) {
     function MapToObservable(or, context, Mapper, Listener) {
 
         if ((typeof or !== 'object') || (or instanceof Date) || (or instanceof Enum)) return or;
+
+        if (or instanceof Null_reference)
+            return null;
 
         if (!MapToObservable.Cache) {
             MapToObservable.Cache = {};

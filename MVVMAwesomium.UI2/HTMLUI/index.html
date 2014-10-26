@@ -6,12 +6,12 @@
         <script src="js/Ko_Extension.js" type="text/javascript"></script>
 	</head>
 	<body>
-       <input type="text" data-bind="value: One().Name, valueUpdate:'afterkeydown'" placeholder="First name">
-        <input type="text" data-bind="value: One().LastName, valueUpdate:'afterkeydown'" placeholder="First name">
-        <input type="text" data-bind="value: Two().Name, valueUpdate:'afterkeydown'" placeholder="First name">
-        <input type="text" data-bind="value: Two().LastName, valueUpdate:'afterkeydown'" placeholder="First name">
+        <input type="text" data-bind="value: One()==null ? '' : One().Name, valueUpdate:'afterkeydown'" placeholder="First name">
+        <input type="text" data-bind="value: One()==null ? '' :One().LastName, valueUpdate:'afterkeydown'" placeholder="First name">
+        <input type="text" data-bind="value: Two()==null ? '' : Two().Name, valueUpdate:'afterkeydown'" placeholder="First name">
+        <input type="text" data-bind="value: Two()==null ? '' : Two().LastName, valueUpdate:'afterkeydown'" placeholder="First name">
         <button data-bind="command: MakeSelf">Click me</button>
 	</body>
-        
+
     
 </html>

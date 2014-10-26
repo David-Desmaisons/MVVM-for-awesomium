@@ -11,5 +11,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         JSValue CreateDate(DateTime dt);
 
         JSValue CreateEnum(Enum ienum);
+
+        JSValue CreateNull();
     }
 }

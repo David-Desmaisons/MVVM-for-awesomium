@@ -24,7 +24,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         internal IJSCSGlue Map(object ifrom, object iadditional=null)
         {
             if (ifrom == null)
-                return new JSGenericObject(_IJSOBuilder.CreateJSO(), ifrom);
+                return new JSGenericObject(_IJSOBuilder.CreateNull(), ifrom);
 
             IJSCSGlue res = null;
             res = _Cacher.GetCached(ifrom);
