@@ -12,7 +12,7 @@ using MVVMAwesomium.Infra;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
-    public class BidirectionalMapper : IDisposable, IJSCBridgeCache, IJavascriptListener, INotifyPropertyChanged
+    public class BidirectionalMapper : IDisposable, IJSCBridgeCache, IJavascriptListener
     {
         private readonly JavascriptBindingMode _BindingMode;
         private readonly IJSCSGlue _Root;
@@ -159,8 +159,6 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public void OnJavaScriptObjectChanges(JSObject objectchanged, string PropertyName, JSValue newValue)
         {
-            FireChanged(PropertyName);
-
             var res = GetFromJavascript(objectchanged) as JSGenericObject;
             IJSCSGlue glue = GetCachedLocal(newValue); 
             object ores = (glue!=null) ? glue.CValue : 
@@ -387,11 +385,5 @@ namespace MVVMAwesomium.AwesomiumBinding
             return res;
         }
 
-        private void FireChanged(string ipn)
-        {
-            if (PropertyChanged!=null)
-                PropertyChanged(this, new PropertyChangedEventArgs(ipn));
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

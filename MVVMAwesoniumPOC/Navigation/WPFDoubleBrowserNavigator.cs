@@ -67,6 +67,7 @@ namespace MVVMAwesomium
             if (_Window != null) _Window.State = WindowLogicalState.Closed;
             _Window = iwindow;
             _Window.State = WindowLogicalState.Opened;
+            _NextWebControl.Source = null;
         }
  
         public Task Navigate(Uri iUri, object iViewModel, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
