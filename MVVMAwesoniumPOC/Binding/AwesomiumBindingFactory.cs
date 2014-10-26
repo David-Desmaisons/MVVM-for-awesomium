@@ -34,12 +34,17 @@ namespace MVVMAwesomium
 
         public Task<IAwesomeBinding> Bind(IWebView view, object iViewModel, JavascriptBindingMode iMode)
         {
-            return AwesomeBinding.Bind(view, iViewModel, iMode, GetFirst(view), GetLast(view));
+            return AwesomeBinding.Bind(view, iViewModel, null,iMode, GetFirst(view), GetLast(view));
         }
 
         public Task<IAwesomeBinding> Bind(IWebView view, string json)
         {
             return StringBinding.Bind(view, json, GetFirst(view), GetLast(view));
+        }
+
+        public Task<IAwesomeBinding> Bind(IWebView view, object iViewModel, object addinfo, JavascriptBindingMode iMode)
+        {
+            return AwesomeBinding.Bind(view, iViewModel, addinfo, iMode, GetFirst(view), GetLast(view));
         }
 
 

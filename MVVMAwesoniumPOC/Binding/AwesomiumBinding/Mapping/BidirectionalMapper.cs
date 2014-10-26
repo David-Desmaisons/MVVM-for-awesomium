@@ -30,13 +30,13 @@ namespace MVVMAwesomium.AwesomiumBinding
         private IDictionary<uint, IJSCSGlue> _FromJavascript_Global = new Dictionary<uint, IJSCSGlue>();
         private IDictionary<uint, IJSCSGlue> _FromJavascript_Local = new Dictionary<uint, IJSCSGlue>();
 
-        internal BidirectionalMapper(object iRoot, IWebView iwebview, JavascriptBindingMode iMode)
+        internal BidirectionalMapper(object iRoot, IWebView iwebview, JavascriptBindingMode iMode, object iadd)
         {
             _IWebView = iwebview;
             _LocalBuilder = new LocalBuilder(iwebview);
             _JSObjectBuilder = new CSharpToJavascriptMapper(_LocalBuilder, this);
             _JavascriptToCSharpMapper = new JavascriptToCSharpMapper(iwebview);
-            _Root = _JSObjectBuilder.Map(iRoot);
+            _Root = _JSObjectBuilder.Map(iRoot, iadd);
             _BindingMode = iMode;
 
             IJavascriptListener JavascriptObjecChanges = null;

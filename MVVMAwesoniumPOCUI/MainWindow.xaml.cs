@@ -61,6 +61,15 @@ namespace MVVMAwesomium.UI
             _Person = datacontext;
         }
 
+        private class Test
+        {
+            public bool _IsClosing_ { get; set; }
+
+            public bool _IsAnimatedClosing_ { get; set; }
+
+            public bool _IsAnimatedClosed_ { get; set; }
+        }
+
   //LastName:"Desmaisons",
  //   Local:{ City:'Florianopolis', Region:'SC'},
  //   Skills: [{Type:'Langage', Name:'French'},{Type:'Info', Name:'C++'}

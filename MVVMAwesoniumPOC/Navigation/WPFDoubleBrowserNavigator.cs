@@ -10,6 +10,7 @@ using Awesomium.Windows.Controls;
 using MVVMAwesomium.Infra;
 using System.IO;
 using System.Windows;
+using MVVMAwesomium.Navigation.Window;
 
 namespace MVVMAwesomium
 {
@@ -21,6 +22,7 @@ namespace MVVMAwesomium
         private IAwesomeBinding _IAwesomeBinding;
         private IUrlSolver _INavigationBuilder;
         private bool _Disposed = false;
+        private HTMLWindow _Window;
 
         internal WebControl WebControl { get { return _CurrentWebControl; } }
 
@@ -53,7 +55,7 @@ namespace MVVMAwesomium
             }
         }
 
-        private void Switch(Task<IAwesomeBinding> iBinding, TaskCompletionSource<object> tcs=null)
+        private void Switch(Task<IAwesomeBinding> iBinding, HTMLWindow iwindow, TaskCompletionSource<object> tcs=null)
         {
             Binding = iBinding.Result;
             if (tcs!=null) tcs.SetResult(Binding);
@@ -62,6 +64,10 @@ namespace MVVMAwesomium
             var tmp = _NextWebControl;
             _NextWebControl = _CurrentWebControl;
             _CurrentWebControl = tmp;
+            if (_Window != null) _Window.State = WindowLogicalState.Closed;
+            _Window = iwindow;
+            _Window.State = WindowLogicalState.Opened;
+            _NextWebControl.Source = null;
         }
  
         public Task Navigate(Uri iUri, object iViewModel, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
@@ -72,22 +78,29 @@ namespace MVVMAwesomium
             if (OnNavigate != null)
                 OnNavigate(this, new NavigationEvent(iViewModel));
 
+            var wh = new WindowHelper(new HTMLWindow());
+
             if (!_CurrentWebControl.IsDocumentReady)
             {
                 _CurrentWebControl.Source = iUri;
-                return _IAwesomiumBindingFactory.Bind(_CurrentWebControl, iViewModel, iMode).
+                return _IAwesomiumBindingFactory.Bind(_CurrentWebControl, iViewModel, wh, iMode).
                                 ContinueWith(t =>
                                 {
                                     Binding = t.Result;
+                                    _Window = wh.__window__;
+                                    _Window.State = WindowLogicalState.Opened;
                                     _CurrentWebControl.Visibility = Visibility.Visible;
                                 }, TaskScheduler.FromCurrentSynchronizationContext());
             }
 
+            //close current window
+            Task closetask = _Window.CloseAsync();
+
             if (!_NextWebControl.IsDocumentReady)
             {
                 _NextWebControl.Source = iUri;
-                return _IAwesomiumBindingFactory.Bind(_NextWebControl, iViewModel, iMode).
-                                ContinueWith(t => Switch(t), TaskScheduler.FromCurrentSynchronizationContext());
+                return _IAwesomiumBindingFactory.Bind(_NextWebControl, iViewModel, wh,iMode).WaitWith(closetask,
+                                t => Switch(t, wh.__window__));
             }
                 
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
@@ -96,8 +109,8 @@ namespace MVVMAwesomium
             sourceupdate = (o, e) =>
             {
                 _NextWebControl.AddressChanged -= sourceupdate;
-                _IAwesomiumBindingFactory.Bind(_NextWebControl, iViewModel, iMode).
-                    ContinueWith( t => Switch(t,tcs), TaskScheduler.FromCurrentSynchronizationContext());
+                _IAwesomiumBindingFactory.Bind(_NextWebControl, iViewModel, wh, iMode).WaitWith(closetask,
+                     t => Switch(t, wh.__window__,tcs));
             };
 
             _NextWebControl.AddressChanged += sourceupdate;

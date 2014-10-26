@@ -95,13 +95,15 @@
     <Compile Include="Binding\AwesomiumBinding\Mapping\JavascriptToCSharpMapper.cs" />
     <Compile Include="Binding\IAwesomeBinding.cs" />
     <Compile Include="Binding\IAwesomiumBindingFactory.cs" />
+    <Compile Include="Infra\VM\BasicRelayCommand.cs" />
     <Compile Include="Infra\DictionaryExtension.cs" />
     <Compile Include="Infra\TypeExtension.cs" />
+    <Compile Include="Infra\VM\ViewModelBase.cs" />
     <Compile Include="Navigation\INavigable.cs" />
     <Compile Include="Navigation\INavigationBuilder.cs" />
     <Compile Include="Navigation\INavigationSolver.cs" />
     <Compile Include="Infra\EnumExtender.cs" />
-    <Compile Include="Infra\TaskExtension.cs" />
+    <Compile Include="Infra\TaskHelper.cs" />
     <Compile Include="Binding\JavascriptBindingMode.cs" />
     <Compile Include="Binding\AwesomiumBinding\GlueObject\IJSCSGlueExtender.cs" />
     <Compile Include="Binding\AwesomiumBinding\Mapping\JavascriptObjectBuilder\GlobalBuilder.cs" />
@@ -123,6 +125,9 @@
     <Compile Include="Navigation\IUrlSolver.cs" />
     <Compile Include="Navigation\NavigationEvent.cs" />
     <Compile Include="Navigation\NavigationBuilder.cs" />
+    <Compile Include="Navigation\Window\HTMLWindow.cs" />
+    <Compile Include="Navigation\Window\WindowHelper.cs" />
+    <Compile Include="Navigation\Window\WindowState.cs" />
     <Compile Include="Navigation\WPFDoubleBrowserNavigator.cs" />
     <Compile Include="Navigation\WPFBrowserNavigator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
