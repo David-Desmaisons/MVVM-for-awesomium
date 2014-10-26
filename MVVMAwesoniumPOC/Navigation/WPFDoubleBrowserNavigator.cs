@@ -64,6 +64,7 @@ namespace MVVMAwesomium
             var tmp = _NextWebControl;
             _NextWebControl = _CurrentWebControl;
             _CurrentWebControl = tmp;
+            if (_Window != null) _Window.State = WindowLogicalState.Closed;
             _Window = iwindow;
             _Window.State = WindowLogicalState.Opened;
         }

@@ -21,14 +21,13 @@ namespace MVVMAwesomium.Infra
             return FromResult<object>(null);
         }
 
-        public static Task<T> WaitWith<T>(this Task<T> @this, Task other, Action<Task<T>> ithen, TaskScheduler tsc)
+        public static Task WaitWith<T>(this Task<T> @this, Task other, Action<Task<T>> ithen, TaskScheduler tsc)
         {
             Task[] tasks = new Task[2] { @this, other };
-            Task.Factory.ContinueWhenAll(tasks, (ts) => ithen(ts[0] as Task<T>), CancellationToken.None, TaskContinuationOptions.None, tsc);
-            return @this;
+            return Task.Factory.ContinueWhenAll(tasks, (ts) => ithen(ts[0] as Task<T>), CancellationToken.None, TaskContinuationOptions.None, tsc);
         }
 
-        public static Task<T> WaitWith<T>(this Task<T> @this, Task other, Action<Task<T>> ithen)
+        public static Task WaitWith<T>(this Task<T> @this, Task other, Action<Task<T>> ithen)
         {
             return @this.WaitWith(other, ithen, TaskScheduler.FromCurrentSynchronizationContext());
         }
