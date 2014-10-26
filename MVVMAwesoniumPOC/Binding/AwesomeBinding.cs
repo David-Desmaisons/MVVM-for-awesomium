@@ -74,9 +74,9 @@ namespace MVVMAwesomium
             return Bind(view, iViewModel, null, iMode, null, null);
         }
 
-        public static Task<IAwesomeBinding> Bind(IWebView view, object iViewModel, object add, JavascriptBindingMode iMode)
-        {
-            return Bind(view, iViewModel, add, iMode, null, null);
-        }
+        //public static Task<IAwesomeBinding> Bind(IWebView view, object iViewModel, object add, JavascriptBindingMode iMode)
+        //{
+        //    return Bind(view, iViewModel, add, iMode, null, null);
+        //}
     }
 }

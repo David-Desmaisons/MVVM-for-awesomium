@@ -39,8 +39,9 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         private void _Command_CanExecuteChanged(object sender, EventArgs e)
         {
+            _Count = (_Count == 1) ? 2 : 1;
             WebCore.QueueWork(() =>
-                    ((JSObject)_MappedJSValue).Invoke("CanExecuteCount", new JSValue(++_Count))
+                    ((JSObject)_MappedJSValue).Invoke("CanExecuteCount", new JSValue(_Count))
             );
         }
 

@@ -42,6 +42,11 @@ namespace MVVMAwesomium
             return StringBinding.Bind(view, json, GetFirst(view), GetLast(view));
         }
 
+        public Task<IAwesomeBinding> Bind(IWebView view, object iViewModel, object addinfo, JavascriptBindingMode iMode)
+        {
+            return AwesomeBinding.Bind(view, iViewModel, addinfo, iMode, GetFirst(view), GetLast(view));
+        }
+
 
         public int InjectionTimeOut { get;set;}
 

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MVVMAwesomium;
+using Awesomium.Core;
 
 namespace MVVM.Navigation2
 {
@@ -30,6 +31,12 @@ namespace MVVM.Navigation2
 
         public MainWindow()
         {
+            WebConfig webC = new WebConfig();
+            webC.RemoteDebuggingPort = 8001;
+            webC.RemoteDebuggingHost = "127.0.0.1";
+            WebCore.Initialize(webC);
+
+
             InitializeComponent();
 
 
