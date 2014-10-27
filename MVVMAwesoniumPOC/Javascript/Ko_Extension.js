@@ -149,5 +149,33 @@ function Null_reference() {
         }
     };
 
+    ko.bindingHandlers.onclose = {
+        preprocess: function (value) {
+            return '{when: $data.__window__().State, do: ' + value + '}';
+        },
+
+        update: function (element, valueAccessor,allBindings,viewModel,bindingContext) {
+            var v = ko.utils.unwrapObservable(valueAccessor());
+            if (v.when.name !== 'Closing')
+                return;
+
+            v.do(function () { bindingContext.$data.__window__().CloseReady().Execute(); });
+        }
+    };
+
+    ko.bindingHandlers.onopened= {
+        preprocess: function (value) {
+            return '{when: $data.__window__().State, do: ' + value + '}';
+        },
+
+        update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+            var v = ko.utils.unwrapObservable(valueAccessor());
+            if (v.when.name !== 'Opened')
+                return;
+
+            v.do();
+        }
+    };
+
 
 }());

@@ -228,13 +228,67 @@ namespace MVVMAwesomium.Test
                     mb.Should().NotBeNull();
                 }
             }
-
-            //WebCore.Shutdown();
         }
 
         private JSValue Get(JSObject root, string pn)
         {
             return root.Invoke(pn);
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_Null_Property()
+        {
+            using (Tester())
+            {
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                _DataContext.MainSkill.Should().BeNull();
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSValue res = GetSafe(() => Get(js, "MainSkill"));
+                    res.IsNull.Should().BeTrue();
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_Circular_reference()
+        {
+            using (Tester())
+            {
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+
+                var datacontext = new MVVMAwesomium.ViewModel.Example.ForNavigation.Couple();
+                var my = new MVVMAwesomium.ViewModel.Example.ForNavigation.Person()
+                {
+                    Name = "O Monstro",
+                    LastName = "Desmaisons",
+                    Local = new MVVMAwesomium.ViewModel.Example.Local() { City = "Florianopolis", Region = "SC" }
+                };
+                my.Couple = datacontext;
+                datacontext.One = my;
+
+                using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSObject One = (JSObject)GetSafe(() => js.Invoke("One"));
+
+                    JSValue res = GetSafe(() => One.Invoke("Name"));
+                    ((string)res).Should().Be("O Monstro");
+
+                    JSValue res2 = GetSafe(() => One.Invoke("LastName"));
+                    ((string)res2).Should().Be("Desmaisons");
+
+                  
+                }
+            }
         }
 
         [Fact]

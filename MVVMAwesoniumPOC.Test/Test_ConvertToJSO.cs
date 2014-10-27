@@ -55,14 +55,7 @@ namespace MVVMAwesomium.Test
             _Tests_NG.Add(_Tests[0]);
         }
 
-        [Fact]
-        public void Test_Null()
-        {
-            JSValue res = _ConverTOJSO.Map(null).JSValue;
-            res.IsObject.Should().BeTrue();
-            ((JSObject)res).GetPropertyNames().Length.Should().Be(1);
-            ((JSObject)res).HasProperty("_MappedId").Should().BeTrue();
-        }
+       
 
         [Fact]
         public void Test_Simple()

@@ -102,5 +102,18 @@ namespace MVVMAwesomium.Test
             }
         }
 
+        [Fact]
+        public void Test_Null()
+        {
+            using (Tester())
+            {
+                Init();
+                JSValue res = _ConverTOJSO.Map(null).JSValue;
+                res.IsObject.Should().BeTrue();
+                //((JSObject)res).GetPropertyNames().Length.Should().Be(1);
+                //((JSObject)res).HasProperty("_MappedId").Should().BeTrue();
+            }
+        }
+
     }
 }
