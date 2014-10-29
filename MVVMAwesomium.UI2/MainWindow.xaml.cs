@@ -37,11 +37,10 @@ namespace MVVMAwesomium.UI2
             var datacontext = new Couple();
             datacontext.One =  new Person()
             {
-                Name = "O Monstro",
+                Name = null,
                 LastName = "Desmaisons",
                 Local = new Local() { City = "Florianopolis", Region = "SC" }
             };
-            //datacontext.Two = datacontext.One;
             datacontext.Two = null;
 
             AwesomeBinding.Bind(f, datacontext, JavascriptBindingMode.TwoWay);

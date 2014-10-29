@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Awesomium.Core;
 using MVVMAwesomium;
 
 
@@ -32,6 +33,11 @@ namespace MVVMAwesomium.UI.Navigation
 
         public MainWindow()
         {
+            WebConfig webC = new WebConfig();
+            webC.RemoteDebuggingPort = 8001;
+            webC.RemoteDebuggingHost = "127.0.0.1";
+            WebCore.Initialize(webC);
+
             InitializeComponent();
 
             var nb = new NavigationBuilder();
@@ -49,6 +55,7 @@ namespace MVVMAwesomium.UI.Navigation
             datacontext.One = my;
          
             bn.Navigate(datacontext);
+            //bn.Navigate(my);
         }
     }
 }

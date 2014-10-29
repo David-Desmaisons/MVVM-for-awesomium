@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
+using System.Threading;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
-    public class JSCommand : IJSObservableBridge
+    public class JSCommand : GlueBase, IJSObservableBridge
     {
         private int _Count = 1;
         public JSCommand(IJSOBuilder builder,  ICommand  icValue)
@@ -41,14 +42,10 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             _Count = (_Count == 1) ? 2 : 1;
             WebCore.QueueWork(() =>
-                    ((JSObject)_MappedJSValue).Invoke("CanExecuteCount", new JSValue(_Count))
+                    ((JSObject)_MappedJSValue).InvokeAsync("CanExecuteCount", new JSValue(_Count))
             );
         }
 
-        public override string ToString()
-        {
-            return "{}";
-        }
 
         public JSValue JSValue { get; private set; }
 
@@ -99,5 +96,9 @@ namespace MVVMAwesomium.AwesomiumBinding
             return Enumerable.Empty<IJSCSGlue>();
         }
 
+        protected override void ComputeString(StringBuilder sb, HashSet<IJSCSGlue> alreadyComputed)
+        {
+            sb.Append("{}");
+        }
     }
 }

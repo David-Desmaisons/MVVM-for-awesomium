@@ -59,6 +59,10 @@ namespace MVVMAwesomium.Test
                     string JSON = JsonConvert.SerializeObject(_DataContext);
                     string alm = jsbridge.ToString();
 
+                    JSArray arr = (JSArray)jsbridge.GetAllChildren().Where(c => c is JSArray).First();
+
+                    string stringarr = arr.ToString();
+
                     dynamic m = JsonConvert.DeserializeObject<dynamic>(jsbridge.ToString());
                     ((string)m.LastName).Should().Be("Desmaisons");
                     ((string)m.Name).Should().Be("O Monstro");
@@ -285,6 +289,11 @@ namespace MVVMAwesomium.Test
 
                     JSValue res2 = GetSafe(() => One.Invoke("LastName"));
                     ((string)res2).Should().Be("Desmaisons");
+
+                    //Test no stackoverflow in case of circular refernce
+                    var jsbridge = (mb as AwesomeBinding).JSBrideRootObject;
+                    string alm = jsbridge.ToString();
+                    alm.Should().NotBeNull();
 
                   
                 }

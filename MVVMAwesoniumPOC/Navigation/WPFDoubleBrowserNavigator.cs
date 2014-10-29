@@ -23,6 +23,7 @@ namespace MVVMAwesomium
         private IUrlSolver _INavigationBuilder;
         private bool _Disposed = false;
         private HTMLWindow _Window;
+        private bool _Navigating = false;
 
         internal WebControl WebControl { get { return _CurrentWebControl; } }
 
@@ -68,12 +69,15 @@ namespace MVVMAwesomium
             _Window = iwindow;
             _Window.State = WindowLogicalState.Opened;
             _NextWebControl.Source = null;
+            _Navigating = false;
         }
  
         public Task Navigate(Uri iUri, object iViewModel, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
         {
             if (iUri == null)
                 throw new Exception("ViewModel not registered");
+
+            _Navigating = true;
 
             if (OnNavigate != null)
                 OnNavigate(this, new NavigationEvent(iViewModel));
@@ -90,17 +94,19 @@ namespace MVVMAwesomium
                                     _Window = wh.__window__;
                                     _Window.State = WindowLogicalState.Opened;
                                     _CurrentWebControl.Visibility = Visibility.Visible;
+                                    _Navigating = false;
                                 }, TaskScheduler.FromCurrentSynchronizationContext());
             }
 
-            //close current window
             Task closetask = _Window.CloseAsync();
 
             if (!_NextWebControl.IsDocumentReady)
             {
                 _NextWebControl.Source = iUri;
-                return _IAwesomiumBindingFactory.Bind(_NextWebControl, iViewModel, wh,iMode).WaitWith(closetask,
+
+                return _IAwesomiumBindingFactory.Bind(_NextWebControl, iViewModel, wh, iMode).WaitWith(closetask,
                                 t => Switch(t, wh.__window__));
+
             }
                 
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
@@ -125,7 +131,7 @@ namespace MVVMAwesomium
 
         public Task Navigate(object iViewModel, string Id = null, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
         {
-            if (iViewModel == null)
+            if ((iViewModel == null) || (_Navigating))
                 return TaskHelper.Ended();
 
             return Navigate(_INavigationBuilder.Solve(iViewModel, Id), iViewModel, iMode);

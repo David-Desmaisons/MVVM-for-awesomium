@@ -67,7 +67,8 @@ function Null_reference() {
                             attribute: att
                         }, Mapper, Listener);
                         res[att] = ko.observable(comp);
-                        if ((Listener.TrackChanges) && ((comp instanceof Date) || comp instanceof Enum)) {
+                        if ((Listener.TrackChanges) &&
+                                ((comp instanceof Date) || (comp instanceof Enum) || (value instanceof Null_reference))) {
                             res[att].subscribe(PropertyListener(res, att, Listener));
                         }
 
@@ -154,9 +155,13 @@ function Null_reference() {
             return '{when: $data.__window__().State, do: ' + value + '}';
         },
 
+        init: function (element, valueAccessor,allBindings,viewModel,bindingContext) {
+            bindingContext.$data.__window__().IsListeningClose(true);
+        },
+
         update: function (element, valueAccessor,allBindings,viewModel,bindingContext) {
             var v = ko.utils.unwrapObservable(valueAccessor());
-            if (v.when.name !== 'Closing')
+            if (v.when().name !== 'Closing')
                 return;
 
             v.do(function () { bindingContext.$data.__window__().CloseReady().Execute(); });
@@ -165,12 +170,12 @@ function Null_reference() {
 
     ko.bindingHandlers.onopened= {
         preprocess: function (value) {
-            return '{when: $data.__window__().State, do: ' + value + '}';
+            return '{when: $data.__window__().State, do: function(){' + value + '}}';
         },
 
         update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
             var v = ko.utils.unwrapObservable(valueAccessor());
-            if (v.when.name !== 'Opened')
+            if (v.when().name !== 'Opened')
                 return;
 
             v.do();

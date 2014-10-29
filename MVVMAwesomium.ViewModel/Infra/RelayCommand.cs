@@ -34,8 +34,7 @@ namespace MVVMAwesomium.ViewModel.Infra
             _execute(parameter);
         }
 
-        public event EventHandler CanExecuteChanged
-        { add { CommandManager.RequerySuggested += value; } remove { CommandManager.RequerySuggested -= value; } }
+         event EventHandler ICommand.CanExecuteChanged { add{} remove{} }
     }
 
 
@@ -60,8 +59,7 @@ namespace MVVMAwesomium.ViewModel.Infra
             _execute(parameter as T);
         }
 
-        public event EventHandler CanExecuteChanged
-        { add { CommandManager.RequerySuggested += value; } remove { CommandManager.RequerySuggested -= value; } }
+        event EventHandler ICommand.CanExecuteChanged { add { } remove { } }
     }
 
     public class ToogleRelayCommand : ICommand
@@ -98,8 +96,7 @@ namespace MVVMAwesomium.ViewModel.Infra
                 CanExecuteChanged(this, EventArgs.Empty);
         }
 
-
-        public event EventHandler CanExecuteChanged;
+         public event EventHandler CanExecuteChanged;
     }
 
 }

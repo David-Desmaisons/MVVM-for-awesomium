@@ -11,8 +11,10 @@ namespace MVVMAwesomium.ViewModel.Example.ForNavigation
     {
          public Couple():base()
         {
-            GoOne = new RelayCommand(() => Navigation.Navigate(One));
-            GoTwo = new RelayCommand(() => Navigation.Navigate(Two));
+            GoOne = new RelayCommand(() => 
+                Navigation.Navigate(One));
+            GoTwo = new RelayCommand(() => 
+                Navigation.Navigate(Two));
         }
 
         public INavigationSolver Navigation { get; set; }

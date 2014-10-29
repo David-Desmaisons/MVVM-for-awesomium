@@ -133,8 +133,6 @@ describe("Map To Observable", function () {
     });
 
     it("should map null reference acording to Null_reference", function () {
-        //mapwithnull = { sar: new Null_reference(), cop: new Null_reference() };
-
         var mapped = ko.MapToObservable(mapwithnull);
 
         expect(mapped.sar).not.toBeNull();
@@ -142,6 +140,27 @@ describe("Map To Observable", function () {
 
         expect(mapped.sar()).toBe(null);
         expect(mapped.cop()).toBe(null);
+    });
+
+    it("should track null reference acording to Null_reference", function () {
+
+        var Listener = { TrackChanges: function () { } };
+        spyOn(Listener, 'TrackChanges');
+
+        var mapped = ko.MapToObservable(mapwithnull,null,Listener);
+
+        expect(mapped.sar).not.toBeNull();
+        expect(mapped.cop).not.toBeNull();
+
+        expect(mapped.sar()).toBe(null);
+        expect(mapped.cop()).toBe(null);
+
+        var obj = { Date: 2018 };
+        mapped.sar(obj);
+
+        expect(Listener.TrackChanges).toHaveBeenCalled();
+        expect(Listener.TrackChanges.calls.count()).toEqual(1);
+        expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped, 'sar', obj);
     });
 
 

@@ -27,6 +27,6 @@ namespace MVVMAwesomium.Infra.VM
             _execute();
         }
 
-        public event EventHandler CanExecuteChanged;
+        event EventHandler ICommand.CanExecuteChanged { add { } remove { } }
     }
 }

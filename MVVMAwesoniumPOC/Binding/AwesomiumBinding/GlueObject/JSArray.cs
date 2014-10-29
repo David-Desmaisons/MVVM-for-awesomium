@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
-    internal class JSArray : IJSObservableBridge
+    internal class JSArray : GlueBase, IJSObservableBridge
     {
         public JSArray(IEnumerable<IJSCSGlue> values,object collection)
         {
@@ -101,9 +101,19 @@ namespace MVVMAwesomium.AwesomiumBinding
             Items.Clear();
         }
 
-        public override string ToString()
+        protected override void ComputeString(StringBuilder sb, HashSet<IJSCSGlue> alreadyComputed)
         {
-            return string.Format("[{0}]", string.Join(",", Items));
+            sb.Append("[");
+            bool f = true;
+            foreach(var it in Items)
+            {
+                if (!f)
+                    sb.Append(",");
+                f = false;
+                it.BuilString(sb, alreadyComputed);
+            }
+
+            sb.Append("]");
         }
 
         public JSValue JSValue { get; private set; }
@@ -125,5 +135,6 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             MappedJSValue = ijsobject;
         }
+
     }
 }

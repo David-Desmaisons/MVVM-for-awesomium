@@ -145,7 +145,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             if ((iroot==null) || (iroot.Type != JSCSGlueType.Object))
             {
-                return TaskHelper.FromResult<object>(null);
+                return TaskHelper.Ended();
             }
 
             var jvm = new JavascriptMapper(iroot as IJSObservableBridge, this);
@@ -160,12 +160,14 @@ namespace MVVMAwesomium.AwesomiumBinding
         public void OnJavaScriptObjectChanges(JSObject objectchanged, string PropertyName, JSValue newValue)
         {
             var res = GetFromJavascript(objectchanged) as JSGenericObject;
+            if (res == null)
+                return;
+
             IJSCSGlue glue = GetCachedLocal(newValue); 
             object ores = (glue!=null) ? glue.CValue : 
                         _JavascriptToCSharpMapper.GetSimpleValue(newValue);
 
-            if (res != null)
-                res.UpdateCSharpProperty(PropertyName, newValue, ores);
+            res.UpdateCSharpProperty(PropertyName, newValue, ores);
         }
 
         public void OnJavaScriptCollectionChanges(JSObject collectionchanged, JSValue[] collectionvalue, JSValue[] changes)
@@ -194,6 +196,7 @@ namespace MVVMAwesomium.AwesomiumBinding
                 return;
 
             JSGenericObject currentfather = _FromCSharp[sender] as JSGenericObject;
+            Console.WriteLine("hepa {0}", currentfather);
 
             object nv = propertyInfo.GetValue(sender, null);
             IJSCSGlue oldbridgedchild = currentfather.Attributes[pn];

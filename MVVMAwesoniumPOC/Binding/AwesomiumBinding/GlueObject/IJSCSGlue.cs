@@ -1,6 +1,7 @@
 ﻿using Awesomium.Core;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
@@ -13,5 +14,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         JSCSGlueType Type { get; }
 
         IEnumerable<IJSCSGlue> GetChildren();
+
+        void BuilString(StringBuilder sb, HashSet<IJSCSGlue> alreadyComputed);
     }
 }

@@ -22,7 +22,7 @@ namespace MVVMAwesomium
         private void CheckPath(string iPath)
         {
             if (!File.Exists(iPath))
-                throw new Exception("Regsitered path does not exist");
+                throw new Exception("Registered path does not exist");
         }
 
         private Uri CreateUri(string iPath)
@@ -47,7 +47,6 @@ namespace MVVMAwesomium
             CheckPath(iPath.LocalPath);
             Register(typeof(T), iPath, Id);
         }
-
 
         private Uri SolveType(Type iType, string id)
         {

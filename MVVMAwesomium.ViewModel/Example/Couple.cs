@@ -17,7 +17,9 @@ namespace MVVMAwesomium.ViewModel.Example
 
         private void DoMakeSelf()
         {
-            Two = One;
+            var t = new MVVMAwesomium.ViewModel.Example.ForNavigation.Person(){Couple=this};
+            Two = t;
+            
         }
 
         private Person _Person;

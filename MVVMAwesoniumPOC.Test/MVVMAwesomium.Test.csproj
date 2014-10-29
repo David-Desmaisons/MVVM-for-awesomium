@@ -83,8 +83,10 @@
   <ItemGroup>
     <Compile Include="Awesomium_Test_Base.cs" />
     <Compile Include="Infra\AssemblyHelper.cs" />
+    <Compile Include="Infra\WindowTest.cs" />
     <Compile Include="Infra\WPFThreadingHelper.cs" />
-    <Compile Include="NavigationTest.cs" />
+    <Compile Include="Test_DoubleNavigation.cs" />
+    <Compile Include="Test_Navigation.cs" />
     <Compile Include="Test_DateTimeConvertion.cs" />
     <Compile Include="Test_JavascriptToCSharpMapper_Simple.cs" />
     <Compile Include="Test_GlobalBuilder.cs" />

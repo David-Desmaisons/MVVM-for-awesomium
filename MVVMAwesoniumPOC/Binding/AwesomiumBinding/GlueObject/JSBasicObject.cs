@@ -35,6 +35,11 @@ namespace MVVMAwesomium.AwesomiumBinding
             return CValue.ToString();
         }
 
+         public void BuilString(StringBuilder sb, HashSet<IJSCSGlue> alreadyComputed)
+         {
+             sb.Append(this);
+         }
+
         public JSValue JSValue { get; private set; }
 
         public object CValue { get; private set; }

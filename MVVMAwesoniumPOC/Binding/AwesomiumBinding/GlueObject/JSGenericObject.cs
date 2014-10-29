@@ -10,7 +10,7 @@ using MVVMAwesomium.Infra;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
-    public class JSGenericObject : IJSObservableBridge
+    public class JSGenericObject : GlueBase, IJSObservableBridge
     {
         public JSGenericObject(JSValue value, object icValue)
         {
@@ -18,9 +18,24 @@ namespace MVVMAwesomium.AwesomiumBinding
             CValue = icValue;
         }
 
-        public override string ToString()
+
+        protected override void ComputeString(StringBuilder sb, HashSet<IJSCSGlue> alreadyComputed)
         {
-            return "{"+ string.Join(",", _Attributes.Where(kvp=>kvp.Value.Type!=JSCSGlueType.Command).Select(kvp=>string.Format(@"""{0}"":{1}",kvp.Key,kvp.Value)))+"}";
+            sb.Append("{");
+
+            bool f = true;
+            foreach (var it in _Attributes.Where(kvp => kvp.Value.Type != JSCSGlueType.Command))
+            {
+                if (!f)
+                    sb.Append(",");
+
+                sb.Append(string.Format(@"""{0}"":", it.Key));
+
+                f = false;
+                it.Value.BuilString(sb, alreadyComputed);
+            }
+
+            sb.Append("}");
         }
 
         private Dictionary<string, IJSCSGlue> _Attributes = new Dictionary<string, IJSCSGlue>();
@@ -63,7 +78,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         public void Reroot(string PropertyName, IJSCSGlue newValue)
         { 
             _Attributes[PropertyName]=newValue;
-            ((JSObject)_MappedJSValue).Invoke(PropertyName, newValue.GetJSSessionValue());    
+            ((JSObject)_MappedJSValue).InvokeAsync(PropertyName, newValue.GetJSSessionValue());    
         }     
     }
 }

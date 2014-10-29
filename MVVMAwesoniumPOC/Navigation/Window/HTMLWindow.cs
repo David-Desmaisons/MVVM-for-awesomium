@@ -12,11 +12,15 @@ namespace MVVMAwesomium.Navigation.Window
 {
     public class HTMLWindow : NotifyPropertyChangedBase, INotifyPropertyChanged
     {
+        static private int _GId = 0;
+        private int _Id;
+
         internal HTMLWindow()
         {
+            _Id = _GId++;
             _State = WindowLogicalState.Loading;
             _IsLiteningClose = false;
-            CloseReady = new BasicRelayCommand(() => _State = WindowLogicalState.Closed);
+            CloseReady = new BasicRelayCommand(() => State = WindowLogicalState.Closed);
         }
 
         private WindowLogicalState _State;
@@ -39,7 +43,7 @@ namespace MVVMAwesomium.Navigation.Window
             if (!IsListeningClose)
                 return TaskHelper.Ended();
 
-            State = WindowLogicalState.Closing;
+           
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 
             PropertyChangedEventHandler echa = null;
@@ -47,11 +51,14 @@ namespace MVVMAwesomium.Navigation.Window
             echa = (o, e) =>
                 {
                     if (State == WindowLogicalState.Closed)
+                    {
                         tcs.SetResult(null);
-                    this.PropertyChanged -= echa;
+                        this.PropertyChanged -= echa;
+                    }
                 };
 
             this.PropertyChanged += echa;
+            State = WindowLogicalState.Closing;
 
             return tcs.Task;
         }
