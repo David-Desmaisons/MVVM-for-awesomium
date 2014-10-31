@@ -28,10 +28,7 @@ namespace MVVM.Navigation2
             public INavigationSolver Navigation
             {
                 get { return _Navigation; }
-                set
-                {
-                    _Navigation = value;
-                }
+                set { _Navigation = value; }
             }
         }
 
