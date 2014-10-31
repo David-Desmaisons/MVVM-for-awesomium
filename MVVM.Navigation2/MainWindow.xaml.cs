@@ -22,18 +22,7 @@ namespace MVVM.Navigation2
     /// </summary>
     public partial class MainWindow : Window
     {
-        public class vm : INavigable
-        {
-            private INavigationSolver _Navigation;
-            public INavigationSolver Navigation
-            {
-                get { return _Navigation; }
-                set
-                {
-                    _Navigation = value;
-                }
-            }
-        }
+    
 
         private void SetUpRoute(INavigationBuilder iNavigationBuilder)
         {

@@ -1,0 +1,12 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:awe="http://schemas.awesomium.com/winfx" x:Class="MVVMAwesomium.AnimatedNavigation.MainWindow"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+
+        <awe:WebControl x:Name="One" />
+        <awe:WebControl x:Name="Two" />
+
+    </Grid>
+</Window>
