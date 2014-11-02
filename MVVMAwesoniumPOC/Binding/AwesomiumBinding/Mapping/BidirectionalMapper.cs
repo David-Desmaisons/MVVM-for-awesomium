@@ -196,7 +196,6 @@ namespace MVVMAwesomium.AwesomiumBinding
                 return;
 
             JSGenericObject currentfather = _FromCSharp[sender] as JSGenericObject;
-            Console.WriteLine("hepa {0}", currentfather);
 
             object nv = propertyInfo.GetValue(sender, null);
             IJSCSGlue oldbridgedchild = currentfather.Attributes[pn];

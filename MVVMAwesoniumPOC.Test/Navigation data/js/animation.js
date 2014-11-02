@@ -1,13 +1,13 @@
 var b = $("#BB");
 
 
-function OnEnter()
+function OnEnter(element)
 {
-	b.addClass("boxanimated");
+    $(element).addClass("boxanimated");
 }
 
-function OnClose(callback)
+function OnClose(callback, element)
 {
-	b.removeClass("boxanimated");
-	setTimeout(callback, 3000);
+    $(element).removeClass("boxanimated");
+	setTimeout(callback, 2000);
 }

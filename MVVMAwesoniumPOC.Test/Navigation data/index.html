@@ -25,10 +25,11 @@
 
 <body>
 
-<p>Welcome</p>
-<div id="BB" class="box"></div>
-
-
+    <p>Welcome</p>
+    <p>Window state:<!--ko text: __window__().State().name--><!--/ko--></p>
+    <div id="BB" class="box" data-bind="onopened:OnEnter, onclose:OnClose"></div>
+    <button data-bind="command:DoNav">Navigate</button>
+    <!--<p>Window state: ko text: ko.toJSON($data,0,2)</p>-->
 </body>
 
 

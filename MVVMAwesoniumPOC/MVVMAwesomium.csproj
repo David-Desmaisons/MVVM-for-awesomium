@@ -87,6 +87,7 @@
     <Compile Include="Binding\AwesomiumBinding\GlueObject\IJSObservableBridge.cs" />
     <Compile Include="Binding\AwesomiumBinding\GlueObject\JSBasicObject.cs" />
     <Compile Include="Binding\AwesomiumBinding\GlueObject\JSCSGlueType.cs" />
+    <Compile Include="Binding\AwesomiumBinding\Helper\ViewReadyExecuter.cs" />
     <Compile Include="Binding\AwesomiumBinding\Mapping\CollectionChanges\CollectionChangeType.cs" />
     <Compile Include="Binding\AwesomiumBinding\Mapping\CollectionChanges\CollectionChanges.cs" />
     <Compile Include="Binding\AwesomiumBinding\Mapping\CollectionChanges\IndividualCollectionChange.cs" />

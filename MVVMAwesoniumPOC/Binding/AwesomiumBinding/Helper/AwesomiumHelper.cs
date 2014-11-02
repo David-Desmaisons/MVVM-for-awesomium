@@ -1,4 +1,5 @@
 ﻿using Awesomium.Core;
+using MVVMAwesomium.Binding.AwesomiumBinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,17 +31,8 @@ namespace MVVMAwesomium.AwesomiumBinding
 
 
         public static void ExecuteWhenReady(this IWebView view, Action ToBeApply)
-        {         
-            if (view.IsDocumentReady)
-            {
-                WebCore.QueueWork(() => ToBeApply());
-            }
-            else
-            {
-                UrlEventHandler ea = null;
-                ea = (o, e) => { ToBeApply(); view.DocumentReady -= ea; };
-                view.DocumentReady += ea;
-            }
+        {
+            new ViewReadyExecuter(view, ToBeApply).Do();
         }
     }
 }

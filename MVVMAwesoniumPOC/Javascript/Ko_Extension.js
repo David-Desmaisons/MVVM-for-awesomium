@@ -164,13 +164,13 @@ function Null_reference() {
             if (v.when().name !== 'Closing')
                 return;
 
-            v.do(function () { bindingContext.$data.__window__().CloseReady().Execute(); });
+            v.do(function () { bindingContext.$data.__window__().CloseReady().Execute(); }, element);
         }
     };
 
     ko.bindingHandlers.onopened= {
         preprocess: function (value) {
-            return '{when: $data.__window__().State, do: function(){' + value + '}}';
+            return '{when: $data.__window__().State, do: ' + value + '}';
         },
 
         update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
@@ -178,7 +178,7 @@ function Null_reference() {
             if (v.when().name !== 'Opened')
                 return;
 
-            v.do();
+            v.do(element);
         }
     };
 

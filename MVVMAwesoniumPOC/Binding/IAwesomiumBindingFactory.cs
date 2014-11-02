@@ -9,7 +9,6 @@ namespace MVVMAwesomium
 
         Task<IAwesomeBinding> Bind(IWebView view, object iViewModel, object addinfo, JavascriptBindingMode iMode);
 
-
         Task<IAwesomeBinding> Bind(IWebView view, string json);
     }
 }
