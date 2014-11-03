@@ -165,6 +165,8 @@
     <Content Include="Navigation data\js\animation.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Navigation data\js\knockout.js" />
+    <Content Include="Navigation data\js\Ko_Extension.js" />
     <Content Include="Navigation data\js\ref\jquery.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
