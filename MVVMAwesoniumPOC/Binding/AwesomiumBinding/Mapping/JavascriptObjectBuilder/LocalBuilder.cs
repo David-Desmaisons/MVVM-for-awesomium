@@ -67,9 +67,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public JSValue CreateNull()
         {
-            return _IWebView.EvaluateSafe(() =>
-                        UpdateObject(_IWebView.ExecuteJavascriptWithResult("new Null_reference()")));
-
+            return _IWebView.EvaluateSafe(() => _IWebView.ExecuteJavascriptWithResult("new Null_reference()"));
         }
     }
 }

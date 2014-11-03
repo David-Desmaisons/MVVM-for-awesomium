@@ -94,6 +94,7 @@
     <Compile Include="Test_ConvertToJSO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Infra\WPFTester.cs" />
+    <Compile Include="Test_NavigationBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MVVMAwesomium.ViewModel\MVVMAwesomium.ViewModel.csproj">

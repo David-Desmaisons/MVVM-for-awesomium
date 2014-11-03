@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MVVMAwesomium.AwesomiumBinding;
 
 namespace MVVMAwesomium.Binding.AwesomiumBinding
 {
@@ -19,19 +20,22 @@ namespace MVVMAwesomium.Binding.AwesomiumBinding
 
         internal void Do()
         {
-            if (_IWebView.IsDocumentReady && !_IWebView.IsLoading)
+            if (_IWebView.IsDocumentReady && !_IWebView.EvaluateSafe(()=>_IWebView.IsLoading) )
                 WebCore.QueueWork(_Do);
             else
             {
-                if (_IWebView.IsDocumentReady)
-                    _DoneCount++;
-                else
-                    _IWebView.DocumentReady += _IWebView_DocumentReady;
+                WebCore.QueueWork(() =>
+                {
+                    if (_IWebView.IsDocumentReady)
+                        _DoneCount++;
+                    else
+                        _IWebView.DocumentReady += _IWebView_DocumentReady;
 
-                if (_IWebView.IsLoading)
-                    _IWebView.LoadingFrameComplete += _IWebView_LoadingFrameComplete;
-                else
-                    _DoneCount++;
+                    if (_IWebView.IsLoading)
+                        _IWebView.LoadingFrameComplete += _IWebView_LoadingFrameComplete;
+                    else
+                        _DoneCount++;
+                });
             }
         }
 

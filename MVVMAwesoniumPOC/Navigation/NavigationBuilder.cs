@@ -15,8 +15,15 @@ namespace MVVMAwesomium
 
         private void Register(Type itype, Uri uri, string id)
         {
-            IDictionary<string, Uri> res = _Mapper.FindOrCreateEntity(itype, t => new Dictionary<string, Uri>());
-            res.Add(id ?? string.Empty, uri);
+            try
+            {
+                IDictionary<string, Uri> res = _Mapper.FindOrCreateEntity(itype, t => new Dictionary<string, Uri>());
+                res.Add(id ?? string.Empty, uri);
+            }
+            catch (ArgumentException)
+            {
+                throw new ArgumentException("A same entity can not be registered twice");
+            }
         }
 
         private void CheckPath(string iPath)

@@ -43,7 +43,7 @@ namespace MVVMAwesomium.AwesomiumBinding
                 return new JSBasicObject(value, ifrom);
             }
 
-            if (ConvertWithCahe(dfr, out value))
+            if (ConvertWithCache(dfr, out value))
             {
                 var trueres = new JSBasicObject(value, ifrom);
                 _Cacher.CacheLocal(ifrom, trueres);
@@ -130,13 +130,13 @@ namespace MVVMAwesomium.AwesomiumBinding
             return true;
         }
 
-        private bool ConvertWithCahe(Enum source, out JSValue res)
+        private bool ConvertWithCache(Enum source, out JSValue res)
         {
             res = _IJSOBuilder.CreateEnum(source);
             return true;
         }
 
-        private bool ConvertWithCahe(object source, out JSValue res)
+        private bool ConvertWithCache(object source, out JSValue res)
         {
             res = new JSValue();
             return false;

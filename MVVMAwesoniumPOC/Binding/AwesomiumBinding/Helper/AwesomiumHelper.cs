@@ -29,7 +29,6 @@ namespace MVVMAwesomium.AwesomiumBinding
             }
         }
 
-
         public static void ExecuteWhenReady(this IWebView view, Action ToBeApply)
         {
             new ViewReadyExecuter(view, ToBeApply).Do();
