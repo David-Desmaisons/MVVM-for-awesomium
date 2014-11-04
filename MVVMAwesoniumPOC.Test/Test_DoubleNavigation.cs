@@ -294,6 +294,78 @@ namespace MVVMAwesomium.Test
             });
         }
 
+        [Fact]
+        public void Test_WPFBrowserNavigator_Navition_3_screens()
+        {
+            TestNavigation((wpfnav, WindowTest)
+                =>
+            {
+                wpfnav.Should().NotBeNull();
+                SetUpRoute(_INavigationBuilder);
+                _INavigationBuilder.Register<A1>("javascript\\navigation_3.html","NewPath");
+                wpfnav.UseINavigable = true;
+                var a1 = new A1();
+                var a2 = new A2();
+                var mre = new ManualResetEvent(false);
+
+                WindowTest.RunOnUIThread(
+                () =>
+                {
+                    wpfnav.Navigate(a1).ContinueWith
+               (
+                   t =>
+                   {
+                       a1.Navigation.Should().Be(wpfnav);
+                       mre.Set();
+                   });
+                });
+                mre.WaitOne();
+
+                WindowTest.RunOnUIThread(
+                () =>
+                wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
+
+                mre = new ManualResetEvent(false);
+
+                WindowTest.RunOnUIThread(
+                () =>
+                {
+                    wpfnav.Navigate(a2).ContinueWith
+               (
+                   t =>
+                   {
+                       a2.Navigation.Should().Be(wpfnav);
+                       mre.Set();
+                   });
+                });
+                mre.WaitOne();
+
+                WindowTest.RunOnUIThread(() =>
+                     wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_2.html"));
+
+
+                WindowTest.RunOnUIThread(
+            () =>
+            {
+                wpfnav.Navigate(a1, "NewPath").ContinueWith
+           (
+               t =>
+               {
+                   a1.Navigation.Should().Be(wpfnav);
+                   mre.Set();
+               });
+            });
+                mre.WaitOne();
+
+                Thread.Sleep(2000);
+
+
+                WindowTest.RunOnUIThread(() =>
+                     wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_3.html"));
+
+            });
+        }
+
 
         [Fact]
         public void Test_WPFBrowserNavigator_Navition_Simple_2()

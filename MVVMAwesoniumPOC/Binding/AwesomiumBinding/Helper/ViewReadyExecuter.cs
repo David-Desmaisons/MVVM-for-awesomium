@@ -20,23 +20,20 @@ namespace MVVMAwesomium.Binding.AwesomiumBinding
 
         internal void Do()
         {
-            if (_IWebView.IsDocumentReady && !_IWebView.EvaluateSafe(()=>_IWebView.IsLoading) )
-                WebCore.QueueWork(_Do);
-            else
-            {
-                WebCore.QueueWork(() =>
-                {
-                    if (_IWebView.IsDocumentReady)
-                        _DoneCount++;
-                    else
-                        _IWebView.DocumentReady += _IWebView_DocumentReady;
+            WebCore.QueueWork(() =>
+                 {
+                     if (_IWebView.IsDocumentReady)
+                         _DoneCount++;
+                     else
+                         _IWebView.DocumentReady += _IWebView_DocumentReady;
 
-                    if (_IWebView.IsLoading)
-                        _IWebView.LoadingFrameComplete += _IWebView_LoadingFrameComplete;
-                    else
-                        _DoneCount++;
-                });
-            }
+                     if (_IWebView.IsLoading)
+                         _IWebView.LoadingFrameComplete += _IWebView_LoadingFrameComplete;
+                     else
+                         _DoneCount++;
+
+                     CheckCompletion(0);
+                 });
         }
 
         void _IWebView_LoadingFrameComplete(object sender, FrameEventArgs e)
@@ -54,10 +51,11 @@ namespace MVVMAwesomium.Binding.AwesomiumBinding
             CheckCompletion();
         }
 
-        private void CheckCompletion()
+        private void CheckCompletion(int add = 1)
         {
-            if (++_DoneCount == 2)
-                Do();
+            _DoneCount += add;
+            if (_DoneCount == 2)
+                _Do();
         }
     }
 }
