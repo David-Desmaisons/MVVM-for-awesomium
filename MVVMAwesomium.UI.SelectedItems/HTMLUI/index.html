@@ -15,10 +15,12 @@
         <select  multiple="multiple"data-bind="options:Skills,  
                                                         optionsText: function(item) { return item.Type() + ' ' + item.Name()},selectedOptions:SelectedSkills"></select>
 
-        <button data-bind="click: AddSkill">Add Skill</button>
+        <button data-bind="command: AddSkill">Add Skill</button>
 
-        <input data-bind="value:MainSkill().Type" placeholder="Type" />
-        <input data-bind="value:MainSkill().Name" placeholder="Name" />
+        <!--ko with:MainSkill-->
+        <input data-bind="value:Type" placeholder="Type" />
+        <input data-bind="value:Name" placeholder="Name" />
+        <!--/ko-->
   
         <!--<button data-bind="click: MakeSelf">Click me</button>-->
 	</body>
