@@ -151,15 +151,16 @@
     <Content Include="src\js\jquery-1.7.1.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="src\js\ko-view.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="src\js\bower_components\jquery\MIT-LICENSE.txt" />
     <Content Include="src\js\bower_components\knockout\dist\knockout.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="src\js\bower_components\knockout\Gruntfile.js" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="src\js\init.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
