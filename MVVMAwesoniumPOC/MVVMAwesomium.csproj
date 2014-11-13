@@ -101,6 +101,9 @@
     <Compile Include="Infra\DictionaryExtension.cs" />
     <Compile Include="Infra\TypeExtension.cs" />
     <Compile Include="Infra\VM\ViewModelBase.cs" />
+    <Compile Include="Navigation\HTMLWindow.xaml.cs">
+      <DependentUpon>HTMLWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Navigation\INavigable.cs" />
     <Compile Include="Navigation\INavigationBuilder.cs" />
     <Compile Include="Navigation\INavigationSolver.cs" />
@@ -152,6 +155,9 @@
     <None Include="Javascript\Ko_Extension.min.js.map">
       <DependentUpon>Ko_Extension.min.js</DependentUpon>
     </None>
+    <None Include="Navigation\javascript\ko-view.min.js.map">
+      <DependentUpon>ko-view.min.js</DependentUpon>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -168,6 +174,16 @@
     <Content Include="Javascript\Ko_Extension.min.js">
       <DependentUpon>Ko_Extension.js</DependentUpon>
     </Content>
+    <Content Include="Navigation\javascript\ko-view.js" />
+    <EmbeddedResource Include="Navigation\javascript\ko-view.min.js">
+      <DependentUpon>ko-view.js</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Navigation\HTMLWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

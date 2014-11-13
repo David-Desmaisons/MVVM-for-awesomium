@@ -26,11 +26,7 @@ namespace MVVMAwesomium.AnimatedNavigation
 
         public ICommand DoNav { get; private set;}
 
-        public INavigationSolver Navigation
-        {
-            get;
-            set;
-        }
+        public INavigationSolver Navigation { get; set; }
     }
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -44,21 +40,11 @@ namespace MVVMAwesomium.AnimatedNavigation
 
         public MainWindow()
         {
-            WebConfig webC = new WebConfig();
-            webC.RemoteDebuggingPort = 8001;
-            webC.RemoteDebuggingHost = "127.0.0.1";
-            WebCore.Initialize(webC);
-
-
             InitializeComponent();
 
-
-            var nb = new NavigationBuilder();
-            SetUpRoute(nb);
-            WPFDoubleBrowserNavigator bn = new WPFDoubleBrowserNavigator(this.One, this.Two, nb) { UseINavigable = true };
-
+            SetUpRoute(HTMLWindow.INavigationBuilder);
             var datacontext = new Nav();
-            bn.Navigate(datacontext);
+            HTMLWindow.Navigate(datacontext);
         }
     }
 }

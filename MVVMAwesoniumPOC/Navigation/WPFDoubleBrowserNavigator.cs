@@ -129,6 +129,11 @@ namespace MVVMAwesomium
             return tcs.Task;
         }
 
+        public void ExcecuteJavascript(string icode)
+        {
+            _CurrentWebControl.ExecuteJavascript(icode);
+        }
+
         public Task Navigate(object iViewModel, string Id = null, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
         {
             if ((iViewModel == null) || (_Navigating))
@@ -151,10 +156,7 @@ namespace MVVMAwesomium
         private bool _UseINavigable = false;
         public bool UseINavigable
         {
-            get
-            {
-                return _UseINavigable;
-            }
+            get { return _UseINavigable; }
             set
             {
                 if (_UseINavigable == value)
