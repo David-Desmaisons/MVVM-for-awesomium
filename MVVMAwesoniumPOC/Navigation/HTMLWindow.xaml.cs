@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Diagnostics;
 
 namespace MVVMAwesomium.Navigation
 {
@@ -55,7 +56,7 @@ namespace MVVMAwesomium.Navigation
             if (_KoView==null)
             {
                 using (Stream stream = Assembly.GetExecutingAssembly().
-                            GetManifestResourceStream("Navigation.javascript.ko-view.min.js"))
+                            GetManifestResourceStream("MVVMAwesomium.Navigation.javascript.ko-view.min.js"))
                 {
                     using (StreamReader reader = new StreamReader(stream))
                     {
@@ -69,8 +70,16 @@ namespace MVVMAwesomium.Navigation
         public void ShowDebugWindow()
         {
             _WPFDoubleBrowserNavigator.ExcecuteJavascript(GetKoView());
+            _WPFDoubleBrowserNavigator.ExcecuteJavascript("ko.doDebug();");
         }
 
+        public void OpenDebugBrowser()
+        {
+            if (_BrowserDebug)
+                Process.Start("http://127.0.0.1:8001/");
+        }
+
+      
         private INavigationBuilder _INavigationBuilder;
         public INavigationBuilder INavigationBuilder
         {

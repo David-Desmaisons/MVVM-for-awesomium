@@ -46,5 +46,15 @@ namespace MVVMAwesomium.AnimatedNavigation
             var datacontext = new Nav();
             HTMLWindow.Navigate(datacontext);
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            HTMLWindow.ShowDebugWindow();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            HTMLWindow.OpenDebugBrowser();
+        }
     }
 }
