@@ -1,6 +1,3 @@
-var b = $("#BB");
-
-
 function OnEnter(element)
 {
     $(element).addClass("boxanimated");
