@@ -21,6 +21,9 @@ namespace MVVMAwesomium.Navigation
 {
     public partial class HTMLWindow : UserControl, INavigationSolver
     {
+        private  WebConfig _WebConfig =
+                new WebConfig() { RemoteDebuggingPort = 8001, RemoteDebuggingHost = "127.0.0.1"};
+
         private WPFDoubleBrowserNavigator _WPFDoubleBrowserNavigator;
         public HTMLWindow()
             : this(null)
@@ -31,6 +34,8 @@ namespace MVVMAwesomium.Navigation
         {
             _IUrlSolver = iIUrlSolver ?? new NavigationBuilder();
             _INavigationBuilder = _IUrlSolver as INavigationBuilder;
+
+
 
             InitializeComponent();
             _WPFDoubleBrowserNavigator = new WPFDoubleBrowserNavigator(this.First, this.Second, _IUrlSolver);
@@ -45,10 +50,7 @@ namespace MVVMAwesomium.Navigation
 
         private void DoDebug()
         {
-            WebConfig webC = new WebConfig();
-            webC.RemoteDebuggingPort = 8001;
-            webC.RemoteDebuggingHost = "127.0.0.1";
-            WebCore.Initialize(webC);
+            WebCore.Initialize(_WebConfig);
         }
 
         private bool _RunKoView = false;
@@ -78,9 +80,8 @@ namespace MVVMAwesomium.Navigation
         public void OpenDebugBrowser()
         {
             if (_BrowserDebug)
-                Process.Start("http://127.0.0.1:8001/");
+                Process.Start(string.Format("http://{0}:{1}/",_WebConfig.RemoteDebuggingHost,_WebConfig.RemoteDebuggingPort));
         }
-
 
         private INavigationBuilder _INavigationBuilder;
         public INavigationBuilder INavigationBuilder
