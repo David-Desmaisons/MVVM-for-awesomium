@@ -22,20 +22,21 @@ namespace MVVMAwesomium.Navigation
     public partial class HTMLWindow : UserControl, INavigationSolver
     {
         private WPFDoubleBrowserNavigator _WPFDoubleBrowserNavigator;
-        public HTMLWindow():this(null)
+        public HTMLWindow()
+            : this(null)
         {
         }
 
         public HTMLWindow(IUrlSolver iIUrlSolver)
         {
-            _IUrlSolver = iIUrlSolver?? new NavigationBuilder();
+            _IUrlSolver = iIUrlSolver ?? new NavigationBuilder();
             _INavigationBuilder = _IUrlSolver as INavigationBuilder;
- 
-            InitializeComponent();           
+
+            InitializeComponent();
             _WPFDoubleBrowserNavigator = new WPFDoubleBrowserNavigator(this.First, this.Second, _IUrlSolver);
         }
 
-        private bool _BrowserDebug=false;
+        private bool _BrowserDebug = false;
         public bool BrowserDebug
         {
             get { return _BrowserDebug; }
@@ -50,27 +51,28 @@ namespace MVVMAwesomium.Navigation
             WebCore.Initialize(webC);
         }
 
-        private string _KoView = null;
-        private string GetKoView()
+        private bool _RunKoView = false;
+        private void RunKoView()
         {
-            if (_KoView==null)
+            if (_RunKoView)
+                return;
+
+            _RunKoView = true;
+
+            using (Stream stream = Assembly.GetExecutingAssembly().
+                        GetManifestResourceStream("MVVMAwesomium.Navigation.javascript.ko-view.min.js"))
             {
-                using (Stream stream = Assembly.GetExecutingAssembly().
-                            GetManifestResourceStream("MVVMAwesomium.Navigation.javascript.ko-view.min.js"))
+                using (StreamReader reader = new StreamReader(stream))
                 {
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                       _KoView = reader.ReadToEnd();
-                    }
+                    _WPFDoubleBrowserNavigator.ExcecuteJavascript(reader.ReadToEnd());
                 }
             }
-            return _KoView;
         }
 
         public void ShowDebugWindow()
         {
-            _WPFDoubleBrowserNavigator.ExcecuteJavascript(GetKoView());
-            _WPFDoubleBrowserNavigator.ExcecuteJavascript("ko.doDebug();");
+            RunKoView();
+            _WPFDoubleBrowserNavigator.ExcecuteJavascript("ko.dodebug();");
         }
 
         public void OpenDebugBrowser()
@@ -79,7 +81,7 @@ namespace MVVMAwesomium.Navigation
                 Process.Start("http://127.0.0.1:8001/");
         }
 
-      
+
         private INavigationBuilder _INavigationBuilder;
         public INavigationBuilder INavigationBuilder
         {
@@ -87,7 +89,7 @@ namespace MVVMAwesomium.Navigation
         }
 
         private IUrlSolver _IUrlSolver;
-        public IUrlSolver IUrlSolver 
+        public IUrlSolver IUrlSolver
         {
             get { return _IUrlSolver; }
         }
