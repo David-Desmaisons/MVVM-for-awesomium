@@ -5,11 +5,26 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:awe="http://schemas.awesomium.com/winfx" x:Class="MVVMAwesomium.Navigation.HTMLWindow" 
              mc:Ignorable="d" 
+             x:Name="Root"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
 
-        <awe:WebControl x:Name="First" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"/>
-        <awe:WebControl x:Name="Second" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"/>
+        <awe:WebControl x:Name="First" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+        <awe:WebControl x:Name="Second" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+
+        <Button Visibility="{Binding ElementName=Root,Path=IsDebug,Converter={StaticResource BoolToVis}}"  Content="Ko-Debug" HorizontalAlignment="Right"  Grid.Row="1" Width="74" Margin="0,0,10,5" Click="Button_Click"/>
+        <Button Visibility="{Binding ElementName=Root,Path=IsDebug,Converter={StaticResource BoolToVis}}" Content="Open browser" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="1" Width="85"  Margin="10,0,0,5" Click="Button_Click_1"/>
 
     </Grid>
 </UserControl>

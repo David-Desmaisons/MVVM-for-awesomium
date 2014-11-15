@@ -52,10 +52,13 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             return InjectInHTLMSession(_Root, true).ContinueWith(_ =>
                 {
-                    if (ListenToCSharp)
-                    {
-                        ListenToCSharpChanges(_Root);
-                    }
+                    WebCore.QueueWork(() =>
+                   {
+                       if (ListenToCSharp)
+                       {
+                           ListenToCSharpChanges(_Root);
+                       }
+                   });
                 }
             );
         }

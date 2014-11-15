@@ -21,8 +21,17 @@ namespace MVVMAwesomium.Navigation
 {
     public partial class HTMLWindow : UserControl, INavigationSolver
     {
-        private  WebConfig _WebConfig =
-                new WebConfig() { RemoteDebuggingPort = 8001, RemoteDebuggingHost = "127.0.0.1"};
+        private WebConfig _WebConfig =
+                new WebConfig() { RemoteDebuggingPort = 8001, RemoteDebuggingHost = "127.0.0.1" };
+
+        public Boolean IsDebug
+        {
+            get { return (Boolean)this.GetValue(IsDebugProperty); }
+            set { this.SetValue(IsDebugProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsDebugProperty =
+            DependencyProperty.Register("IsDebug", typeof(Boolean), typeof(HTMLWindow), new PropertyMetadata(false, DebugChanged));
 
         private WPFDoubleBrowserNavigator _WPFDoubleBrowserNavigator;
         public HTMLWindow()
@@ -35,40 +44,39 @@ namespace MVVMAwesomium.Navigation
             _IUrlSolver = iIUrlSolver ?? new NavigationBuilder();
             _INavigationBuilder = _IUrlSolver as INavigationBuilder;
 
-
-
             InitializeComponent();
             _WPFDoubleBrowserNavigator = new WPFDoubleBrowserNavigator(this.First, this.Second, _IUrlSolver);
         }
 
-        private bool _BrowserDebug = false;
-        public bool BrowserDebug
+
+        private static bool _First = true;
+        private  static void DebugChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            get { return _BrowserDebug; }
-            set { _BrowserDebug = value; if (_BrowserDebug) DoDebug(); }
+            if (!_First) return;   
+            HTMLWindow w = d as HTMLWindow;
+            if (w.IsDebug)
+            {
+                WebCore.Initialize(w._WebConfig);
+                _First = false;
+            }
         }
 
-        private void DoDebug()
-        {
-            WebCore.Initialize(_WebConfig);
-        }
 
-        private bool _RunKoView = false;
+        private string _KoView = null;
         private void RunKoView()
         {
-            if (_RunKoView)
-                return;
-
-            _RunKoView = true;
-
-            using (Stream stream = Assembly.GetExecutingAssembly().
-                        GetManifestResourceStream("MVVMAwesomium.Navigation.javascript.ko-view.min.js"))
+            if (_KoView == null)
             {
-                using (StreamReader reader = new StreamReader(stream))
+                using (Stream stream = Assembly.GetExecutingAssembly().
+                        GetManifestResourceStream("MVVMAwesomium.Navigation.javascript.ko-view.min.js"))
                 {
-                    _WPFDoubleBrowserNavigator.ExcecuteJavascript(reader.ReadToEnd());
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        _KoView = reader.ReadToEnd();
+                    }
                 }
             }
+            _WPFDoubleBrowserNavigator.ExcecuteJavascript(_KoView);
         }
 
         public void ShowDebugWindow()
@@ -79,8 +87,7 @@ namespace MVVMAwesomium.Navigation
 
         public void OpenDebugBrowser()
         {
-            if (_BrowserDebug)
-                Process.Start(string.Format("http://{0}:{1}/",_WebConfig.RemoteDebuggingHost,_WebConfig.RemoteDebuggingPort));
+            Process.Start(string.Format("http://{0}:{1}/", _WebConfig.RemoteDebuggingHost, _WebConfig.RemoteDebuggingPort));
         }
 
         private INavigationBuilder _INavigationBuilder;
@@ -115,6 +122,16 @@ namespace MVVMAwesomium.Navigation
         public void Dispose()
         {
             _WPFDoubleBrowserNavigator.Dispose();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ShowDebugWindow();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            OpenDebugBrowser();
         }
     }
 }

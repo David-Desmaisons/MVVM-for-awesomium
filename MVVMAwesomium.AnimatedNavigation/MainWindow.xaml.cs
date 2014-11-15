@@ -49,12 +49,7 @@ namespace MVVMAwesomium.AnimatedNavigation
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            HTMLWindow.ShowDebugWindow();
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            HTMLWindow.OpenDebugBrowser();
+            HTMLWindow.IsDebug = !HTMLWindow.IsDebug;
         }
     }
 }

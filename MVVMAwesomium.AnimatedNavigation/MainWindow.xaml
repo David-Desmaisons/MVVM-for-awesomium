@@ -4,9 +4,8 @@
         xmlns:awe="http://schemas.awesomium.com/winfx" x:Class="MVVMAwesomium.AnimatedNavigation.MainWindow"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <Navigation:HTMLWindow UseINavigable="True" BrowserDebug="True" x:Name="HTMLWindow"/>
-        <Button Content="ko Debug" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="75" Click="Button_Click"/>
-        <Button Content="Web Browser Debug" HorizontalAlignment="Right" Margin="0,0,100,10" VerticalAlignment="Bottom" Click="Button_Click_1" />
+        <Navigation:HTMLWindow UseINavigable="True" IsDebug="True" x:Name="HTMLWindow"/>
+         <Button Content="Debug" HorizontalAlignment="Right" Margin="0,0,30,10" VerticalAlignment="Bottom" Click="Button_Click" />
 
     </Grid>
 </Window>
