@@ -19,6 +19,9 @@ using System.Windows.Threading;
 
 using MVVMAwesomium.Infra;
 using MVVMAwesomium.ViewModel.Infra;
+using MVVMAwesomium.Navigation;
+using System.Windows.Forms;
+using System.Windows.Automation;
 
 namespace MVVMAwesomium.Test
 {
@@ -28,14 +31,31 @@ namespace MVVMAwesomium.Test
 
     public class Test_DoubleNavigation
     {
-        private NavigationBuilder _INavigationBuilder;
+        //private NavigationBuilder _INavigationBuilder;
 
         public Test_DoubleNavigation()
         {
-            _INavigationBuilder = new NavigationBuilder();
+            //_INavigationBuilder = new NavigationBuilder();
         }
 
-        private WindowTest BuildWindow(Func<Tuple<WebControl, WebControl>> iWebControlFac)
+        //private WindowTest BuildWindow(Func<Tuple<WebControl, WebControl>> iWebControlFac)
+        //{
+        //    return new WindowTest(
+        //        (w) =>
+        //        {
+        //            StackPanel stackPanel = new StackPanel();
+        //            w.Content = stackPanel;
+        //            var iWebControl = iWebControlFac();
+        //            w.RegisterName(iWebControl.Item1.Name, iWebControl);
+        //            stackPanel.Children.Add(iWebControl.Item1);
+
+        //            w.RegisterName(iWebControl.Item2.Name, iWebControl);
+        //            stackPanel.Children.Add(iWebControl.Item2);
+        //        }
+        //        );
+        //}
+
+        private WindowTest BuildWindow(Func<HTMLWindow> iWebControlFac)
         {
             return new WindowTest(
                 (w) =>
@@ -43,35 +63,28 @@ namespace MVVMAwesomium.Test
                     StackPanel stackPanel = new StackPanel();
                     w.Content = stackPanel;
                     var iWebControl = iWebControlFac();
-                    w.RegisterName(iWebControl.Item1.Name, iWebControl);
-                    stackPanel.Children.Add(iWebControl.Item1);
-
-                    w.RegisterName(iWebControl.Item2.Name, iWebControl);
-                    stackPanel.Children.Add(iWebControl.Item2);
+                    w.RegisterName(iWebControl.Name, iWebControl);
+                    stackPanel.Children.Add(iWebControl);
                 }
                 );
         }
 
 
-        internal void TestNavigation(Action<WPFDoubleBrowserNavigator, WindowTest> Test)
+        internal void TestNavigation(Action<INavigationBuilder, HTMLWindow, WindowTest> Test)
         {
             AssemblyHelper.SetEntryAssembly();
-            WebControl wc1 = null;
-            WebControl wc2 = null;
-            Func<Tuple<WebControl, WebControl>> Build = () =>
-                {
-                    wc1 = new WebControl() { Name = "WebControl1" };
-                    wc2 = new WebControl() { Name = "WebControl2" };
-                    return new Tuple<WebControl, WebControl>(wc1, wc2);
-                };
-
-            using (var wcontext = BuildWindow(Build))
+            HTMLWindow wc1 = null;
+            Func<HTMLWindow> iWebControlFac = () =>
             {
-                WPFDoubleBrowserNavigator res = null;
-                wcontext.RunOnUIThread(()=>res =  new WPFDoubleBrowserNavigator(wc1,wc2, _INavigationBuilder));
-                using (res)
-                { 
-                    Test(res, wcontext);
+                wc1 = new HTMLWindow();
+                return wc1;
+            };
+
+            using (var wcontext = BuildWindow(iWebControlFac))
+            {
+                using (wc1)
+                {
+                    Test(wc1.NavigationBuilder, wc1, wcontext);
                 }
             }
         }
@@ -116,25 +129,27 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_WPFBrowserNavigator_Simple()
         {
-            TestNavigation( (wpfnav, WindowTest)
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
                 {
                     wpfnav.Should().NotBeNull();
-                    SetUpRoute(_INavigationBuilder); 
+                    SetUpRoute(wpfbuild);
                     wpfnav.UseINavigable = true;
                     var a = new A1();
                     var mre = new ManualResetEvent(false);
 
                     WindowTest.RunOnUIThread(
-                    () =>
+               () =>
+               {
+                   wpfnav.Navigate(a).ContinueWith(t => mre.Set());
+               });
+
+                    mre.WaitOne();
+
+                    WindowTest.RunOnUIThread(() =>
                     {
-                        wpfnav.Navigate(a).ContinueWith
-                   (
-                       t =>
-                       {
-                           a.Navigation.Should().Be(wpfnav);
-                           mre.Set();
-                       });
+                        //a1.Navigation.Should().Be(wpfnav);
+                        a.Navigation.Should().NotBeNull();
                     });
 
 
@@ -143,82 +158,57 @@ namespace MVVMAwesomium.Test
                 });
         }
 
-        [Fact]
-        public void Test_WPFBrowserNavigator_Register_ShouldNotAceptBadPath()
-        {
-            //TestNavigation((wpfnav, WindowTest)
-            //    =>
-            //    {
-            _INavigationBuilder.Should().NotBeNull();
-                    Action wf = () =>
-                        {
-                            _INavigationBuilder.Register<A1>("javascript\\navigationk_1.html");
-                        };
-                    wf.ShouldThrow<Exception>();
-
-                    wf = () =>
-                    {
-                        _INavigationBuilder.RegisterAbsolute<A1>("C:\\javascript\\navigationk_1.html");
-                    };
-                    wf.ShouldThrow<Exception>();
-
-                    wf = () =>
-                    {
-                        _INavigationBuilder.Register<A1>(new Uri("C:\\navigationk_1.html"));
-                    };
-                    wf.ShouldThrow<Exception>();
-
-                //});
-        }
 
 
         [Fact]
         public void Test_WPFBrowserNavigator_Navition_Simple()
         {
-            TestNavigation((wpfnav, WindowTest)
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
             {
                 wpfnav.Should().NotBeNull();
-                SetUpRoute(_INavigationBuilder);
+                SetUpRoute(wpfbuild);
                 wpfnav.UseINavigable = true;
                 var a1 = new A1();
                 var a2 = new A2();
                 var mre = new ManualResetEvent(false);
 
                 WindowTest.RunOnUIThread(
-                () =>
-                {
-                    wpfnav.Navigate(a1).ContinueWith
-               (
-                   t =>
-                   {
-                       a1.Navigation.Should().Be(wpfnav);
-                       mre.Set();
-                   });
-                });
+               () =>
+               {
+                   wpfnav.Navigate(a1).ContinueWith(t => mre.Set());
+               });
+
                 mre.WaitOne();
+
+                WindowTest.RunOnUIThread(() =>
+                {
+                    //a1.Navigation.Should().Be(wpfnav);
+                    a1.Navigation.Should().NotBeNull();
+                });
 
                 WindowTest.RunOnUIThread(
                 () =>
-                wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
+                wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
 
                 mre = new ManualResetEvent(false);
 
                 WindowTest.RunOnUIThread(
-                () =>
-                {
-                    wpfnav.Navigate(a2).ContinueWith
-               (
-                   t =>
-                   {
-                       a2.Navigation.Should().Be(wpfnav);
-                       mre.Set();
-                   });
-                });
+              () =>
+              {
+                  wpfnav.Navigate(a2).ContinueWith(t => mre.Set());
+              });
+
                 mre.WaitOne();
 
                 WindowTest.RunOnUIThread(() =>
-                     wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_2.html"));
+                {
+                    //a1.Navigation.Should().Be(wpfnav);
+                    a1.Navigation.Should().NotBeNull();
+                });
+
+                WindowTest.RunOnUIThread(() =>
+                     wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_2.html"));
 
             });
         }
@@ -226,70 +216,73 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_WPFBrowserNavigator_Navition_Round_Trip()
         {
-            TestNavigation((wpfnav, WindowTest)
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
             {
                 wpfnav.Should().NotBeNull();
-                SetUpRoute(_INavigationBuilder);
+                SetUpRoute(wpfbuild);
                 wpfnav.UseINavigable = true;
                 var a1 = new A1();
                 var a2 = new A2();
                 var mre = new ManualResetEvent(false);
 
                 WindowTest.RunOnUIThread(
-                () =>
-                {
-                    wpfnav.Navigate(a1).ContinueWith
-               (
-                   t =>
-                   {
-                       a1.Navigation.Should().Be(wpfnav);
-                       mre.Set();
-                   });
-                });
+               () =>
+               {
+                   wpfnav.Navigate(a1).ContinueWith(t => mre.Set());
+               });
+
                 mre.WaitOne();
+
+                WindowTest.RunOnUIThread(() =>
+                {
+                    //a1.Navigation.Should().Be(wpfnav);
+                    a1.Navigation.Should().NotBeNull();
+                });
 
                 WindowTest.RunOnUIThread(
                 () =>
-                wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
+                wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
 
                 mre = new ManualResetEvent(false);
 
                 WindowTest.RunOnUIThread(
                 () =>
                 {
-                    wpfnav.Navigate(a2).ContinueWith
-               (
-                   t =>
-                   {
-                       a2.Navigation.Should().Be(wpfnav);
-                       mre.Set();
-                   });
+                    wpfnav.Navigate(a2).ContinueWith(t => mre.Set());
                 });
+
                 mre.WaitOne();
 
                 WindowTest.RunOnUIThread(() =>
-                     wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_2.html"));
+                {
+                    //a1.Navigation.Should().Be(wpfnav);
+                    a1.Navigation.Should().NotBeNull();
+                });
+
+                WindowTest.RunOnUIThread(() =>
+                     wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_2.html"));
 
 
                 WindowTest.RunOnUIThread(
-            () =>
-            {
-                wpfnav.Navigate(a1).ContinueWith
-           (
-               t =>
+               () =>
                {
-                   a1.Navigation.Should().Be(wpfnav);
-                   mre.Set();
+                   wpfnav.Navigate(a1).ContinueWith(t => mre.Set());
                });
-            });
+
                 mre.WaitOne();
+
+                WindowTest.RunOnUIThread(() =>
+                {
+                    //a1.Navigation.Should().Be(wpfnav);
+                    a1.Navigation.Should().NotBeNull();
+                });
 
                 Thread.Sleep(1000);
 
 
                 WindowTest.RunOnUIThread(() =>
-                     wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
+                     wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
 
             });
         }
@@ -297,51 +290,53 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_WPFBrowserNavigator_Navition_3_screens()
         {
-            TestNavigation((wpfnav, WindowTest)
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
             {
                 wpfnav.Should().NotBeNull();
-                SetUpRoute(_INavigationBuilder);
-                _INavigationBuilder.Register<A1>("javascript\\navigation_3.html","NewPath");
+                SetUpRoute(wpfbuild);
+                wpfbuild.Register<A1>("javascript\\navigation_3.html", "NewPath");
                 wpfnav.UseINavigable = true;
                 var a1 = new A1();
                 var a2 = new A2();
                 var mre = new ManualResetEvent(false);
 
+
                 WindowTest.RunOnUIThread(
-                () =>
-                {
-                    wpfnav.Navigate(a1).ContinueWith
-               (
-                   t =>
-                   {
-                       a1.Navigation.Should().Be(wpfnav);
-                       mre.Set();
-                   });
-                });
+               () =>
+               {
+                   wpfnav.Navigate(a1).ContinueWith(t => mre.Set());
+               });
+
                 mre.WaitOne();
+
+                WindowTest.RunOnUIThread(() =>
+                {
+                    //a1.Navigation.Should().Be(wpfnav);
+                    a1.Navigation.Should().NotBeNull();
+                });
 
                 WindowTest.RunOnUIThread(
                 () =>
-                wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
+                wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
 
                 mre = new ManualResetEvent(false);
 
                 WindowTest.RunOnUIThread(
-                () =>
-                {
-                    wpfnav.Navigate(a2).ContinueWith
-               (
-                   t =>
-                   {
-                       a2.Navigation.Should().Be(wpfnav);
-                       mre.Set();
-                   });
-                });
+               () =>
+               {
+                   wpfnav.Navigate(a2).ContinueWith(t => mre.Set());
+               });
+
                 mre.WaitOne();
 
                 WindowTest.RunOnUIThread(() =>
-                     wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_2.html"));
+                {
+                    a1.Navigation.Should().NotBeNull();
+                });
+
+                WindowTest.RunOnUIThread(() =>
+                     wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_2.html"));
 
 
                 WindowTest.RunOnUIThread(
@@ -351,7 +346,8 @@ namespace MVVMAwesomium.Test
            (
                t =>
                {
-                   a1.Navigation.Should().Be(wpfnav);
+                   //a1.Navigation.Should().Be(wpfnav);
+                   a1.Navigation.Should().NotBeNull();
                    mre.Set();
                });
             });
@@ -361,7 +357,7 @@ namespace MVVMAwesomium.Test
 
 
                 WindowTest.RunOnUIThread(() =>
-                     wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_3.html"));
+                     wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_3.html"));
 
             });
         }
@@ -370,33 +366,34 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_WPFBrowserNavigator_Navition_Simple_2()
         {
-            TestNavigation((wpfnav, WindowTest)
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
             {
                 wpfnav.Should().NotBeNull();
-                SetUpRoute(_INavigationBuilder);
+                SetUpRoute(wpfbuild);
                 wpfnav.UseINavigable = true;
                 var a1 = new A1();
                 var mre = new ManualResetEvent(false);
 
                 WindowTest.RunOnUIThread(
-                () =>
-                {
-                    wpfnav.Navigate(a1).ContinueWith
-               (
-                   t =>
-                   {
-                       a1.Navigation.Should().Be(wpfnav);
-                       mre.Set();
-                   });
-                });
+               () =>
+               {
+                   wpfnav.Navigate(a1).ContinueWith(t => mre.Set());
+               });
+
                 mre.WaitOne();
+
+                WindowTest.RunOnUIThread(() =>
+                {
+                    //a1.Navigation.Should().Be(wpfnav);
+                    a1.Navigation.Should().NotBeNull();
+                });
 
                 WindowTest.RunOnUIThread(
                 () =>
-                wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
+                wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
 
-        
+
                 WindowTest.RunOnUIThread(
                 () =>
                 {
@@ -406,7 +403,7 @@ namespace MVVMAwesomium.Test
                 Thread.Sleep(1000);
 
                 WindowTest.RunOnUIThread(() =>
-                     wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_2.html"));
+                     wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_2.html"));
 
             });
         }
@@ -414,11 +411,11 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_WPFBrowserNavigator_Navigation_ToSame()
         {
-            TestNavigation((wpfnav, WindowTest)
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
             {
                 wpfnav.Should().NotBeNull();
-                SetUpRoute(_INavigationBuilder);
+                SetUpRoute(wpfbuild);
                 wpfnav.UseINavigable = true;
                 var a1 = new A1();
                 var mre = new ManualResetEvent(false);
@@ -426,19 +423,21 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
                 () =>
                 {
-                    wpfnav.Navigate(a1).ContinueWith
-               (
-                   t =>
-                   {
-                       a1.Navigation.Should().Be(wpfnav);
-                       mre.Set();
-                   });
+                    wpfnav.Navigate(a1).ContinueWith(t => mre.Set());
                 });
+
                 mre.WaitOne();
+
+                WindowTest.RunOnUIThread(() =>
+                 {
+                     //a1.Navigation.Should().Be(wpfnav);
+                     a1.Navigation.Should().NotBeNull();
+                 });
+
 
                 WindowTest.RunOnUIThread(
                 () =>
-                wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
+                wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
 
 
                 WindowTest.RunOnUIThread(
@@ -450,7 +449,7 @@ namespace MVVMAwesomium.Test
                 Thread.Sleep(200);
 
                 WindowTest.RunOnUIThread(() =>
-                     wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
+                     wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
 
             });
         }
@@ -458,48 +457,51 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_WPFBrowserNavigator_Navigation_ToNull()
         {
-            TestNavigation((wpfnav, WindowTest)
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
             {
                 wpfnav.Should().NotBeNull();
-                SetUpRoute(_INavigationBuilder);
+                SetUpRoute(wpfbuild);
                 wpfnav.UseINavigable = true;
                 var a1 = new A1();
                 var mre = new ManualResetEvent(false);
 
                 WindowTest.RunOnUIThread(
-                () =>
-                {
-                    wpfnav.Navigate(a1).ContinueWith
-               (
-                   t =>
-                   {
-                       a1.Navigation.Should().Be(wpfnav);
-                       mre.Set();
-                   });
-                });
+               () =>
+               {
+                   wpfnav.Navigate(a1).ContinueWith(t => mre.Set());
+               });
+
                 mre.WaitOne();
+
+                WindowTest.RunOnUIThread(() =>
+                {
+                    //a1.Navigation.Should().Be(wpfnav);
+                    a1.Navigation.Should().NotBeNull();
+                });
 
                 WindowTest.RunOnUIThread(
                 () =>
-                wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
+                wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
 
+
+                WindowTest.RunOnUIThread(
+               () =>
+               {
+                   wpfnav.Navigate(null).ContinueWith(t => mre.Set());
+               });
+
+                mre.WaitOne();
 
                 WindowTest.RunOnUIThread(() =>
-                 wpfnav.Navigate(null).ContinueWith
-               (
-                   t =>
-                   {
-                       a1.Navigation.Should().Be(wpfnav);
-                       mre.Set();
-                   }));
-
-                 mre.WaitOne();
+                {
+                    a1.Navigation.Should().NotBeNull();
+                });
 
                 Thread.Sleep(200);
 
                 WindowTest.RunOnUIThread(() =>
-                     wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
+                     wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
 
             });
         }
@@ -507,92 +509,93 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_WPFBrowserNavigator_Navition_Resolve_OnBaseType()
         {
-            TestNavigation((wpfnav, WindowTest)
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
             {
                 wpfnav.Should().NotBeNull();
-                _INavigationBuilder.Register<A>("javascript\\navigation_1.html");
-                _INavigationBuilder.Register<A1>("javascript\\navigation_2.html", "Special");
+                wpfbuild.Register<A>("javascript\\navigation_1.html");
+                wpfbuild.Register<A1>("javascript\\navigation_2.html", "Special");
 
                 wpfnav.UseINavigable = true;
                 var a1 = new A1();
                 var mre = new ManualResetEvent(false);
 
+
                 WindowTest.RunOnUIThread(
                () =>
                {
-                   wpfnav.Navigate(a1).ContinueWith
-              (
-                  t =>
-                  {
-                      a1.Navigation.Should().Be(wpfnav);
-                      mre.Set();
-                  });
+                   wpfnav.Navigate(a1).ContinueWith(t => mre.Set());
                });
 
                 mre.WaitOne();
 
+                WindowTest.RunOnUIThread(() =>
+                {
+                    //a1.Navigation.Should().Be(wpfnav);
+                    a1.Navigation.Should().NotBeNull();
+                });
+
                 WindowTest.RunOnUIThread(
                 () =>
-                wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
+                wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
 
             });
-          }
+        }
 
         //string.Format("{0}\\{1}", Assembly.GetCallingAssembly().GetPath(), iPath)
 
         [Fact]
         public void Test_WPFBrowserNavigator_Navition_Resolve_OnName_alernativesignature()
         {
-            TestNavigation((wpfnav, WindowTest)
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
             {
                 wpfnav.Should().NotBeNull();
-                _INavigationBuilder.RegisterAbsolute<A2>(string.Format("{0}\\{1}", Assembly.GetExecutingAssembly().GetPath(), "javascript\\navigation_1.html"), "Special1");
-                _INavigationBuilder.Register<A2>(new Uri(string.Format("{0}\\{1}", Assembly.GetExecutingAssembly().GetPath(), "javascript\\navigation_2.html")), "Special2");
+                wpfbuild.RegisterAbsolute<A2>(string.Format("{0}\\{1}", Assembly.GetExecutingAssembly().GetPath(), "javascript\\navigation_1.html"), "Special1");
+                wpfbuild.Register<A2>(new Uri(string.Format("{0}\\{1}", Assembly.GetExecutingAssembly().GetPath(), "javascript\\navigation_2.html")), "Special2");
 
                 wpfnav.UseINavigable = true;
                 var a1 = new A2();
                 var mre = new ManualResetEvent(false);
 
                 WindowTest.RunOnUIThread(
-               () =>
-               {
-                   wpfnav.Navigate(a1, "Special1").ContinueWith
-              (
-                  t =>
-                  {
-                      a1.Navigation.Should().Be(wpfnav);
-                      mre.Set();
-                  });
-               });
+                () =>
+                {
+                    wpfnav.Navigate(a1, "Special1").ContinueWith(t => mre.Set());
+                });
 
                 mre.WaitOne();
+
+                WindowTest.RunOnUIThread(() =>
+                {
+                    //a1.Navigation.Should().Be(wpfnav);
+                    a1.Navigation.Should().NotBeNull();
+                });
 
                 WindowTest.RunOnUIThread(
                 () =>
-                wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
+                wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
 
 
                 WindowTest.RunOnUIThread(
-             () =>
-             {
-                 wpfnav.Navigate(a1, "Special2").ContinueWith
-            (
-                t =>
+                () =>
                 {
-                    a1.Navigation.Should().Be(wpfnav);
-                    mre.Set();
+                    wpfnav.Navigate(a1, "Special2").ContinueWith(t => mre.Set());
                 });
-             });
 
                 mre.WaitOne();
+
+                WindowTest.RunOnUIThread(() =>
+                {
+                    //a1.Navigation.Should().Be(wpfnav);
+                    a1.Navigation.Should().NotBeNull();
+                });
 
                 Thread.Sleep(1000);
 
                 WindowTest.RunOnUIThread(
                 () =>
-                wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_2.html"));
+                wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_2.html"));
 
             });
         }
@@ -600,12 +603,12 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_WPFBrowserNavigator_Navition_Resolve_OnName()
         {
-            TestNavigation((wpfnav, WindowTest)
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
             {
                 wpfnav.Should().NotBeNull();
-                _INavigationBuilder.Register<A2>("javascript\\navigation_1.html", "Special1");
-                _INavigationBuilder.Register<A2>("javascript\\navigation_2.html", "Special2");
+                wpfbuild.Register<A2>("javascript\\navigation_1.html", "Special1");
+                wpfbuild.Register<A2>("javascript\\navigation_2.html", "Special2");
 
                 wpfnav.UseINavigable = true;
                 wpfnav.UseINavigable = true;
@@ -615,43 +618,47 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
                () =>
                {
-                   wpfnav.Navigate(a1, "Special1").ContinueWith
-              (
-                  t =>
-                  {
-                      a1.Navigation.Should().Be(wpfnav);
-                      mre.Set();
-                  });
+                   wpfnav.Navigate(a1, "Special1").ContinueWith(t => mre.Set());
                });
 
                 mre.WaitOne();
+
+                WindowTest.RunOnUIThread(() =>
+                {
+                    //a1.Navigation.Should().Be(wpfnav);
+                    a1.Navigation.Should().NotBeNull();
+                });
+
+
 
                 Thread.Sleep(1000);
 
                 WindowTest.RunOnUIThread(
                 () =>
-                wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
+                wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
+
+
 
 
                 WindowTest.RunOnUIThread(
              () =>
              {
-                 wpfnav.Navigate(a1, "Special2").ContinueWith
-            (
-                t =>
-                {
-                    a1.Navigation.Should().Be(wpfnav);
-                    mre.Set();
-                });
+                 wpfnav.Navigate(a1, "Special2").ContinueWith(t => mre.Set());
              });
 
                 mre.WaitOne();
+
+                WindowTest.RunOnUIThread(() =>
+                {
+                    //a1.Navigation.Should().Be(wpfnav);
+                    a1.Navigation.Should().NotBeNull();
+                });
 
                 Thread.Sleep(1000);
 
                 WindowTest.RunOnUIThread(
                 () =>
-                wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_2.html"));
+                wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_2.html"));
 
             });
         }
@@ -659,18 +666,18 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_WPFBrowserNavigator_Navition_Resolve_NotFound()
         {
-            TestNavigation((wpfnav, WindowTest)
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
             {
                 wpfnav.Should().NotBeNull();
-  
+
                 wpfnav.UseINavigable = true;
                 var a1 = new A2();
 
                 WindowTest.RunOnUIThread(
                () =>
                {
-                   Action wf = () =>wpfnav.Navigate(a1);
+                   Action wf = () => wpfnav.Navigate(a1);
                    wf.ShouldThrow<Exception>();
                });
 
@@ -680,12 +687,12 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_WPFBrowserNavigator_Navition_Resolve_OnBaseType_2()
         {
-            TestNavigation((wpfnav, WindowTest)
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
             {
                 wpfnav.Should().NotBeNull();
-                _INavigationBuilder.Register<A>("javascript\\navigation_1.html");
-                _INavigationBuilder.Register<A1>("javascript\\navigation_2.html", "Special");
+                wpfbuild.Register<A>("javascript\\navigation_1.html");
+                wpfbuild.Register<A1>("javascript\\navigation_2.html", "Special");
 
                 wpfnav.UseINavigable = true;
                 var a1 = new A2();
@@ -694,55 +701,103 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
                () =>
                {
-                   wpfnav.Navigate(a1).ContinueWith
-              (
-                  t =>
-                  {
-                      a1.Navigation.Should().Be(wpfnav);
-                      mre.Set();
-                  });
+                   wpfnav.Navigate(a1).ContinueWith(t => mre.Set());
                });
 
                 mre.WaitOne();
 
-                WindowTest.RunOnUIThread(
-                () =>
-                wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
+                WindowTest.RunOnUIThread(() =>
+                {
+                    a1.Navigation.Should().NotBeNull();
+                    wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html");
+                });
 
             });
         }
 
         [Fact]
-        public void Test_WPFBrowserNavigator_Navition_Resolve_OnBaseType_UsingName()
+        public void Test_WPFBrowserNavigator_Navition_Debug_One()
         {
-            TestNavigation((wpfnav, WindowTest)
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
             {
                 wpfnav.Should().NotBeNull();
-                _INavigationBuilder.Register<A>("javascript\\navigation_1.html");
-                _INavigationBuilder.Register<A1>("javascript\\navigation_2.html", "Special");
+                wpfbuild.Register<A>("javascript\\navigation_1.html");
+                wpfbuild.Register<A1>("javascript\\navigation_2.html", "Special");
 
                 wpfnav.UseINavigable = true;
-                var a1 = new A1();
+                wpfnav.UseINavigable.Should().BeTrue();
+
+                wpfnav.EnableBrowserDebug = true;
+                wpfnav.EnableBrowserDebug.Should().BeTrue();
+
+                wpfnav.OnNavigate += wpfnav_OnNavigate;
+                wpfnav.OnNavigate -= wpfnav_OnNavigate;
+
+                WindowTest.RunOnUIThread(() =>
+                    {
+                        wpfnav.IsDebug = true;
+                        wpfnav.IsDebug.Should().BeTrue();
+                    });
+
+                var a1 = new A2();
                 var mre = new ManualResetEvent(false);
 
                 WindowTest.RunOnUIThread(
                () =>
                {
-                   wpfnav.Navigate(a1, "Special").ContinueWith
-              (
-                  t =>
-                  {
-                      a1.Navigation.Should().Be(wpfnav);
-                      mre.Set();
-                  });
+                   wpfnav.Navigate(a1).ContinueWith(t => mre.Set());
                });
 
                 mre.WaitOne();
 
+                WindowTest.RunOnUIThread(() =>
+                {
+                    a1.Navigation.Should().NotBeNull();
+                    wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html");
+                    wpfnav.ShowDebugWindow();
+                    wpfnav.OpenDebugBrowser();     
+                });
+            });
+        }
+
+
+        void wpfnav_OnNavigate(object sender, NavigationEvent e)
+        {
+        }
+
+        [Fact]
+        public void Test_WPFBrowserNavigator_Navition_Resolve_OnBaseType_UsingName()
+        {
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
+                =>
+            {
+                wpfnav.Should().NotBeNull();
+                wpfbuild.Register<A>("javascript\\navigation_1.html");
+                wpfbuild.Register<A1>("javascript\\navigation_2.html", "Special");
+
+                wpfnav.UseINavigable = true;
+                var a1 = new A1();
+                var mre = new ManualResetEvent(false);
+
+
+                WindowTest.RunOnUIThread(
+               () =>
+               {
+                   wpfnav.Navigate(a1, "Special").ContinueWith(t => mre.Set());
+               });
+
+                mre.WaitOne();
+
+                WindowTest.RunOnUIThread(() =>
+                {
+                    //a1.Navigation.Should().Be(wpfnav);
+                    a1.Navigation.Should().NotBeNull();
+                });
+
                 WindowTest.RunOnUIThread(
                 () =>
-                wpfnav.WebControl.Source.LocalPath.Should().EndWith("javascript\\navigation_2.html"));
+                wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_2.html"));
 
             });
         }
@@ -750,16 +805,16 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_WPFBrowserNavigator_Navition_Resolve_OnBaseType_ShoulFailed()
         {
-            TestNavigation((wpfnav, WindowTest)
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
             {
                 wpfnav.Should().NotBeNull();
-                _INavigationBuilder.Register<A>("javascript\\navigation_1.html");
-                _INavigationBuilder.Register<A1>("javascript\\navigation_2.html", "Special");
+                wpfbuild.Register<A>("javascript\\navigation_1.html");
+                wpfbuild.Register<A1>("javascript\\navigation_2.html", "Special");
 
                 wpfnav.UseINavigable = true;
                 var a1 = new object();
-     
+
                 WindowTest.RunOnUIThread(
                () =>
                {

@@ -4,7 +4,7 @@
         xmlns:awe="http://schemas.awesomium.com/winfx" x:Class="MVVMAwesomium.AnimatedNavigation.MainWindow"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <Navigation:HTMLWindow UseINavigable="True" IsDebug="True" x:Name="HTMLWindow"/>
+        <Navigation:HTMLWindow EnableBrowserDebug="True"  UseINavigable="True" IsDebug="False" x:Name="HTMLWindow"/>
          <Button Content="Debug" HorizontalAlignment="Right" Margin="0,0,30,10" VerticalAlignment="Bottom" Click="Button_Click" />
 
     </Grid>

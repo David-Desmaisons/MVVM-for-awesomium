@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using MVVMAwesomium.Infra.VM;
 
 namespace MVVMAwesomium.Navigation
 {
@@ -24,6 +25,13 @@ namespace MVVMAwesomium.Navigation
         private WebConfig _WebConfig =
                 new WebConfig() { RemoteDebuggingPort = 8001, RemoteDebuggingHost = "127.0.0.1" };
 
+        private Boolean _EnableBrowserDebug;
+        public Boolean EnableBrowserDebug
+        {
+            get { return _EnableBrowserDebug; }
+            set { _EnableBrowserDebug = value; if (_EnableBrowserDebug) InitForDebug(); }
+        }
+
         public Boolean IsDebug
         {
             get { return (Boolean)this.GetValue(IsDebugProperty); }
@@ -31,7 +39,15 @@ namespace MVVMAwesomium.Navigation
         }
 
         public static readonly DependencyProperty IsDebugProperty =
-            DependencyProperty.Register("IsDebug", typeof(Boolean), typeof(HTMLWindow), new PropertyMetadata(false, DebugChanged));
+            DependencyProperty.Register("IsDebug", typeof(Boolean), typeof(HTMLWindow), new PropertyMetadata(false));
+
+
+        public ICommand DebugWindow { get; private set; }
+
+        public ICommand DebugBrowser { get; private set; }
+
+
+        private IUrlSolver _IUrlSolver;
 
         private WPFDoubleBrowserNavigator _WPFDoubleBrowserNavigator;
         public HTMLWindow()
@@ -44,21 +60,21 @@ namespace MVVMAwesomium.Navigation
             _IUrlSolver = iIUrlSolver ?? new NavigationBuilder();
             _INavigationBuilder = _IUrlSolver as INavigationBuilder;
 
+            DebugWindow = new BasicRelayCommand(() => ShowDebugWindow());
+
+            DebugBrowser = new BasicRelayCommand(() => OpenDebugBrowser()); 
+
             InitializeComponent();
             _WPFDoubleBrowserNavigator = new WPFDoubleBrowserNavigator(this.First, this.Second, _IUrlSolver);
+             
+            
         }
 
 
-        private static bool _First = true;
-        private  static void DebugChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private void InitForDebug()
         {
-            if (!_First) return;   
-            HTMLWindow w = d as HTMLWindow;
-            if (w.IsDebug)
-            {
-                WebCore.Initialize(w._WebConfig);
-                _First = false;
-            }
+            if (!WebCore.IsInitialized)
+                WebCore.Initialize(_WebConfig);
         }
 
 
@@ -87,19 +103,21 @@ namespace MVVMAwesomium.Navigation
 
         public void OpenDebugBrowser()
         {
-            Process.Start(string.Format("http://{0}:{1}/", _WebConfig.RemoteDebuggingHost, _WebConfig.RemoteDebuggingPort));
+            if (EnableBrowserDebug)
+                Process.Start(string.Format("http://{0}:{1}/", _WebConfig.RemoteDebuggingHost, _WebConfig.RemoteDebuggingPort));
+            else
+                MessageBox.Show("EnableBrowserDebug should be set to true to enable debugging in a Webrowser!");
         }
 
         private INavigationBuilder _INavigationBuilder;
-        public INavigationBuilder INavigationBuilder
+        public INavigationBuilder NavigationBuilder
         {
             get { return _INavigationBuilder; }
         }
 
-        private IUrlSolver _IUrlSolver;
-        public IUrlSolver IUrlSolver
+        public Uri Source
         {
-            get { return _IUrlSolver; }
+            get { return _WPFDoubleBrowserNavigator.WebControl.Source; }
         }
 
         public bool UseINavigable
@@ -122,16 +140,6 @@ namespace MVVMAwesomium.Navigation
         public void Dispose()
         {
             _WPFDoubleBrowserNavigator.Dispose();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            ShowDebugWindow();
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            OpenDebugBrowser();
-        }
+        }  
     }
 }

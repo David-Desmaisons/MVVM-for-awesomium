@@ -42,7 +42,7 @@ namespace MVVMAwesomium.AnimatedNavigation
         {
             InitializeComponent();
 
-            SetUpRoute(HTMLWindow.INavigationBuilder);
+            SetUpRoute(HTMLWindow.NavigationBuilder);
             var datacontext = new Nav();
             HTMLWindow.Navigate(datacontext);
         }

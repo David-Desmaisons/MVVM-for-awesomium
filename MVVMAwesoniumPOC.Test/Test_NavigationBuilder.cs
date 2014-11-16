@@ -24,5 +24,29 @@ namespace MVVMAwesomium.Test
 
             Failed.ShouldThrow<ArgumentException>();
         }
+
+        [Fact]
+        public void Test_WPFBrowserNavigator_Register_ShouldNotAceptBadPath()
+        {
+
+            _NavigationBuilder.Should().NotBeNull();
+            Action wf = () =>
+            {
+                _NavigationBuilder.Register<object>("javascript\\navigationk_1.html");
+            };
+            wf.ShouldThrow<Exception>();
+
+            wf = () =>
+            {
+                _NavigationBuilder.RegisterAbsolute<object>("C:\\javascript\\navigationk_1.html");
+            };
+            wf.ShouldThrow<Exception>();
+
+            wf = () =>
+            {
+                _NavigationBuilder.Register<object>(new Uri("C:\\navigationk_1.html"));
+            };
+            wf.ShouldThrow<Exception>();
+        }
     }
 }
