@@ -134,7 +134,7 @@ namespace MVVMAwesomium
             _CurrentWebControl.ExecuteJavascript(icode);
         }
 
-        public Task Navigate(object iViewModel, string Id = null, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
+        public Task NavigateAsync(object iViewModel, string Id = null, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
         {
             if ((iViewModel == null) || (_Navigating))
                 return TaskHelper.Ended();

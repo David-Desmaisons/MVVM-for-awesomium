@@ -83,7 +83,7 @@ namespace MVVMAwesomium
             return tcs.Task;
         }
 
-        public Task Navigate(object iViewModel, string Id = null, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
+        public Task NavigateAsync(object iViewModel, string Id = null, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
         {
             if (iViewModel == null)
                 return TaskHelper.Ended();

@@ -10,7 +10,7 @@ namespace MVVMAwesomium
     {
         bool UseINavigable { get; set; }
 
-        Task Navigate(object iViewModel, string Id = null, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay);
+        Task NavigateAsync(object iViewModel, string Id = null, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay);
 
         event EventHandler<NavigationEvent> OnNavigate;
     }

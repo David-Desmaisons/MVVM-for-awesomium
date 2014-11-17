@@ -66,8 +66,7 @@ namespace MVVMAwesomium.Navigation
 
             InitializeComponent();
             _WPFDoubleBrowserNavigator = new WPFDoubleBrowserNavigator(this.First, this.Second, _IUrlSolver);
-             
-            
+           
         }
 
 
@@ -126,9 +125,9 @@ namespace MVVMAwesomium.Navigation
             set { _WPFDoubleBrowserNavigator.UseINavigable = value; }
         }
 
-        public Task Navigate(object iViewModel, string Id = null, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
+        public Task NavigateAsync(object iViewModel, string Id = null, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
         {
-            return _WPFDoubleBrowserNavigator.Navigate(iViewModel, Id, iMode);
+            return _WPFDoubleBrowserNavigator.NavigateAsync(iViewModel, Id, iMode);
         }
 
         public event EventHandler<NavigationEvent> OnNavigate

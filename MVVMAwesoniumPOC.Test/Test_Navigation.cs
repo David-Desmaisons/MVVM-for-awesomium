@@ -86,8 +86,8 @@ namespace MVVMAwesomium.Test
         {
             public A1()
             {
-                Change = new RelayCommand(() => Navigation.Navigate(new A1()));
-                GoTo1 = new RelayCommand(() => Navigation.Navigate(new A2()));
+                Change = new RelayCommand(() => Navigation.NavigateAsync(new A1()));
+                GoTo1 = new RelayCommand(() => Navigation.NavigateAsync(new A2()));
             }
 
             public ICommand GoTo1 { get; private set; }
@@ -98,7 +98,7 @@ namespace MVVMAwesomium.Test
         {
             public A2()
             {
-                GoTo1 = new RelayCommand(() => Navigation.Navigate(new A1()));
+                GoTo1 = new RelayCommand(() => Navigation.NavigateAsync(new A1()));
             }
 
             public ICommand GoTo1 { get; private set; }
@@ -121,7 +121,7 @@ namespace MVVMAwesomium.Test
                     WindowTest.RunOnUIThread(
                     () =>
                     {
-                        wpfnav.Navigate(a).ContinueWith
+                        wpfnav.NavigateAsync(a).ContinueWith
                    (
                        t =>
                        {
@@ -181,7 +181,7 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
                 () =>
                 {
-                    wpfnav.Navigate(a1).ContinueWith
+                    wpfnav.NavigateAsync(a1).ContinueWith
                (
                    t =>
                    {
@@ -200,7 +200,7 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
                 () =>
                 {
-                    wpfnav.Navigate(a2).ContinueWith
+                    wpfnav.NavigateAsync(a2).ContinueWith
                (
                    t =>
                    {
@@ -232,7 +232,7 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
                 () =>
                 {
-                    wpfnav.Navigate(a1).ContinueWith
+                    wpfnav.NavigateAsync(a1).ContinueWith
                (
                    t =>
                    {
@@ -276,7 +276,7 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
                 () =>
                 {
-                    wpfnav.Navigate(a1).ContinueWith
+                    wpfnav.NavigateAsync(a1).ContinueWith
                (
                    t =>
                    {
@@ -320,7 +320,7 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
                 () =>
                 {
-                    wpfnav.Navigate(a1).ContinueWith
+                    wpfnav.NavigateAsync(a1).ContinueWith
                (
                    t =>
                    {
@@ -336,7 +336,7 @@ namespace MVVMAwesomium.Test
 
 
                 WindowTest.RunOnUIThread(() =>
-                 wpfnav.Navigate(null).ContinueWith
+                 wpfnav.NavigateAsync(null).ContinueWith
                (
                    t =>
                    {
@@ -371,7 +371,7 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
                () =>
                {
-                   wpfnav.Navigate(a1).ContinueWith
+                   wpfnav.NavigateAsync(a1).ContinueWith
               (
                   t =>
                   {
@@ -408,7 +408,7 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
                () =>
                {
-                   wpfnav.Navigate(a1, "Special1").ContinueWith
+                   wpfnav.NavigateAsync(a1, "Special1").ContinueWith
               (
                   t =>
                   {
@@ -427,7 +427,7 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
              () =>
              {
-                 wpfnav.Navigate(a1, "Special2").ContinueWith
+                 wpfnav.NavigateAsync(a1, "Special2").ContinueWith
             (
                 t =>
                 {
@@ -463,7 +463,7 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
                () =>
                {
-                   wpfnav.Navigate(a1, "Special1").ContinueWith
+                   wpfnav.NavigateAsync(a1, "Special1").ContinueWith
               (
                   t =>
                   {
@@ -482,7 +482,7 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
              () =>
              {
-                 wpfnav.Navigate(a1, "Special2").ContinueWith
+                 wpfnav.NavigateAsync(a1, "Special2").ContinueWith
             (
                 t =>
                 {
@@ -514,7 +514,7 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
                () =>
                {
-                   Action wf = () =>wpfnav.Navigate(a1);
+                   Action wf = () =>wpfnav.NavigateAsync(a1);
                    wf.ShouldThrow<Exception>();
                });
 
@@ -538,7 +538,7 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
                () =>
                {
-                   wpfnav.Navigate(a1).ContinueWith
+                   wpfnav.NavigateAsync(a1).ContinueWith
               (
                   t =>
                   {
@@ -573,7 +573,7 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
                () =>
                {
-                   wpfnav.Navigate(a1, "Special").ContinueWith
+                   wpfnav.NavigateAsync(a1, "Special").ContinueWith
               (
                   t =>
                   {
@@ -607,7 +607,7 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(
                () =>
                {
-                   Action wf = () => wpfnav.Navigate(a1);
+                   Action wf = () => wpfnav.NavigateAsync(a1);
                    wf.ShouldThrow<Exception>();
                });
 

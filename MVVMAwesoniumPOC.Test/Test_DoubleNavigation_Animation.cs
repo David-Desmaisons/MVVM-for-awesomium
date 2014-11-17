@@ -83,7 +83,7 @@ namespace MVVMAwesomium.Test
                     WindowTest.RunOnUIThread(
                    () =>
                    {
-                       wpfnav.Navigate(vm).ContinueWith
+                       wpfnav.NavigateAsync(vm).ContinueWith
                       (
                           t =>
                           {
@@ -98,7 +98,7 @@ namespace MVVMAwesomium.Test
                     WindowTest.RunOnUIThread(
                  () =>
                  {
-                     wpfnav.Navigate(vm).ContinueWith
+                     wpfnav.NavigateAsync(vm).ContinueWith
                     (
                         t =>
                         {

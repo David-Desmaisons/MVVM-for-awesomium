@@ -56,7 +56,7 @@ namespace MVVM.Navigation2
             my.Couple = datacontext;
             datacontext.One = my;
 
-            bn.Navigate(datacontext);
+            bn.NavigateAsync(datacontext);
         }
     }
 }

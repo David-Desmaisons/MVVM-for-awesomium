@@ -54,7 +54,7 @@ namespace MVVMAwesomium.UI.Navigation
             my.Couple = datacontext;
             datacontext.One = my;
          
-            bn.Navigate(datacontext);
+            bn.NavigateAsync(datacontext);
             //bn.Navigate(my);
         }
     }

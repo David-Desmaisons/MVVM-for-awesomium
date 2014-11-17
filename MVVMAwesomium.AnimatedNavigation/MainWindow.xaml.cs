@@ -21,7 +21,7 @@ namespace MVVMAwesomium.AnimatedNavigation
     {
         public Nav()
         {
-            DoNav = new RelayCommand(() => Navigation.Navigate(this));
+            DoNav = new RelayCommand(() => Navigation.NavigateAsync(this));
         }
 
         public ICommand DoNav { get; private set;}
@@ -44,7 +44,7 @@ namespace MVVMAwesomium.AnimatedNavigation
 
             SetUpRoute(HTMLWindow.NavigationBuilder);
             var datacontext = new Nav();
-            HTMLWindow.Navigate(datacontext);
+            HTMLWindow.NavigateAsync(datacontext);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
