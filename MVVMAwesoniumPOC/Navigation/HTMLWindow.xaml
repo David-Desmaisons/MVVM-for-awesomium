@@ -9,6 +9,17 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <Style TargetType="awe:WebControl">
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Grid.RowSpan" Value="2"/>
+            <Setter Property="Grid.ColumnSpan" Value="2"/>
+            <Setter Property="ContextMenu">
+                <Setter.Value>
+                    <ContextMenu Visibility="Collapsed"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -20,8 +31,9 @@
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
 
-        <awe:WebControl x:Name="First" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
-        <awe:WebControl x:Name="Second" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+        <awe:WebControl x:Name="First"/>
+
+        <awe:WebControl x:Name="Second"/>
 
         <Button x:Name="Button_DebugWindow" Visibility="{Binding ElementName=Root,Path=IsDebug,Converter={StaticResource BoolToVis}}"  Content="Ko-Debug" HorizontalAlignment="Right"  Grid.Row="1" Width="74" Margin="0,0,10,5" Command="{Binding ElementName=Root,Path=DebugWindow}"/>
         <Button x:Name="Button_DebugBrowser" Visibility="{Binding ElementName=Root,Path=IsDebug,Converter={StaticResource BoolToVis}}" Content="Open browser" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="1" Width="85"  Margin="10,0,0,5" Command="{Binding ElementName=Root,Path=DebugBrowser}"/>
