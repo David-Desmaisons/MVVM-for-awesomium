@@ -197,6 +197,8 @@ function Null_reference() {
                    if (window.console && console.log) {
                        console.log("binding error", ex.message, node, bindingContext);
                    }
+                   if (ko.log)
+                       ko.log("MVVM for awesomium binding error: '" + ex.message+"'", "node HTLM: " + node.outerHTML, "context:" + ko.toJSON(bindingContext.$data));
                 }
 
                 return bindings;
