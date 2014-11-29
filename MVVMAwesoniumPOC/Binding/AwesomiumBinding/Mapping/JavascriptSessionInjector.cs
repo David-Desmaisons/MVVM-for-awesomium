@@ -1,6 +1,7 @@
 ﻿using Awesomium.Core;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -78,6 +79,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         public void RegisterInSession(JSObject iJSObject)
         {
             var ko = GetKo();
+            ko.Bind("log", false, (o, e) => Trace.WriteLine(string.Join(" - ", e.Arguments.Select(s=>((string)s).Replace("\n"," ")))));
             if (ko.HasMethod("register"))
                 ko.Invoke("register", iJSObject);
             ko.Invoke("applyBindings", iJSObject);
