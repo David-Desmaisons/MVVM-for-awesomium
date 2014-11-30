@@ -11,6 +11,7 @@ using MVVMAwesomium.Infra;
 using System.IO;
 using System.Windows;
 using MVVMAwesomium.Navigation.Window;
+using System.Diagnostics;
 
 namespace MVVMAwesomium
 {
@@ -22,7 +23,7 @@ namespace MVVMAwesomium
         private IAwesomeBinding _IAwesomeBinding;
         private IUrlSolver _INavigationBuilder;
         private bool _Disposed = false;
-        private HTMLWindow _Window;
+        private HTMLLogicWindow _Window;
         private bool _Navigating = false;
 
         internal WebControl WebControl { get { return _CurrentWebControl; } }
@@ -56,7 +57,7 @@ namespace MVVMAwesomium
             }
         }
 
-        private void Switch(Task<IAwesomeBinding> iBinding, HTMLWindow iwindow, TaskCompletionSource<object> tcs=null)
+        private void Switch(Task<IAwesomeBinding> iBinding, HTMLLogicWindow iwindow, TaskCompletionSource<object> tcs = null)
         {
             Binding = iBinding.Result;
             if (tcs!=null) tcs.SetResult(Binding);
@@ -82,7 +83,7 @@ namespace MVVMAwesomium
             if (OnNavigate != null)
                 OnNavigate(this, new NavigationEvent(iViewModel));
 
-            var wh = new WindowHelper(new HTMLWindow());
+            var wh = new WindowHelper(new HTMLLogicWindow());
 
             if (!_CurrentWebControl.IsDocumentReady)
             {
@@ -131,7 +132,15 @@ namespace MVVMAwesomium
 
         public void ExcecuteJavascript(string icode)
         {
-            _CurrentWebControl.ExecuteJavascript(icode);
+            try 
+            {
+                _CurrentWebControl.ExecuteJavascript(icode);
+            }
+            catch(Exception e)
+            {
+                Trace.WriteLine(string.Format("MVVM for awesomium: Can not execute javascript: {0}, reason: {1}",icode,e));
+            }
+            
         }
 
         public Task NavigateAsync(object iViewModel, string Id = null, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)

@@ -7,9 +7,9 @@ namespace MVVMAwesomium.Navigation.Window
 {
     public class WindowHelper
     {
-        public HTMLWindow __window__ { get;private set;}
+        public HTMLLogicWindow __window__ { get;private set;}
 
-        public WindowHelper(HTMLWindow iwindow)
+        public WindowHelper(HTMLLogicWindow iwindow)
         {
             __window__ = iwindow;
         }

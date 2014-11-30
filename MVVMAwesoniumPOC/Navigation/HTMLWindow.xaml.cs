@@ -18,7 +18,7 @@ using System.Windows.Shapes;
 using System.Diagnostics;
 using MVVMAwesomium.Infra.VM;
 
-namespace MVVMAwesomium.Navigation
+namespace MVVMAwesomium
 {
     public partial class HTMLWindow : UserControl, INavigationSolver
     {

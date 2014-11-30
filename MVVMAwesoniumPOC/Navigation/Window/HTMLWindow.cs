@@ -10,12 +10,12 @@ using System.Windows.Input;
 
 namespace MVVMAwesomium.Navigation.Window
 {
-    public class HTMLWindow : NotifyPropertyChangedBase, INotifyPropertyChanged
+    public class HTMLLogicWindow : NotifyPropertyChangedBase, INotifyPropertyChanged
     {
         static private int _GId = 0;
         private int _Id;
 
-        internal HTMLWindow()
+        internal HTMLLogicWindow()
         {
             _Id = _GId++;
             _State = WindowLogicalState.Loading;
