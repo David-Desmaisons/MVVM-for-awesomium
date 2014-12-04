@@ -71,8 +71,16 @@ namespace MVVMAwesomium.AwesomiumBinding
             if (!propertyInfo.CanWrite)
                 return;
            
-            _Attributes[PropertyName] = new JSBasicObject(newValue, simplevalue); 
-            propertyInfo.SetValue(CValue, simplevalue, null);
+            _Attributes[PropertyName] = new JSBasicObject(newValue, simplevalue);
+
+            try
+            {
+                propertyInfo.SetValue(CValue, simplevalue, null);
+            }
+            catch(ArgumentException)
+            {
+                propertyInfo.SetValue(CValue, Convert.ChangeType(simplevalue, propertyInfo.PropertyType), null);      
+            }
         }
 
         public void Reroot(string PropertyName, IJSCSGlue newValue)

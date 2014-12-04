@@ -182,5 +182,29 @@ function Null_reference() {
         }
     };
 
+    //improve knockout binding debug
+    //allow parcial binding even if somebinding are KO
+    var existing = ko.bindingProvider.instance;
+
+        ko.bindingProvider.instance = {
+            nodeHasBindings: existing.nodeHasBindings,
+            getBindings: function(node, bindingContext) {
+                var bindings;
+                try {
+                   bindings = existing.getBindings(node, bindingContext);
+                }
+                catch (ex) {
+                   if (window.console && console.log) {
+                       console.log("binding error", ex.message, node, bindingContext);
+                   }
+                   //alert("problema");
+                   if (ko.log)
+                       ko.log("MVVM for awesomium binding error: '" + ex.message+"'", "node HTLM: " + node.outerHTML, "context:" + ko.toJSON(bindingContext.$data));
+                }
+
+                return bindings;
+            }
+        };
+
 
 }());

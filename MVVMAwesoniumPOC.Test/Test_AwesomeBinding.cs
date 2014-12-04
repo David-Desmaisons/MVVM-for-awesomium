@@ -787,7 +787,7 @@ namespace MVVMAwesomium.Test
 
                     _DataContext.Skills[0] = new Skill() { Name = "HTML5", Type = "Info" };
                     _DataContext.Skills.Insert(0, new Skill() { Name = "HTML5", Type = "Info" });
-                    Thread.Sleep(100);
+                    Thread.Sleep(150);
                     res = GetSafe(() => Get(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
@@ -827,7 +827,7 @@ namespace MVVMAwesomium.Test
                     JSObject coll = GetSafe(() => ((JSObject)js)["Skills"]);
                     DoSafe(() => coll.Invoke("push", (root.Attributes["Skills"] as JSArray).Items[0].GetJSSessionValue()));
 
-                    Thread.Sleep(100);
+                    Thread.Sleep(150);
                     _DataContext.Skills.Should().HaveCount(3);
                     _DataContext.Skills[2].Should().Be(_DataContext.Skills[0]);
                     res = GetSafe(() => Get(js, "Skills"));
@@ -854,7 +854,7 @@ namespace MVVMAwesomium.Test
                     DoSafe(() => coll.Invoke("unshift",
                         (root.Attributes["Skills"] as JSArray).Items[0].GetJSSessionValue()));
                     
-                    Thread.Sleep(100);
+                    Thread.Sleep(150);
                     _DataContext.Skills.Should().HaveCount(2);
                     res = GetSafe(() => Get(js, "Skills"));
                     res.Should().NotBeNull();
@@ -873,6 +873,21 @@ namespace MVVMAwesomium.Test
 
         }
 
+        private class VMwithdecimal : ViewModelBase
+        {
+            public VMwithdecimal()
+            {
+            }
+
+            private decimal _DecimalValue;
+            public decimal decimalValue 
+            { 
+                get{return _DecimalValue;} 
+                set{Set(ref _DecimalValue,value,"decimalValue");} 
+            }
+
+        }
+
 
         private void Checkstring(JSValue[] coll, IList<string> iskill)
         {
@@ -883,6 +898,40 @@ namespace MVVMAwesomium.Test
                
             });
 
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Decimal_ShouldOK()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                var datacontext = new VMwithdecimal();
+
+                using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSValue res = GetSafe(() => Get(js, "decimalValue"));
+                    res.Should().NotBeNull();
+                    res.IsNumber.Should().BeTrue();
+                    var doublev = (double)res;
+                    doublev.Should().Be(0);
+
+                    this.DoSafe(() => js.Invoke("decimalValue", 0.5));
+                    Thread.Sleep(2000);
+
+                    res = GetSafe(() => Get(js, "decimalValue"));
+                    res.Should().NotBeNull();
+                    res.IsNumber.Should().BeTrue();
+                    doublev = (double)res;
+                    double half = 0.5;
+                    doublev.Should().Be(half);
+                }
+            }
         }
 
         [Fact]

@@ -94,6 +94,7 @@ namespace MVVMAwesomium.Test
 
                     mre.WaitOne();
                     mre = new ManualResetEvent(false);
+                    Thread.Sleep(500);
 
                     WindowTest.RunOnUIThread(
                  () =>
@@ -108,6 +109,7 @@ namespace MVVMAwesomium.Test
                  });
 
                     mre.WaitOne();
+                    Thread.Sleep(500);
                 });
 
 
