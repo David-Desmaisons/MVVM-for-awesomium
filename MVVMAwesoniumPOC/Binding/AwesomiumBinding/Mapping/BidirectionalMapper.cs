@@ -170,7 +170,11 @@ namespace MVVMAwesomium.AwesomiumBinding
             object ores = (glue!=null) ? glue.CValue : 
                         _JavascriptToCSharpMapper.GetSimpleValue(newValue);
 
+        
+            INotifyPropertyChanged inc = res.CValue as INotifyPropertyChanged;
+            if (inc != null) inc.PropertyChanged -= Object_PropertyChanged;
             res.UpdateCSharpProperty(PropertyName, newValue, ores);
+            if (inc != null) inc.PropertyChanged += Object_PropertyChanged;
         }
 
         public void OnJavaScriptCollectionChanges(JSObject collectionchanged, JSValue[] collectionvalue, JSValue[] changes)

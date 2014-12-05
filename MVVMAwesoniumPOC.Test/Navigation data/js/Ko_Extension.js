@@ -23,6 +23,26 @@ function Null_reference() {
         };
     }
 
+     //if (Listener.TrackChanges) {
+     //                   createSubsription(res[att], PropertyListener(res, att, Listener));
+     //               }
+     //               else res[att].silent = res[att];
+
+     function createSubsription(observable, tracker,res,att) {
+         if (tracker.TrackChanges) {
+             listener = PropertyListener(res, att, tracker);
+             observable.Listener = listener;
+             observable.subscriber = observable.subscribe(listener);
+             observable.silent = function (v) {
+                 observable.subscriber.dispose();
+                 observable(v);
+                 observable.subscriber = observable.subscribe(observable.Listener);
+             };
+         }
+         else
+             observable.silent = observable;
+    }
+
 
     function MapToObservable(or, context, Mapper, Listener) {
 
@@ -67,9 +87,12 @@ function Null_reference() {
                             attribute: att
                         }, Mapper, Listener);
                         res[att] = ko.observable(comp);
-                        if ((Listener.TrackChanges) &&
-                                ((comp instanceof Date) || (comp instanceof Enum) || (value instanceof Null_reference))) {
-                            res[att].subscribe(PropertyListener(res, att, Listener));
+                        if (((comp instanceof Date) || (comp instanceof Enum) || (value instanceof Null_reference))) {
+                            //res[att].subscribe(PropertyListener(res, att, Listener));
+                            //createSubsription(res[att], PropertyListener(res, att, Listener));
+                            createSubsription(res[att], Listener, res, att);
+                            //(Listener.TrackChanges) &&
+
                         }
 
                     } else {
@@ -93,9 +116,23 @@ function Null_reference() {
                     }
                 } else {
                     res[att] = ko.observable(value);
-                    if (Listener.TrackChanges) {
-                        res[att].subscribe(PropertyListener(res, att, Listener));
-                    }
+                    createSubsription(res[att], Listener, res, att);
+
+                    //if (Listener.TrackChanges) {
+                    //    createSubsription(res[att], PropertyListener(res, att, Listener));
+                    //    //var current = res[att];
+                    //    //var f = PropertyListener(res, att, Listener);
+                    //    //current.Listener = f;
+                    //    //current.subscriber = current.subscribe(f);
+                    //    //current.silent = (function (c) {
+                    //    //    return function (v) {
+                    //    //        c.subscriber.dispose();
+                    //    //        c(v);
+                    //    //        c.subscriber = c.subscribe(c.Listener);
+                    //    //    };
+                    //    //})(current);
+                    //}
+                    //else res[att].silent = res[att];
                 }
             }
         }
@@ -197,7 +234,7 @@ function Null_reference() {
                    if (window.console && console.log) {
                        console.log("binding error", ex.message, node, bindingContext);
                    }
-                   //alert("problema");
+
                    if (ko.log)
                        ko.log("MVVM for awesomium binding error: '" + ex.message+"'", "node HTLM: " + node.outerHTML, "context:" + ko.toJSON(bindingContext.$data));
                 }

@@ -53,6 +53,8 @@ namespace MVVMAwesomium.AwesomiumBinding
             _MappedJSValue = ijsobject;
         }
 
+        private IDictionary<string, JSObject> _Silenters=new Dictionary<string, JSObject>(); 
+
         public object CValue { get; private set; }
 
         public JSCSGlueType Type { get { return JSCSGlueType.Object; } }
@@ -86,7 +88,22 @@ namespace MVVMAwesomium.AwesomiumBinding
         public void Reroot(string PropertyName, IJSCSGlue newValue)
         { 
             _Attributes[PropertyName]=newValue;
-            ((JSObject)_MappedJSValue).InvokeAsync(PropertyName, newValue.GetJSSessionValue());    
+
+            JSObject silenter = null;
+            if ( _Silenters.TryGetValue(PropertyName,out silenter))
+            {
+                silenter.InvokeAsync("silent", newValue.GetJSSessionValue());      
+            }
+            else
+            {
+                WebCore.QueueWork(() =>
+                    {
+                        var jso = (JSObject)_MappedJSValue;
+                        silenter = (JSObject)jso[PropertyName];
+                        _Silenters.Add(PropertyName, silenter);
+                        silenter.Invoke("silent", newValue.GetJSSessionValue());
+                    });
+            }
         }     
     }
 }

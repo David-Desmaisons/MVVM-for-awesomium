@@ -21,7 +21,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public JSObject CreateJSO()
         {
-            string Name = string.Format("{0}_{1}", _NameScape, _Count++);
+            string Name = string.Format("{0}_{1}", _NameScape, ++_Count);
             return _IWebView.EvaluateSafe(() => _IWebView.CreateGlobalJavascriptObject(Name));
         }
 

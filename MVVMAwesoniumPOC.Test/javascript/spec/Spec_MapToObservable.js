@@ -215,6 +215,8 @@ describe("Map To Observable", function () {
          expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped,'Name','Toto');
      });
 
+   
+
      it("should listen TrackChanges on int", function () {
          var Listener = { TrackChanges: function () { } };
          spyOn(Listener, 'TrackChanges');
@@ -227,6 +229,39 @@ describe("Map To Observable", function () {
          expect(Listener.TrackChanges).toHaveBeenCalled();
          expect(Listener.TrackChanges.calls.count()).toEqual(1);
          expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped, 'Age', 10);
+     });
+
+     it("should not listen TrackChanges on int when silent", function () {
+         var Listener = { TrackChanges: function () { } };
+         spyOn(Listener, 'TrackChanges');
+
+         var mapped = ko.MapToObservable(basicmaped, null, Listener);
+
+         mapped.Age.silent(10);
+
+         expect(mapped.Age()).toEqual(10);
+         expect(Listener.TrackChanges).not.toHaveBeenCalled();
+         expect(Listener.TrackChanges.calls.count()).toEqual(0);
+     });
+
+     it("should re-listen TrackChanges on int when silent and then not", function () {
+         var Listener = { TrackChanges: function () { } };
+         spyOn(Listener, 'TrackChanges');
+
+         var mapped = ko.MapToObservable(basicmaped, null, Listener);
+
+         mapped.Age.silent(10);
+
+         expect(mapped.Age()).toEqual(10);
+         expect(Listener.TrackChanges).not.toHaveBeenCalled();
+         expect(Listener.TrackChanges.calls.count()).toEqual(0);
+
+         mapped.Age(60);
+
+         expect(mapped.Age()).toEqual(60);
+         expect(Listener.TrackChanges).toHaveBeenCalled();
+         expect(Listener.TrackChanges.calls.count()).toEqual(1);
+         expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped, 'Age', 60);
      });
 
      it("should listen TrackChanges on Date", function () {
@@ -243,6 +278,54 @@ describe("Map To Observable", function () {
          mapped.When(newDate);
 
        
+         expect(Listener.TrackChanges).toHaveBeenCalled();
+         expect(Listener.TrackChanges.calls.count()).toEqual(1);
+         expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped, 'When', newDate);
+     });
+
+     it("should define silent when no TrackChanges defined - date case", function () {
+         var original = new Date(1974, 2, 26);
+         var newDate = new Date(Date.now());
+
+         var mapped = ko.MapToObservable(basicmapped7, null, null);
+
+         expect(mapped.When()).toEqual(original);
+
+         mapped.When.silent(newDate);
+         expect(mapped.When()).toEqual(newDate);
+     });
+
+     it("should define silent when no TrackChanges defined - string case", function () {
+
+         var mapped = ko.MapToObservable(basicmaped, null, null);
+
+         mapped.Name.silent("Toto");
+
+         expect(mapped.Name()).toEqual("Toto");
+     });
+
+     it("should not listen TrackChanges on Date when silent", function () {
+         var Listener = { TrackChanges: function () { } };
+         spyOn(Listener, 'TrackChanges');
+
+         var original = new Date(1974, 2, 26);
+         var newDate = new Date(Date.now());
+
+         var mapped = ko.MapToObservable(basicmapped7, null, Listener);
+
+         expect(mapped.When()).toEqual(original);
+
+         mapped.When.silent(newDate);
+
+         expect(mapped.When()).toEqual(newDate);
+         expect(Listener.TrackChanges).not.toHaveBeenCalled();
+         expect(Listener.TrackChanges.calls.count()).toEqual(0);
+
+         newDate = new Date(2002,2,2);
+ 
+         mapped.When(newDate);
+
+         expect(mapped.When()).toEqual(newDate);
          expect(Listener.TrackChanges).toHaveBeenCalled();
          expect(Listener.TrackChanges.calls.count()).toEqual(1);
          expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped, 'When', newDate);

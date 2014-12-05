@@ -787,7 +787,7 @@ namespace MVVMAwesomium.Test
 
                     _DataContext.Skills[0] = new Skill() { Name = "HTML5", Type = "Info" };
                     _DataContext.Skills.Insert(0, new Skill() { Name = "HTML5", Type = "Info" });
-                    Thread.Sleep(150);
+                    Thread.Sleep(100);
                     res = GetSafe(() => Get(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
