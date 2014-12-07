@@ -396,6 +396,19 @@ describe("Map To Observable", function () {
          expect(Listener.TrackCollectionChanges.calls.count()).toEqual(1);
      });
 
+
+     it("should not listen TrackCollectionChanges on silent changes", function () {
+         var Listener = { TrackCollectionChanges: function (o, v, c) { console.log(o); console.log(v); console.log(c); } };
+         spyOn(Listener, 'TrackCollectionChanges').and.callThrough();
+
+         var mapped = ko.MapToObservable(basicmaped6, null, Listener);
+
+         mapped.List.silentremoveAll();
+
+         expect(mapped.List().length).toEqual(0);
+         expect(Listener.TrackCollectionChanges.calls.count()).toEqual(0);
+     });
+
 });
 
 describe("is Date function", function () {

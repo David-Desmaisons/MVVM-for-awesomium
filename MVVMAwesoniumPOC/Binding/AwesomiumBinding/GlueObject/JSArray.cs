@@ -44,12 +44,6 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public void UpdateEventArgsFromJavascript(IEnumerable<IndividualCollectionChange> iChanges, IEnumerable<IJSCSGlue> Current)
         {
-            if (_UnderJavascriptUpdate>0)
-            {
-                _UnderJavascriptUpdate--;
-                return;
-            }
-
             IList ilist = CValue as IList;
             if (ilist == null) return;
 
@@ -64,13 +58,10 @@ namespace MVVMAwesomium.AwesomiumBinding
 #endif
         }
 
-        private int _UnderJavascriptUpdate = 0;
 
         public void Add(IJSCSGlue iIJSCBridge, int Index)
         {
-            _UnderJavascriptUpdate++;
-
-            ((JSObject)MappedJSValue).Invoke("splice", new JSValue(Index), new JSValue(0), iIJSCBridge.GetJSSessionValue());
+            ((JSObject)MappedJSValue).Invoke("silentsplice", new JSValue(Index), new JSValue(0), iIJSCBridge.GetJSSessionValue());
             if (Index > Items.Count - 1)
                 Items.Add(iIJSCBridge);
             else
@@ -79,25 +70,19 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public void Insert(IJSCSGlue iIJSCBridge, int Index)
         {
-            _UnderJavascriptUpdate++;
-
-            ((JSObject)MappedJSValue).Invoke("splice", new JSValue(Index), new JSValue(1), iIJSCBridge.GetJSSessionValue());
+            ((JSObject)MappedJSValue).Invoke("silentsplice", new JSValue(Index), new JSValue(1), iIJSCBridge.GetJSSessionValue());
             Items[Index]=iIJSCBridge;
         }
 
         public void Remove( int Index)
         {
-            _UnderJavascriptUpdate++;
-
-            ((JSObject)MappedJSValue).Invoke("splice", new JSValue(Index), new JSValue(1));
+            ((JSObject)MappedJSValue).Invoke("silentsplice", new JSValue(Index), new JSValue(1));
             Items.RemoveAt(Index);
         }
 
         public void Reset()
         {
-            _UnderJavascriptUpdate++;
-
-            ((JSObject)MappedJSValue).Invoke("removeAll");
+            ((JSObject)MappedJSValue).Invoke("silentremoveAll");
             Items.Clear();
         }
 

@@ -23,25 +23,44 @@ function Null_reference() {
         };
     }
 
-     //if (Listener.TrackChanges) {
-     //                   createSubsription(res[att], PropertyListener(res, att, Listener));
-     //               }
-     //               else res[att].silent = res[att];
-
      function createSubsription(observable, tracker,res,att) {
          if (tracker.TrackChanges) {
              listener = PropertyListener(res, att, tracker);
-             observable.Listener = listener;
+             observable.listener = listener;
              observable.subscriber = observable.subscribe(listener);
              observable.silent = function (v) {
                  observable.subscriber.dispose();
                  observable(v);
-                 observable.subscriber = observable.subscribe(observable.Listener);
+                 observable.subscriber = observable.subscribe(observable.listener);
              };
          }
          else
              observable.silent = observable;
-    }
+     }
+
+     function createCollectionSubsription(observable, tracker, res, att) {
+         if (tracker.TrackCollectionChanges) {
+             var collectionlistener = CollectionListener(res[att], tracker);
+             observable.listener = collectionlistener;
+             observable.subscriber = observable.subscribe(collectionlistener, null, 'arrayChange');
+             observable.silent = function (fn) {
+                 return function () {
+                     observable.subscriber.dispose();
+                     fn.apply(observable, arguments);
+                     observable.subscriber = observable.subscribe(collectionlistener, null, 'arrayChange');
+                 };
+             };
+         }
+         else
+             observable.silent = function (fn) {
+                 return function () {
+                     fn.apply(observable, arguments);
+                 };
+             };
+
+         observable.silentsplice = observable.silent(observable.splice);
+         observable.silentremoveAll = observable.silent(observable.removeAll);
+     }
 
 
     function MapToObservable(or, context, Mapper, Listener) {
@@ -87,12 +106,8 @@ function Null_reference() {
                             attribute: att
                         }, Mapper, Listener);
                         res[att] = ko.observable(comp);
-                        if (((comp instanceof Date) || (comp instanceof Enum) || (value instanceof Null_reference))) {
-                            //res[att].subscribe(PropertyListener(res, att, Listener));
-                            //createSubsription(res[att], PropertyListener(res, att, Listener));
+                        if ((comp instanceof Date) || (comp instanceof Enum) || (value instanceof Null_reference)) {
                             createSubsription(res[att], Listener, res, att);
-                            //(Listener.TrackChanges) &&
-
                         }
 
                     } else {
@@ -110,29 +125,14 @@ function Null_reference() {
                             object: res,
                             attribute: att
                         });
-                        if (Listener.TrackCollectionChanges) {
-                            res[att].subscribe(CollectionListener(res[att], Listener), null, 'arrayChange');
-                        }
+                        createCollectionSubsription(res[att], Listener, res, att);
+                        //if (Listener.TrackCollectionChanges) {
+                        //    res[att].subscribe(CollectionListener(res[att], Listener), null, 'arrayChange');
+                        //}
                     }
                 } else {
                     res[att] = ko.observable(value);
                     createSubsription(res[att], Listener, res, att);
-
-                    //if (Listener.TrackChanges) {
-                    //    createSubsription(res[att], PropertyListener(res, att, Listener));
-                    //    //var current = res[att];
-                    //    //var f = PropertyListener(res, att, Listener);
-                    //    //current.Listener = f;
-                    //    //current.subscriber = current.subscribe(f);
-                    //    //current.silent = (function (c) {
-                    //    //    return function (v) {
-                    //    //        c.subscriber.dispose();
-                    //    //        c(v);
-                    //    //        c.subscriber = c.subscribe(c.Listener);
-                    //    //    };
-                    //    //})(current);
-                    //}
-                    //else res[att].silent = res[att];
                 }
             }
         }

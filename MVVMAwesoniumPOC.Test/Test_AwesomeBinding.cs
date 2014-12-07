@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using System.Windows.Input;
 using MVVMAwesomium.ViewModel;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace MVVMAwesomium.Test
 {
@@ -799,6 +800,62 @@ namespace MVVMAwesomium.Test
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
 
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Collection_Stress()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSValue res = GetSafe(() => Get(js, "Skills"));
+                    res.Should().NotBeNull();
+                    var col = ((JSValue[])res);
+                    col.Length.Should().Be(2);
+
+                    Check(col, _DataContext.Skills);
+
+                    _DataContext.Skills.Add(new Skill() { Name = "C++", Type = "Info" });
+
+                    Thread.Sleep(150);
+                    res = GetSafe(() => Get(js, "Skills"));
+                    res.Should().NotBeNull();
+                    Check((JSValue[])res, _DataContext.Skills);
+
+                    _DataContext.Skills[0] = new Skill() { Name = "HTML5", Type = "Info" };
+                    int iis = 500;
+                    for (int i = 0; i < iis; i++)
+                    {
+                        _DataContext.Skills.Insert(0, new Skill() { Name = "HTML5", Type = "Info" });
+                    }
+
+                    bool notok=true;
+                    int tcount =_DataContext.Skills.Count;
+
+                    var stopWatch = new Stopwatch();
+                    stopWatch.Start();
+
+                    while(notok)
+                    {
+                        Thread.Sleep(100);
+                        res = GetSafe(() => Get(js, "Skills"));
+                        res.Should().NotBeNull();
+                        notok = ((JSValue[])res).Length != tcount;
+                    }
+                    stopWatch.Stop();
+                    var ts = stopWatch.ElapsedMilliseconds;
+
+                    Console.WriteLine("Perf: {0} sec for {1} items", ((double)(ts))/1000, iis);
+                    Check((JSValue[])res, _DataContext.Skills);
                 }
             }
         }
