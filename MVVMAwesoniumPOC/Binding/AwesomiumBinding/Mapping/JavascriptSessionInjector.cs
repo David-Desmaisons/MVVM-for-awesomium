@@ -32,34 +32,56 @@ namespace MVVMAwesomium.AwesomiumBinding
                 _Listener = new JSObject();
         }
 
+        private Queue<IJavascriptMapper> _IJavascriptMapper = new Queue<IJavascriptMapper>();
+        private IJavascriptMapper _Current;
+        private bool _PullNextMapper = true;
+        private JSObject _Mapper;
+
         private JSObject GetMapper(IJavascriptMapper iMapperListener)
         {
-            if (iMapperListener == null)
-                return new JSObject();
+            _IJavascriptMapper.Enqueue(iMapperListener);
+    
+            if (_Mapper != null)
+                return _Mapper;
 
-            var mapper = _GlobalBuilder.CreateJSO();
+            _Mapper = _GlobalBuilder.CreateJSO();
 
-            mapper.Bind("Register", false, (o, e) =>
+             _Mapper.Bind("Register", false, (o, e) =>
             {
+                if (_PullNextMapper)
+                { 
+                    _Current = _IJavascriptMapper.Dequeue();
+                    _PullNextMapper = false;
+                }
+
+                if (_Current == null)
+                    return;
+
                 JSObject registered = (JSObject)e.Arguments[0];
                 JSObject Context = (JSObject)e.Arguments[1];
 
                 if (Context == null)
                 {
-                    iMapperListener.RegisterFirst(registered);
+                    _Current.RegisterFirst(registered);
                     return;
                 }
 
                 if (Context.HasProperty("index"))
-                    iMapperListener.RegisterCollectionMapping((JSObject)Context["object"],
+                    _Current.RegisterCollectionMapping((JSObject)Context["object"],
                         (string)Context["attribute"], (int)Context["index"], registered);
                 else
-                    iMapperListener.RegisterMapping((JSObject)Context["object"], (string)Context["attribute"], registered);
+                    _Current.RegisterMapping((JSObject)Context["object"], (string)Context["attribute"], registered);
             });
 
-            mapper.Bind("End", false, (o, e) => iMapperListener.End((JSObject)e.Arguments[0]));
+            _Mapper.Bind("End", false, (o, e) =>
+                {
+                    if (_Current!=null)
+                        _Current.End((JSObject)e.Arguments[0]);
+                    _Current = null;
+                    _PullNextMapper = true;
+                });
 
-            return mapper;
+            return _Mapper;
         }
 
         private JSObject GetKo()
@@ -70,10 +92,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public JSObject Map(JSValue ihybridobject, IJavascriptMapper ijvm)
         {
-            using (var mapp = GetMapper(ijvm))
-            {
-                return GetKo().Invoke("MapToObservable", ihybridobject, mapp, _Listener);
-            }
+            return GetKo().Invoke("MapToObservable", ihybridobject, GetMapper(ijvm), _Listener);
         }
 
         public void RegisterInSession(JSObject iJSObject)
