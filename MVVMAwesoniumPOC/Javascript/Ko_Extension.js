@@ -109,6 +109,7 @@ function Null_reference() {
                         if ((comp instanceof Date) || (comp instanceof Enum) || (value instanceof Null_reference)) {
                             createSubsription(res[att], Listener, res, att);
                         }
+                        else res[att].silent = res[att];
 
                     } else {
                         var nar = [];
@@ -126,9 +127,6 @@ function Null_reference() {
                             attribute: att
                         });
                         createCollectionSubsription(res[att], Listener, res, att);
-                        //if (Listener.TrackCollectionChanges) {
-                        //    res[att].subscribe(CollectionListener(res[att], Listener), null, 'arrayChange');
-                        //}
                     }
                 } else {
                     res[att] = ko.observable(value);

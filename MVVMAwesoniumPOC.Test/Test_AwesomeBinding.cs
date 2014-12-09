@@ -362,6 +362,85 @@ namespace MVVMAwesomium.Test
             }
         }
 
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Nested()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSValue res = GetSafe(() => Get(js, "Name"));
+                    ((string)res).Should().Be("O Monstro");
+
+                    JSValue res2 = GetSafe(() => js.Invoke("LastName"));
+                    ((string)res2).Should().Be("Desmaisons");
+
+                    JSObject local = (JSObject)GetSafe(() => js.Invoke("Local"));
+                    JSValue city = GetSafe(() => local.Invoke("City"));
+                    ((string)city).Should().Be("Florianopolis");
+
+                    this.DoSafe(() =>
+                    _DataContext.Local = new Local() { City = "Paris" });
+ 
+                    Thread.Sleep(50);
+                    JSObject local2 = (JSObject)GetSafe(() => js.Invoke("Local"));
+                    JSValue city2 = GetSafe(() => local2.Invoke("City"));
+                    ((string)city2).Should().Be("Paris");
+
+                    _DataContext.Local.City = "Foz de Iguaçu";
+
+                    Thread.Sleep(50);
+                    JSObject local3 = (JSObject)GetSafe(() => js.Invoke("Local"));
+                    JSValue city3 = GetSafe(() => local3.Invoke("City"));
+                    ((string)city3).Should().Be("Foz de Iguaçu");
+
+
+
+                    //JSValue res3 = GetSafe(() => js.Invoke("Name"));
+                    //((string)res3).Should().Be("23");
+
+                    //JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
+                    //((string)res4).Should().Be("Florianopolis");
+
+                    //_DataContext.Local.City = "Paris";
+                    //Thread.Sleep(50);
+
+                    //res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
+                    //((string)res4).Should().Be("Paris");
+
+                    //JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    //((string)res5).Should().Be("Langage");
+
+                    //_DataContext.Skills[0].Name = "Ling";
+                    //Thread.Sleep(50);
+
+                    //res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    //((string)res5).Should().Be("Ling");
+
+                    ////Teste Two Way
+                    //this.DoSafe(() => js.Invoke("Name", "resName"));
+                    //JSValue resName = GetSafe(() => js.Invoke("Name"));
+                    //((string)resName).Should().Be("resName");
+
+                    //Thread.Sleep(500);
+
+                    //_DataContext.Name.Should().Be("resName");
+
+                    //_DataContext.Name = "nnnnvvvvvvv";
+
+                    //Thread.Sleep(50);
+                    //res3 = GetSafe(() => js.Invoke("Name"));
+                    //((string)res3).Should().Be("nnnnvvvvvvv");
+                }
+            }
+        }
+
 
         [Fact]
         public void Test_AwesomeBinding_TwoWay_Enum()

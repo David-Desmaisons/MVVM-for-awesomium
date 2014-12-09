@@ -286,8 +286,9 @@ namespace MVVMAwesomium.AwesomiumBinding
             if (_ReListen!=null)
                 _ReListen.AddRef();
             else
-            {               
-                _ReListen = ((ivalue!=null) && (ivalue.Type==JSCSGlueType.Basic)) ? null : new ReListener(this);
+            {             
+                //((ivalue!=null) && (ivalue.Type==JSCSGlueType.Basic)) ? null :
+                _ReListen =  new ReListener(this);
             }
 
             return _ReListen;

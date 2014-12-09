@@ -21,7 +21,7 @@ describe("Map To Observable", function () {
         basicmaped6 = { List: [{ Name: '1' }, { Name: '2' }, { Name: '3' }] };
         basicmapped7 = { When: new Date(1974, 2, 26) };
         mapwithenum = { Enum: new Enum(0, '34') };
-        mapwithnull = { sar: new Null_reference(), cop:new Null_reference()};
+        mapwithnull = { sar: new Null_reference(), cop: new Null_reference() };
     });
 
     it("should map basic property", function () {
@@ -64,6 +64,15 @@ describe("Map To Observable", function () {
         expect(mapped.One().Name()).toBe("Albert");
         expect(mapped.Two().Name()).toBe("Mickey");
     });
+
+
+    it("should implement silent with nested", function () {
+        var mapped = ko.MapToObservable(basicmaped4);
+
+        expect(mapped.One.silent).not.toBe(undefined);
+        expect(typeof mapped.One.silent).toBe("function");
+    });
+
 
     it("should call the mapper register", function () {
         var mapper = { Register: function () { } };
