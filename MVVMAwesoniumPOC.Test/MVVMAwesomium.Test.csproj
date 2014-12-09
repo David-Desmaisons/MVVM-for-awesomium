@@ -88,6 +88,7 @@
     <Compile Include="Infra\AssemblyHelper.cs" />
     <Compile Include="Infra\WindowTest.cs" />
     <Compile Include="Infra\WPFThreadingHelper.cs" />
+    <Compile Include="PropertyAbstractionTest.cs" />
     <Compile Include="Test_DoubleNavigation.cs" />
     <Compile Include="Test_DoubleNavigation_Animation.cs" />
     <Compile Include="Test_Navigation.cs" />

@@ -87,6 +87,10 @@
     <Compile Include="Binding\AwesomiumBinding\GlueObject\IJSObservableBridge.cs" />
     <Compile Include="Binding\AwesomiumBinding\GlueObject\JSBasicObject.cs" />
     <Compile Include="Binding\AwesomiumBinding\GlueObject\JSCSGlueType.cs" />
+    <Compile Include="Binding\AwesomiumBinding\Reflection\IProperty.cs" />
+    <Compile Include="Binding\AwesomiumBinding\Reflection\IReflectionCacher.cs" />
+    <Compile Include="Binding\AwesomiumBinding\Reflection\PropertyAbstraction.cs" />
+    <Compile Include="Binding\AwesomiumBinding\Reflection\ReflectionCacher.cs" />
     <Compile Include="Binding\AwesomiumBinding\Helper\ViewReadyExecuter.cs" />
     <Compile Include="Binding\AwesomiumBinding\Mapping\CollectionChanges\CollectionChangeType.cs" />
     <Compile Include="Binding\AwesomiumBinding\Mapping\CollectionChanges\CollectionChanges.cs" />
@@ -169,7 +173,9 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Binding\AwesomiumBinding\Mapping\ReflectionCacher\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
