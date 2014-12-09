@@ -13,5 +13,7 @@ namespace MVVMAwesomium
         Task NavigateAsync(object iViewModel, string Id = null, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay);
 
         event EventHandler<NavigationEvent> OnNavigate;
+
+        event EventHandler OnFirstLoad;
     }
 }

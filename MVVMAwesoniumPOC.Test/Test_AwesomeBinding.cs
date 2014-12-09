@@ -352,6 +352,12 @@ namespace MVVMAwesomium.Test
                     Thread.Sleep(500);
 
                     _DataContext.Name.Should().Be("resName");
+
+                    _DataContext.Name = "nnnnvvvvvvv";
+
+                    Thread.Sleep(50);
+                    res3 = GetSafe(() => js.Invoke("Name"));
+                    ((string)res3).Should().Be("nnnnvvvvvvv");
                 }
             }
         }
@@ -805,7 +811,7 @@ namespace MVVMAwesomium.Test
         }
 
         [Fact]
-        public void Test_AwesomeBinding_Basic_TwoWay_Collection_Stress()
+        public void Test_AwesomeBinding_Stress_TwoWay_Collection()
         {
             using (Tester())
             {
@@ -846,7 +852,7 @@ namespace MVVMAwesomium.Test
 
                     while(notok)
                     {
-                        Thread.Sleep(100);
+                        Thread.Sleep(10);
                         res = GetSafe(() => Get(js, "Skills"));
                         res.Should().NotBeNull();
                         notok = ((JSValue[])res).Length != tcount;
@@ -856,6 +862,56 @@ namespace MVVMAwesomium.Test
 
                     Console.WriteLine("Perf: {0} sec for {1} items", ((double)(ts))/1000, iis);
                     Check((JSValue[])res, _DataContext.Skills);
+
+                    TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(6.5));
+                }
+            }
+        }
+
+
+        [Fact]
+        public void Test_AwesomeBinding_Stress_TwoWay_Int()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                 
+                    int iis = 500;
+                    for (int i = 0; i < iis; i++)
+                    {
+                        _DataContext.Age += 1;
+                    }
+
+                    bool notok = true;
+                    var tg =  _DataContext.Age;
+              
+                    var stopWatch = new Stopwatch();
+                    stopWatch.Start();
+
+                    while (notok)
+                    {
+                        Thread.Sleep(0);
+                        JSValue res = GetSafe(() => Get(js, "Age"));
+                        res.Should().NotBeNull();
+                        res.IsNumber.Should().BeTrue();
+                        var doublev = (int)res;
+                        notok = doublev != tg;
+                        Console.WriteLine(doublev);
+                    }
+                    stopWatch.Stop();
+                    var ts = stopWatch.ElapsedMilliseconds;
+
+                    Console.WriteLine("Perf: {0} sec for {1} iterations", ((double)(ts)) / 1000, iis);
+
+                    TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(3));
+                
                 }
             }
         }

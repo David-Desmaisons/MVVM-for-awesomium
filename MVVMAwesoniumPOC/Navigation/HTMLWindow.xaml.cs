@@ -42,6 +42,16 @@ namespace MVVMAwesomium
             DependencyProperty.Register("IsDebug", typeof(Boolean), typeof(HTMLWindow), new PropertyMetadata(false));
 
 
+        public Boolean IsHTMLLoaded
+        {
+            get { return (Boolean)this.GetValue(IsHTMLLoadedProperty); }
+            set { this.SetValue(IsHTMLLoadedProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsHTMLLoadedProperty =
+            DependencyProperty.Register("IsHTMLLoaded", typeof(Boolean), typeof(HTMLWindow), new PropertyMetadata(false));
+
+
         public ICommand DebugWindow { get; private set; }
 
         public ICommand DebugBrowser { get; private set; }
@@ -66,7 +76,14 @@ namespace MVVMAwesomium
 
             InitializeComponent();
             _WPFDoubleBrowserNavigator = new WPFDoubleBrowserNavigator(this.First, this.Second, _IUrlSolver);
+            _WPFDoubleBrowserNavigator.OnFirstLoad += FirstLoad;
            
+        }
+
+        private void FirstLoad(object sender, EventArgs e)
+        {
+            IsHTMLLoaded = true;
+            _WPFDoubleBrowserNavigator.OnFirstLoad -= FirstLoad;
         }
 
 
@@ -130,15 +147,23 @@ namespace MVVMAwesomium
             return _WPFDoubleBrowserNavigator.NavigateAsync(iViewModel, Id, iMode);
         }
 
+      
+
+        public void Dispose()
+        {
+            _WPFDoubleBrowserNavigator.Dispose();
+        }
+
         public event EventHandler<NavigationEvent> OnNavigate
         {
             add { _WPFDoubleBrowserNavigator.OnNavigate += value; }
             remove { _WPFDoubleBrowserNavigator.OnNavigate -= value; }
         }
 
-        public void Dispose()
+        public event EventHandler OnFirstLoad
         {
-            _WPFDoubleBrowserNavigator.Dispose();
-        }  
+            add { _WPFDoubleBrowserNavigator.OnFirstLoad += value; }
+            remove { _WPFDoubleBrowserNavigator.OnFirstLoad -= value; }
+        }
     }
 }

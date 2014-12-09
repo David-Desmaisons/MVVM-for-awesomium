@@ -73,7 +73,15 @@ namespace MVVMAwesomium
 
         public Uri Solve(object iViewModel, string Id = null)
         {
-            return SolveType(iViewModel.GetType(), Id??string.Empty);
+            string id = Id??string.Empty;
+            Uri res = SolveType(iViewModel.GetType(), id);
+            if (res != null)
+                return res;
+
+            if (id!=string.Empty)
+                return SolveType(iViewModel.GetType(), string.Empty);
+
+            return null;
         }
     }
 }

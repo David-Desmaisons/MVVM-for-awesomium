@@ -31,29 +31,10 @@ namespace MVVMAwesomium.Test
 
     public class Test_DoubleNavigation
     {
-        //private NavigationBuilder _INavigationBuilder;
 
         public Test_DoubleNavigation()
         {
-            //_INavigationBuilder = new NavigationBuilder();
         }
-
-        //private WindowTest BuildWindow(Func<Tuple<WebControl, WebControl>> iWebControlFac)
-        //{
-        //    return new WindowTest(
-        //        (w) =>
-        //        {
-        //            StackPanel stackPanel = new StackPanel();
-        //            w.Content = stackPanel;
-        //            var iWebControl = iWebControlFac();
-        //            w.RegisterName(iWebControl.Item1.Name, iWebControl);
-        //            stackPanel.Children.Add(iWebControl.Item1);
-
-        //            w.RegisterName(iWebControl.Item2.Name, iWebControl);
-        //            stackPanel.Children.Add(iWebControl.Item2);
-        //        }
-        //        );
-        //}
 
         private WindowTest BuildWindow(Func<HTMLWindow> iWebControlFac)
         {
@@ -70,13 +51,15 @@ namespace MVVMAwesomium.Test
         }
 
 
-        internal void TestNavigation(Action<INavigationBuilder, HTMLWindow, WindowTest> Test)
+        internal void TestNavigation(Action<INavigationBuilder, HTMLWindow, WindowTest> Test,bool iDebug=false)
         {
             AssemblyHelper.SetEntryAssembly();
             HTMLWindow wc1 = null;
             Func<HTMLWindow> iWebControlFac = () =>
             {
                 wc1 = new HTMLWindow();
+                wc1.IsDebug = iDebug;
+                wc1.EnableBrowserDebug = iDebug;
                 return wc1;
             };
 
@@ -84,6 +67,7 @@ namespace MVVMAwesomium.Test
             {
                 using (wc1)
                 {
+
                     Test(wc1.NavigationBuilder, wc1, wcontext);
                 }
             }
@@ -129,14 +113,20 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_WPFBrowserNavigator_Simple()
         {
+            bool fl = false;
+            EventHandler ea = null;
+
             TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
                 {
+                    ea = (o, e) => { fl = true; wpfnav.OnFirstLoad -= ea; };
+                    wpfnav.OnFirstLoad+= ea;
                     wpfnav.Should().NotBeNull();
                     SetUpRoute(wpfbuild);
                     wpfnav.UseINavigable = true;
                     var a = new A1();
                     var mre = new ManualResetEvent(false);
+                    WindowTest.RunOnUIThread(() => wpfnav.IsHTMLLoaded.Should().BeFalse());
 
                     WindowTest.RunOnUIThread(
                () =>
@@ -146,8 +136,11 @@ namespace MVVMAwesomium.Test
 
                     mre.WaitOne();
 
+                    fl.Should().BeTrue();
+
                     WindowTest.RunOnUIThread(() =>
                     {
+                        wpfnav.IsHTMLLoaded.Should().BeTrue();
                         //a1.Navigation.Should().Be(wpfnav);
                         a.Navigation.Should().NotBeNull();
                     });
@@ -721,6 +714,16 @@ namespace MVVMAwesomium.Test
             TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
             {
+                WindowTest.RunOnUIThread(() =>
+                {
+                    wpfnav.IsDebug.Should().BeTrue();
+                    Action safe = ()=>
+                    wpfnav.ShowDebugWindow();
+                    safe.ShouldNotThrow<Exception>();
+                });
+
+               
+
                 wpfnav.Should().NotBeNull();
                 wpfbuild.Register<A>("javascript\\navigation_1.html");
                 wpfbuild.Register<A1>("javascript\\navigation_2.html", "Special");
@@ -734,11 +737,7 @@ namespace MVVMAwesomium.Test
                 wpfnav.OnNavigate += wpfnav_OnNavigate;
                 wpfnav.OnNavigate -= wpfnav_OnNavigate;
 
-                WindowTest.RunOnUIThread(() =>
-                    {
-                        wpfnav.IsDebug = true;
-                        wpfnav.IsDebug.Should().BeTrue();
-                    });
+             
 
                 var a1 = new A2();
                 var mre = new ManualResetEvent(false);
@@ -758,7 +757,7 @@ namespace MVVMAwesomium.Test
                     wpfnav.ShowDebugWindow();
                     wpfnav.OpenDebugBrowser();     
                 });
-            });
+            },true);
         }
 
 

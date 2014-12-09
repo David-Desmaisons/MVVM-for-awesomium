@@ -57,7 +57,13 @@ namespace MVVMAwesomium
             if (!_WebControl.IsDocumentReady)
             {
                 _WebControl.Source = iUri;
-                return _IAwesomiumBindingFactory.Bind(_WebControl, iViewModel, iMode).ContinueWith(t=>Binding = t.Result);
+                return _IAwesomiumBindingFactory.Bind(_WebControl, iViewModel, iMode)
+                            .ContinueWith(t =>
+                                {
+                                    if (OnFirstLoad != null)
+                                        OnFirstLoad(this, EventArgs.Empty);
+                                    Binding = t.Result;
+                                });
             }
                 
             TaskCompletionSource<IAwesomeBinding> tcs = new TaskCompletionSource<IAwesomeBinding>();
@@ -98,10 +104,6 @@ namespace MVVMAwesomium
             UseINavigable = false;
         }
 
-
-        public event EventHandler<NavigationEvent> OnNavigate;
-
-
         private bool _UseINavigable = false;
         public bool UseINavigable
         {
@@ -127,5 +129,10 @@ namespace MVVMAwesomium
             if (nv != null)
                 nv.Navigation = this;
         }
+
+        public event EventHandler OnFirstLoad;
+
+        public event EventHandler<NavigationEvent> OnNavigate;
+
     }
 }
