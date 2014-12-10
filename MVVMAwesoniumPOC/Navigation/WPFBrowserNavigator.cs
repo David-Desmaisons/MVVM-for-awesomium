@@ -49,7 +49,7 @@ namespace MVVMAwesomium
         public Task Navigate(Uri iUri, object iViewModel, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
         {
             if (iUri == null)
-                throw new Exception("ViewModel not registered");
+                throw new Exception(string.Format("ViewModel type not registered: {0}", iViewModel.GetType()));
 
             if (OnNavigate != null)
                 OnNavigate(this, new NavigationEvent(iViewModel));
