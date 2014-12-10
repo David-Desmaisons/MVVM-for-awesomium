@@ -942,7 +942,7 @@ namespace MVVMAwesomium.Test
                     Console.WriteLine("Perf: {0} sec for {1} items", ((double)(ts))/1000, iis);
                     Check((JSValue[])res, _DataContext.Skills);
 
-                    TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(6.5));
+                    TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(4.5));
                 }
             }
         }

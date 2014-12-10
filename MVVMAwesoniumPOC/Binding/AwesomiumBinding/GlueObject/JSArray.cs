@@ -61,7 +61,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public void Add(IJSCSGlue iIJSCBridge, int Index)
         {
-            ((JSObject)MappedJSValue).Invoke("silentsplice", new JSValue(Index), new JSValue(0), iIJSCBridge.GetJSSessionValue());
+            ((JSObject)MappedJSValue).InvokeAsync("silentsplice", new JSValue(Index), new JSValue(0), iIJSCBridge.GetJSSessionValue());
             if (Index > Items.Count - 1)
                 Items.Add(iIJSCBridge);
             else
@@ -70,19 +70,19 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public void Insert(IJSCSGlue iIJSCBridge, int Index)
         {
-            ((JSObject)MappedJSValue).Invoke("silentsplice", new JSValue(Index), new JSValue(1), iIJSCBridge.GetJSSessionValue());
+            ((JSObject)MappedJSValue).InvokeAsync("silentsplice", new JSValue(Index), new JSValue(1), iIJSCBridge.GetJSSessionValue());
             Items[Index]=iIJSCBridge;
         }
 
         public void Remove( int Index)
         {
-            ((JSObject)MappedJSValue).Invoke("silentsplice", new JSValue(Index), new JSValue(1));
+            ((JSObject)MappedJSValue).InvokeAsync("silentsplice", new JSValue(Index), new JSValue(1));
             Items.RemoveAt(Index);
         }
 
         public void Reset()
         {
-            ((JSObject)MappedJSValue).Invoke("silentremoveAll");
+            ((JSObject)MappedJSValue).InvokeAsync("silentremoveAll");
             Items.Clear();
         }
 
