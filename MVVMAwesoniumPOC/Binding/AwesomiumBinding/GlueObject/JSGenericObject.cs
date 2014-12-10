@@ -99,8 +99,12 @@ namespace MVVMAwesomium.AwesomiumBinding
                 WebCore.QueueWork(() =>
                     {
                         var jso = (JSObject)_MappedJSValue;
-                        silenter = (JSObject)jso[PropertyName];
-                        _Silenters.Add(PropertyName, silenter);
+                        if (!_Silenters.TryGetValue(PropertyName, out silenter))
+                        {
+                            silenter = (JSObject)jso[PropertyName];
+                            _Silenters.Add(PropertyName, silenter);
+                        }
+              
                         silenter.Invoke("silent", newValue.GetJSSessionValue());
                     });
             }

@@ -83,11 +83,13 @@ namespace MVVMAwesomium.AwesomiumBinding
 
             return _Mapper;
         }
+
         private JSObject _Ko;
         private JSObject GetKo()
         {
             if (_Ko==null)
                 _Ko = _IWebView.ExecuteJavascriptWithResult("ko");
+
             return _Ko;
         }
 

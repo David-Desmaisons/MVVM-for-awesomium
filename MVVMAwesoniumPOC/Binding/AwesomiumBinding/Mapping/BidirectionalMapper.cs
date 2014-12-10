@@ -50,17 +50,22 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         internal Task Init()
         {
-            return InjectInHTLMSession(_Root, true).ContinueWith(_ =>
+            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+
+            InjectInHTLMSession(_Root, true).ContinueWith(_ =>
                 {
                     WebCore.QueueWork(() =>
                    {
                        if (ListenToCSharp)
                        {
-                           ListenToCSharpChanges(_Root);
-                       }
+                           ListenToCSharpChanges(_Root);   
+                       } 
+                       tcs.SetResult(null);
                    });
                 }
             );
+
+            return tcs.Task;
         }
 
         #region IJavascriptMapper
@@ -184,7 +189,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
             CollectionChanges cc = new CollectionChanges(this);
 
-            using (ReListen())
+            using (ReListen(null))
             { 
                 INotifyCollectionChanged inc = res.CValue as INotifyCollectionChanged;
                 if (inc != null) inc.CollectionChanged -= CollectionChanged;
@@ -276,12 +281,15 @@ namespace MVVMAwesomium.AwesomiumBinding
         }
 
         private ReListener _ReListen = null;
-        private IDisposable ReListen()
+        private IDisposable ReListen(IJSCSGlue ivalue)
         {
             if (_ReListen!=null)
                 _ReListen.AddRef();
             else
-                _ReListen = new ReListener(this);
+            {             
+                //((ivalue!=null) && (ivalue.Type==JSCSGlueType.Basic)) ? null :
+                _ReListen =  new ReListener(this);
+            }
 
             return _ReListen;
         }
@@ -331,7 +339,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         private void RegisterAndDo(IJSCSGlue ivalue, Action Do)
         {
-            var idisp = ReListen();
+            var idisp = ReListen(ivalue);
 
             InjectInHTLMSession(ivalue).ContinueWith(_ =>
                 WebCore.QueueWork(() =>

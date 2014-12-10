@@ -91,6 +91,9 @@ namespace MVVMAwesomium
                 return _IAwesomiumBindingFactory.Bind(_CurrentWebControl, iViewModel, wh, iMode).
                                 ContinueWith(t =>
                                 {
+                                    if (OnFirstLoad != null)
+                                        OnFirstLoad(this, EventArgs.Empty);
+
                                     Binding = t.Result;
                                     _Window = wh.__window__;
                                     _Window.State = WindowLogicalState.Opened;
@@ -158,10 +161,6 @@ namespace MVVMAwesomium
             UseINavigable = false;
         }
 
-
-        public event EventHandler<NavigationEvent> OnNavigate;
-
-
         private bool _UseINavigable = false;
         public bool UseINavigable
         {
@@ -184,5 +183,9 @@ namespace MVVMAwesomium
             if (nv != null)
                 nv.Navigation = this;
         }
+
+        public event EventHandler<NavigationEvent> OnNavigate;
+
+        public event EventHandler OnFirstLoad;
     }
 }
