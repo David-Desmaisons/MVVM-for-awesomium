@@ -49,8 +49,10 @@ namespace MVVMAwesomium.AwesomiumBinding
 
             var old = Items.ToList();
 
-            iChanges.Where(c => c.CollectionChangeType == CollectionChangeType.Remove).OrderByDescending(c => c.Index).ForEach(c => ReplayChanges(c, ilist));
-            iChanges.Where(c => c.CollectionChangeType == CollectionChangeType.Add).OrderBy(c => c.Index).ForEach(c => ReplayChanges(c, ilist));
+            var changes = iChanges.ToList();
+
+            changes.Where(c => c.CollectionChangeType == CollectionChangeType.Remove).OrderByDescending(c => c.Index).ForEach(c => ReplayChanges(c, ilist));
+            changes.Where(c => c.CollectionChangeType == CollectionChangeType.Add).OrderBy(c => c.Index).ForEach(c => ReplayChanges(c, ilist));
 
 #if DEBUG
             if (!ilist.Cast<object>().SequenceEqual(Current.Select(c => c.CValue)))

@@ -1227,6 +1227,21 @@ namespace MVVMAwesomium.Test
 
                     Checkstring(col, datacontext.List);
 
+                    var comp = new List<string>(datacontext.List);
+                    comp.Add("newvalue");
+
+                    res = GetSafe(() => js["List"]);
+                    DoSafe(() =>
+                    ((JSObject)res).Invoke("push", new JSValue("newvalue")));
+
+                    Thread.Sleep(350);
+
+                    res = GetSafe(() => Get(js, "List"));
+                    col = ((JSValue[])res);
+
+                    comp.Should().Equal(datacontext.List);
+                    Checkstring(col, datacontext.List);
+
                 }
             }
         }
