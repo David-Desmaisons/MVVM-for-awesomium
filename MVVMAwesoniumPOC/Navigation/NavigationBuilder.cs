@@ -29,7 +29,7 @@ namespace MVVMAwesomium
         private void CheckPath(string iPath)
         {
             if (!File.Exists(iPath))
-                throw new Exception("Registered path does not exist");
+                throw new Exception(string.Format("Registered path does not exist: {0}", iPath));
         }
 
         private Uri CreateUri(string iPath)

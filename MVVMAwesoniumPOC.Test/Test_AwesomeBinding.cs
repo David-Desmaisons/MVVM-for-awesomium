@@ -1114,13 +1114,69 @@ namespace MVVMAwesomium.Test
                     doublev.Should().Be(0);
 
                     this.DoSafe(() => js.Invoke("decimalValue", 0.5));
-                    Thread.Sleep(2000);
+                    Thread.Sleep(150);
+
+                    datacontext.decimalValue.Should().Be(0.5m);
+
 
                     res = GetSafe(() => Get(js, "decimalValue"));
                     res.Should().NotBeNull();
                     res.IsNumber.Should().BeTrue();
                     doublev = (double)res;
                     double half = 0.5;
+                    doublev.Should().Be(half);
+                }
+            }
+        }
+
+
+
+        private class VMwithlong : ViewModelBase
+        {
+            public VMwithlong()
+            {
+            }
+
+            private long _LongValue;
+            public long longValue
+            {
+                get { return _LongValue; }
+                set { Set(ref _LongValue, value, "decimalValue"); }
+            }
+
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Long_ShouldOK()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                var datacontext = new VMwithlong() { longValue=45 };
+
+                using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSValue res = GetSafe(() => Get(js, "longValue"));
+                    res.Should().NotBeNull();
+                    res.IsNumber.Should().BeTrue();
+                    var doublev = (long)res;
+                    doublev.Should().Be(45);
+
+                    this.DoSafe(() => js.Invoke("longValue", 24524));
+                    Thread.Sleep(100);
+
+                    datacontext.longValue.Should().Be(24524);
+
+                    res = GetSafe(() => Get(js, "longValue"));
+                    res.Should().NotBeNull();
+                    res.IsNumber.Should().BeTrue();
+                    doublev = (long)res;
+                    long half = 24524;
                     doublev.Should().Be(half);
                 }
             }
@@ -1169,6 +1225,21 @@ namespace MVVMAwesomium.Test
                     res = GetSafe(() => Get(js, "List"));
                     col = ((JSValue[])res);
 
+                    Checkstring(col, datacontext.List);
+
+                    var comp = new List<string>(datacontext.List);
+                    comp.Add("newvalue");
+
+                    res = GetSafe(() => js["List"]);
+                    DoSafe(() =>
+                    ((JSObject)res).Invoke("push", new JSValue("newvalue")));
+
+                    Thread.Sleep(350);
+
+                    res = GetSafe(() => Get(js, "List"));
+                    col = ((JSValue[])res);
+
+                    comp.Should().Equal(datacontext.List);
                     Checkstring(col, datacontext.List);
 
                 }

@@ -187,13 +187,13 @@ namespace MVVMAwesomium.AwesomiumBinding
             var res = GetFromJavascript(collectionchanged) as JSArray;
             if (res == null) return;
 
-            CollectionChanges cc = new CollectionChanges(this);
+            CollectionChanges cc = new CollectionChanges(this,_JavascriptToCSharpMapper);
 
             using (ReListen(null))
             { 
                 INotifyCollectionChanged inc = res.CValue as INotifyCollectionChanged;
                 if (inc != null) inc.CollectionChanged -= CollectionChanged;
-                res.UpdateEventArgsFromJavascript(cc.GetIndividualChanges(changes), collectionvalue.Select(cv => GetCached(cv)));
+                res.UpdateEventArgsFromJavascript(cc.GetIndividualChanges(changes), collectionvalue.Select(cv => cc.GetBridgeValue(cv)));
                 if (inc != null) inc.CollectionChanged += CollectionChanged;
             }
         }
