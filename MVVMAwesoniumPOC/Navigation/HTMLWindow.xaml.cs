@@ -165,5 +165,11 @@ namespace MVVMAwesomium
             add { _WPFDoubleBrowserNavigator.OnFirstLoad += value; }
             remove { _WPFDoubleBrowserNavigator.OnFirstLoad -= value; }
         }
+
+        private void Root_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F5)
+                e.Handled = true;
+        }
     }
 }

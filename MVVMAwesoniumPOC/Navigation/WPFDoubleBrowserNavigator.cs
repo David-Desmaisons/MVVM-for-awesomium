@@ -65,6 +65,7 @@ namespace MVVMAwesomium
             _NextWebControl.Visibility = Visibility.Visible;
             var tmp = _NextWebControl;
             _NextWebControl = _CurrentWebControl;
+            _NextWebControl.WebSession.ClearCache();
             _CurrentWebControl = tmp;
             if (_Window != null) _Window.State = WindowLogicalState.Closed;
             _Window = iwindow;
