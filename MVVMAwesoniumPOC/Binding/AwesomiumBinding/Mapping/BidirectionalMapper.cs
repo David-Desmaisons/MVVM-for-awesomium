@@ -187,13 +187,13 @@ namespace MVVMAwesomium.AwesomiumBinding
             var res = GetFromJavascript(collectionchanged) as JSArray;
             if (res == null) return;
 
-            CollectionChanges cc = new CollectionChanges(this,_JavascriptToCSharpMapper);
+            CollectionChanges cc = new CollectionChanges(this);
 
             using (ReListen(null))
             { 
                 INotifyCollectionChanged inc = res.CValue as INotifyCollectionChanged;
                 if (inc != null) inc.CollectionChanged -= CollectionChanged;
-                res.UpdateEventArgsFromJavascript(cc.GetIndividualChanges(changes), collectionvalue.Select(cv => cc.GetBridgeValue(cv)));
+                res.UpdateEventArgsFromJavascript(cc.GetIndividualChanges(changes), collectionvalue.Select(cv => GetCachedOrCreateBasic(cv)));
                 if (inc != null) inc.CollectionChanged += CollectionChanged;
             }
         }
@@ -390,6 +390,15 @@ namespace MVVMAwesomium.AwesomiumBinding
             IJSCSGlue res = null;
             _FromJavascript_Global.TryGetValue(_GlobalBuilder.GetID(globalkey), out res);
             return res;
+        }
+
+        public IJSCSGlue GetCachedOrCreateBasic(JSValue globalkey)
+        {
+            IJSCSGlue res = GetCached(globalkey);
+            if (res != null)
+                return res;
+
+            return new JSBasicObject(globalkey, _JavascriptToCSharpMapper.GetSimpleValue(globalkey));
         }
 
         private IJSCSGlue GetCachedLocal(JSObject localkey)

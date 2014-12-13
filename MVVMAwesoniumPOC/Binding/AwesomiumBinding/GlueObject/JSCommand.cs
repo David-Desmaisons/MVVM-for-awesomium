@@ -63,7 +63,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         private object Convert(IJSCBridgeCache mapper, JSValue value)
         {
-            var found = mapper.GetCached(value);
+            var found = mapper.GetCachedOrCreateBasic(value);
             return (found != null) ? found.CValue : null;
         }
 

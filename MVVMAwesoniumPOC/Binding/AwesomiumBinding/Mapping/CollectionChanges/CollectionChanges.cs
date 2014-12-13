@@ -9,16 +9,9 @@ namespace MVVMAwesomium.AwesomiumBinding
     public class CollectionChanges
     {
         private IJSCBridgeCache _IJSCBridgeCache;
-        private JavascriptToCSharpMapper _JavascriptToCSharpMapper;
-        public CollectionChanges(IJSCBridgeCache iJSCBridgeCache, JavascriptToCSharpMapper iJavascriptToCSharpMapper)
+        public CollectionChanges(IJSCBridgeCache iJSCBridgeCache)
         {
             _IJSCBridgeCache = iJSCBridgeCache;
-            _JavascriptToCSharpMapper = iJavascriptToCSharpMapper;
-        }
-
-        public IJSCSGlue GetBridgeValue(JSValue iobject)
-        {
-            return _IJSCBridgeCache.GetCached(iobject) ?? new JSBasicObject(iobject, _JavascriptToCSharpMapper.GetSimpleValue(iobject));
         }
 
         public IEnumerable<IndividualCollectionChange> GetIndividualChanges(JSValue[] iChanges)
@@ -28,7 +21,7 @@ namespace MVVMAwesomium.AwesomiumBinding
                 yield return new IndividualCollectionChange(
                     (string)ic["status"] == "added" ? CollectionChangeType.Add : CollectionChangeType.Remove,
                     (int)ic["index"],
-                    GetBridgeValue(ic["value"]));
+                    _IJSCBridgeCache.GetCachedOrCreateBasic(ic["value"]));
             }
         }
 

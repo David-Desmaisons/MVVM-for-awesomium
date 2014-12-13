@@ -10,7 +10,7 @@ namespace MVVMAwesomium.AwesomiumBinding
     internal class JavascriptSessionInjector : IDisposable
     {
         private IWebView _IWebView;
-        private IJSOBuilder _GlobalBuilder;  
+        private IJSOBuilder _GlobalBuilder;
         private JSObject _Listener;
         private IJavascriptListener _IJavascriptListener;
 
@@ -75,6 +75,9 @@ namespace MVVMAwesomium.AwesomiumBinding
 
             _Mapper.Bind("End", false, (o, e) =>
                 {
+                    if (_PullNextMapper)
+                        _Current = _IJavascriptMapper.Dequeue();
+
                     if (_Current!=null)
                         _Current.End((JSObject)e.Arguments[0]);
                     _Current = null;
@@ -87,7 +90,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         private JSObject _Ko;
         private JSObject GetKo()
         {
-            if (_Ko==null)
+            if (_Ko == null)
                 _Ko = _IWebView.ExecuteJavascriptWithResult("ko");
 
             return _Ko;
@@ -102,7 +105,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         public void RegisterInSession(JSObject iJSObject)
         {
             var ko = GetKo();
-            ko.Bind("log", false, (o, e) => Trace.WriteLine(string.Join(" - ", e.Arguments.Select(s=>((string)s).Replace("\n"," ")))));
+            ko.Bind("log", false, (o, e) => Trace.WriteLine(string.Join(" - ", e.Arguments.Select(s => ((string)s).Replace("\n", " ")))));
             if (ko.HasMethod("register"))
                 ko.Invoke("register", iJSObject);
             ko.Invoke("applyBindings", iJSObject);

@@ -800,6 +800,27 @@ namespace MVVMAwesomium.Test
             }
         }
 
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Command_Received_javascript_variable()
+        {
+            using (Tester())
+            {
+  
+                _ICommand.CanExecute(Arg.Any<object>()).Returns(true);
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("TestCommand"));
+                    JSValue res = GetSafe(() => mycommand.Invoke("Execute", new JSValue("titi")));
+
+                    Thread.Sleep(150);
+                    _ICommand.Received().Execute("titi");
+                }
+            }
+        }
+
         private JSValue GetValue(JSObject jso, string pn)
         {
             return jso.Invoke(pn);
@@ -1055,13 +1076,13 @@ namespace MVVMAwesomium.Test
             }
         }
 
-        private class VMWithList : ViewModelBase
+        private class VMWithList<T> : ViewModelBase
         {
             public VMWithList()
             {
-                List = new ObservableCollection<string>();
+                List = new ObservableCollection<T>();
             }
-            public ObservableCollection<string> List { get; private set; }
+            public ObservableCollection<T> List { get; private set; }
 
         }
 
@@ -1088,6 +1109,17 @@ namespace MVVMAwesomium.Test
             {
                 (GetSafe(() => (string)c)).Should().Be(iskill[i]);
                
+            });
+
+        }
+
+        private void Checkdecimal(JSValue[] coll, IList<decimal> iskill)
+        {
+            coll.Length.Should().Be(iskill.Count);
+            coll.ForEach((c, i) =>
+            {
+               ((decimal)(double)c).Should().Be(iskill[i]);
+
             });
 
         }
@@ -1191,7 +1223,7 @@ namespace MVVMAwesomium.Test
                 bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
                 isValidSynchronizationContext.Should().BeTrue();
 
-                var datacontext = new VMWithList();
+                var datacontext = new VMWithList<string>();
 
                 using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
                 {
@@ -1245,6 +1277,7 @@ namespace MVVMAwesomium.Test
                 }
             }
         }
+
 
         [Fact]
         public void Test_AwesomeBinding_Factory_TwoWay()

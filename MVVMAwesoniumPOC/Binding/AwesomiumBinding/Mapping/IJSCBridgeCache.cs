@@ -15,5 +15,8 @@ namespace MVVMAwesomium.AwesomiumBinding
         IJSCSGlue GetCached(object key);
 
         IJSCSGlue GetCached(JSObject key);
+
+        IJSCSGlue GetCachedOrCreateBasic(JSValue key);
+
     }
 }
