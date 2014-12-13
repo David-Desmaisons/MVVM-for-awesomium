@@ -18,6 +18,7 @@ using System.Windows.Input;
 using MVVMAwesomium.ViewModel;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using MVVMAwesomium.ViewModel.Infra;
 
 namespace MVVMAwesomium.Test
 {
@@ -865,6 +866,36 @@ namespace MVVMAwesomium.Test
 
                     Thread.Sleep(150);
                     _ICommand.Received().Execute("titi");
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Command_Complete()
+        {
+            using (Tester())
+            {
+                _ICommand = new RelayCommand(() =>
+                {
+                    _DataContext.MainSkill = new Skill();
+                    _DataContext.Skills.Add(_DataContext.MainSkill);
+                });
+                _DataContext.TestCommand = _ICommand;
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    _DataContext.Skills.Should().HaveCount(2);
+
+                    DoSafe(() =>
+                    _ICommand.Execute(null));
+
+                    Thread.Sleep(100);
+
+                    JSValue res = GetSafe(() => Get(js, "Skills"));
+                    res.Should().NotBeNull();
+                    ((JSValue[])res).Should().HaveCount(3);
                 }
             }
         }
