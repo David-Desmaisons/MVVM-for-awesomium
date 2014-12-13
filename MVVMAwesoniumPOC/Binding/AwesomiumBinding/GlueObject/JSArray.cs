@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using MVVMAwesomium.Infra;
 using System.Collections;
+using MVVMAwesomium.Exceptions;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
@@ -56,7 +57,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
 #if DEBUG
             if (!ilist.Cast<object>().SequenceEqual(Current.Select(c => c.CValue)))
-                throw new Exception("Unable to track collection changes");
+                throw ExceptionHelper.Get("Unable to track collection changes");
 #endif
         }
 

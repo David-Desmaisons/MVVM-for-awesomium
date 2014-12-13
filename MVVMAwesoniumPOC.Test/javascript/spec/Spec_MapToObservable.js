@@ -378,7 +378,7 @@ describe("Map To Observable", function () {
          expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped.One(), 'Name', 'Titi');
      });
 
-     it("should not listen TrackChanges on nested object", function () {
+     it("should listen TrackChanges on nested object", function () {
          var Listener = { TrackChanges: function () { } };
          spyOn(Listener, 'TrackChanges');
 
@@ -389,7 +389,8 @@ describe("Map To Observable", function () {
          mapped.One(newone);
 
          expect(mapped.One()).toEqual(newone);
-         expect(Listener.TrackChanges.calls.count()).toEqual(0);
+         expect(Listener.TrackChanges.calls.count()).toEqual(1);
+         expect(Listener.TrackChanges).toHaveBeenCalledWith(mapped, 'One', newone);
      });
 
 

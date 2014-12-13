@@ -106,11 +106,7 @@ function Null_reference() {
                             attribute: att
                         }, Mapper, Listener);
                         res[att] = ko.observable(comp);
-                        if ((comp instanceof Date) || (comp instanceof Enum) || (value instanceof Null_reference)) {
-                            createSubsription(res[att], Listener, res, att);
-                        }
-                        else res[att].silent = res[att];
-
+                        createSubsription(res[att], Listener, res, att);
                     } else {
                         var nar = [];
                         for (var i = 0; i < value.length; ++i) {
@@ -234,7 +230,7 @@ function Null_reference() {
                    }
 
                    if (ko.log)
-                       ko.log("MVVM for awesomium binding error: '" + ex.message+"'", "node HTLM: " + node.outerHTML, "context:" + ko.toJSON(bindingContext.$data));
+                       ko.log("ko binding error: '" + ex.message+"'", "node HTLM: " + node.outerHTML, "context:" + ko.toJSON(bindingContext.$data));
                 }
 
                 return bindings;

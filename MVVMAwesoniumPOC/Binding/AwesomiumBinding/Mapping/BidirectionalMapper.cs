@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MVVMAwesomium.Infra;
+using MVVMAwesomium.Exceptions;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
@@ -17,7 +18,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         private readonly JavascriptBindingMode _BindingMode;
         private readonly IJSCSGlue _Root;
         private readonly IWebView _IWebView;
-        
+
         private CSharpToJavascriptMapper _JSObjectBuilder;
         private JavascriptSessionInjector _SessionInjector;
         private JavascriptToCSharpMapper _JavascriptToCSharpMapper;
@@ -25,7 +26,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         private IJSOLocalBuilder _LocalBuilder;
         private IJSOBuilder _GlobalBuilder;
 
-        
+
         private IDictionary<object, IJSCSGlue> _FromCSharp = new Dictionary<object, IJSCSGlue>();
         private IDictionary<uint, IJSCSGlue> _FromJavascript_Global = new Dictionary<uint, IJSCSGlue>();
         private IDictionary<uint, IJSCSGlue> _FromJavascript_Local = new Dictionary<uint, IJSCSGlue>();
@@ -45,7 +46,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
             _GlobalBuilder = new GlobalBuilder(_IWebView, "MVVMGlue");
 
-            _SessionInjector = new JavascriptSessionInjector(iwebview, _GlobalBuilder, JavascriptObjecChanges);      
+            _SessionInjector = new JavascriptSessionInjector(iwebview, _GlobalBuilder, JavascriptObjecChanges);
         }
 
         internal Task Init()
@@ -58,8 +59,8 @@ namespace MVVMAwesomium.AwesomiumBinding
                    {
                        if (ListenToCSharp)
                        {
-                           ListenToCSharpChanges(_Root);   
-                       } 
+                           ListenToCSharpChanges(_Root);
+                       }
                        tcs.SetResult(null);
                    });
                 }
@@ -111,7 +112,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         private void Update(IJSObservableBridge ibo, JSObject jsobject)
         {
-            ibo.SetMappedJSValue( jsobject,this);
+            ibo.SetMappedJSValue(jsobject, this);
             _FromJavascript_Global[_GlobalBuilder.GetID(jsobject)] = ibo;
         }
 
@@ -135,7 +136,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         private void ListenToCSharpChanges(IJSCSGlue ibridge)
         {
             var list = new JSCBridgeListenableVisitor(n => n.PropertyChanged += Object_PropertyChanged,
-                                     c => c.CollectionChanged += CollectionChanged, co=>co.ListenChanges());
+                                     c => c.CollectionChanged += CollectionChanged, co => co.ListenChanges());
             _Root.ApplyOnListenable(list);
         }
 
@@ -143,7 +144,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             var list = new JSCBridgeListenableVisitor(n => n.PropertyChanged -= Object_PropertyChanged,
                            c => c.CollectionChanged -= CollectionChanged, co => co.UnListenChanges());
- 
+
             _Root.ApplyOnListenable(list);
         }
 
@@ -151,7 +152,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         private Task InjectInHTLMSession(IJSCSGlue iroot, bool isroot = false)
         {
-            if ((iroot==null) || (iroot.Type != JSCSGlueType.Object))
+            if ((iroot == null) || (iroot.Type != JSCSGlueType.Object))
             {
                 return TaskHelper.Ended();
             }
@@ -161,40 +162,52 @@ namespace MVVMAwesomium.AwesomiumBinding
             if (!isroot)
                 return jvm.UpdateTask;
             else
-                return jvm.UpdateTask.ContinueWith(_ => _SessionInjector.RegisterInSession(res), 
-                            TaskScheduler.FromCurrentSynchronizationContext()); 
+                return jvm.UpdateTask.ContinueWith(_ => _SessionInjector.RegisterInSession(res),
+                            TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         public void OnJavaScriptObjectChanges(JSObject objectchanged, string PropertyName, JSValue newValue)
         {
-            var res = GetFromJavascript(objectchanged) as JSGenericObject;
-            if (res == null)
-                return;
+            try
+            {
+                var res = GetFromJavascript(objectchanged) as JSGenericObject;
+                if (res == null)
+                    return;
 
-            IJSCSGlue glue = GetCachedLocal(newValue); 
-            object ores = (glue!=null) ? glue.CValue : 
-                        _JavascriptToCSharpMapper.GetSimpleValue(newValue);
+                IJSCSGlue glue = GetCachedOrCreateBasic(newValue);
+                object ores = glue.CValue;
 
-        
-            INotifyPropertyChanged inc = res.CValue as INotifyPropertyChanged;
-            if (inc != null) inc.PropertyChanged -= Object_PropertyChanged;
-            res.UpdateCSharpProperty(PropertyName, newValue, ores);
-            if (inc != null) inc.PropertyChanged += Object_PropertyChanged;
+                INotifyPropertyChanged inc = res.CValue as INotifyPropertyChanged;
+                if (inc != null) inc.PropertyChanged -= Object_PropertyChanged;
+                res.UpdateCSharpProperty(PropertyName, newValue, ores);
+                if (inc != null) inc.PropertyChanged += Object_PropertyChanged;
+            }
+            catch (Exception e)
+            {
+                ExceptionHelper.Log(string.Format("Unable to update ViewModel from View, exception raised: {0}", e));
+            }
         }
 
         public void OnJavaScriptCollectionChanges(JSObject collectionchanged, JSValue[] collectionvalue, JSValue[] changes)
         {
-            var res = GetFromJavascript(collectionchanged) as JSArray;
-            if (res == null) return;
+            try
+            {
+                var res = GetFromJavascript(collectionchanged) as JSArray;
+                if (res == null) return;
 
-            CollectionChanges cc = new CollectionChanges(this);
+                CollectionChanges cc = new CollectionChanges(this);
 
-            using (ReListen(null))
-            { 
-                INotifyCollectionChanged inc = res.CValue as INotifyCollectionChanged;
-                if (inc != null) inc.CollectionChanged -= CollectionChanged;
-                res.UpdateEventArgsFromJavascript(cc.GetIndividualChanges(changes), collectionvalue.Select(cv => GetCachedOrCreateBasic(cv)));
-                if (inc != null) inc.CollectionChanged += CollectionChanged;
+                using (ReListen(null))
+                {
+                    INotifyCollectionChanged inc = res.CValue as INotifyCollectionChanged;
+                    if (inc != null) inc.CollectionChanged -= CollectionChanged;
+                    res.UpdateEventArgsFromJavascript(cc.GetIndividualChanges(changes), collectionvalue.Select(cv => GetCachedOrCreateBasic(cv)));
+                    if (inc != null) inc.CollectionChanged += CollectionChanged;
+                }
+            }
+            catch (Exception e)
+            {
+                ExceptionHelper.Log(string.Format("Unable to update ViewModel from View, excepetion raised: {0}", e));
             }
         }
 
@@ -227,7 +240,7 @@ namespace MVVMAwesomium.AwesomiumBinding
             private HashSet<INotifyPropertyChanged> _OldObject = new HashSet<INotifyPropertyChanged>();
             private HashSet<INotifyCollectionChanged> _OldCollections = new HashSet<INotifyCollectionChanged>();
             private HashSet<JSCommand> _OldCommands = new HashSet<JSCommand>();
-     
+
             private int _Count = 1;
 
             private BidirectionalMapper _BidirectionalMapper;
@@ -274,8 +287,6 @@ namespace MVVMAwesomium.AwesomiumBinding
                 _OldCommands.Where(o => !new_Commands.Contains(o)).ForEach(o => o.UnListenChanges());
                 new_Commands.Where(o => !_OldCommands.Contains(o)).ForEach(o => o.ListenChanges());
 
-
-
                 _BidirectionalMapper._ReListen = null;
             }
         }
@@ -283,12 +294,12 @@ namespace MVVMAwesomium.AwesomiumBinding
         private ReListener _ReListen = null;
         private IDisposable ReListen(IJSCSGlue ivalue)
         {
-            if (_ReListen!=null)
+            if (_ReListen != null)
                 _ReListen.AddRef();
             else
-            {             
+            {
                 //((ivalue!=null) && (ivalue.Type==JSCSGlueType.Basic)) ? null :
-                _ReListen =  new ReListener(this);
+                _ReListen = new ReListener(this);
             }
 
             return _ReListen;
@@ -308,14 +319,14 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             JSArray arr = _FromCSharp[sender] as JSArray;
             if (arr == null) return;
-                
+
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     IJSCSGlue addvalue = _JSObjectBuilder.Map(e.NewItems[0]);
 
                     if (addvalue == null) return;
-                        
+
                     RegisterAndDo(addvalue, () => arr.Add(addvalue, e.NewStartingIndex));
                     break;
 
@@ -323,8 +334,8 @@ namespace MVVMAwesomium.AwesomiumBinding
                     IJSCSGlue newvalue = _JSObjectBuilder.Map(e.NewItems[0]);
 
                     if (newvalue == null) return;
-                       
-                    RegisterAndDo(newvalue, () => arr.Insert(newvalue, e.NewStartingIndex) );
+
+                    RegisterAndDo(newvalue, () => arr.Insert(newvalue, e.NewStartingIndex));
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
@@ -383,7 +394,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         }
 
         public IJSCSGlue GetCached(JSObject globalkey)
-        {          
+        {
             if (!_GlobalBuilder.HasRelevantId(globalkey))
                 return null;
 
@@ -394,9 +405,12 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public IJSCSGlue GetCachedOrCreateBasic(JSValue globalkey)
         {
-            IJSCSGlue res = GetCached(globalkey);
-            if (res != null)
-                return res;
+            IJSCSGlue res = null;
+            JSObject obj = globalkey;
+
+            //Use local cache for objet not created in javascript session such as enum
+            if ((obj != null) &&  ((res = GetCached(globalkey) ?? GetCachedLocal(globalkey)) != null) )
+                    return res;
 
             return new JSBasicObject(globalkey, _JavascriptToCSharpMapper.GetSimpleValue(globalkey));
         }
@@ -407,7 +421,7 @@ namespace MVVMAwesomium.AwesomiumBinding
                 return null;
 
             IJSCSGlue res = null;
-            _FromJavascript_Local.TryGetValue(_LocalBuilder.GetID(localkey), out res);               
+            _FromJavascript_Local.TryGetValue(_LocalBuilder.GetID(localkey), out res);
             return res;
         }
 

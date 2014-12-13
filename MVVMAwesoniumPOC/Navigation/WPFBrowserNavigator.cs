@@ -9,6 +9,7 @@ using Awesomium.Core;
 using Awesomium.Windows.Controls;
 using MVVMAwesomium.Infra;
 using System.IO;
+using MVVMAwesomium.Exceptions;
 
 namespace MVVMAwesomium
 {
@@ -49,7 +50,7 @@ namespace MVVMAwesomium
         public Task Navigate(Uri iUri, object iViewModel, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
         {
             if (iUri == null)
-                throw new Exception(string.Format("ViewModel type not registered: {0}", iViewModel.GetType()));
+                throw ExceptionHelper.GetArgument(string.Format("ViewModel type not registered: {0}", iViewModel.GetType()));
 
             if (OnNavigate != null)
                 OnNavigate(this, new NavigationEvent(iViewModel));

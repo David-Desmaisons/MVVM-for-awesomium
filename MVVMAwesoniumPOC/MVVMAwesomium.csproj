@@ -97,6 +97,8 @@
     <Compile Include="Binding\AwesomiumBinding\Mapping\JavascriptToCSharpMapper.cs" />
     <Compile Include="Binding\IAwesomeBinding.cs" />
     <Compile Include="Binding\IAwesomiumBindingFactory.cs" />
+    <Compile Include="Exceptions\MVVMforAwesomiumArgumentException.cs" />
+    <Compile Include="Exceptions\ExceptionHelper.cs" />
     <Compile Include="Infra\VM\BasicRelayCommand.cs" />
     <Compile Include="Infra\DictionaryExtension.cs" />
     <Compile Include="Infra\TypeExtension.cs" />

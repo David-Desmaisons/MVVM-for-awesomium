@@ -5,6 +5,7 @@ using System.Text;
 using MVVMAwesomium.Infra;
 using System.IO;
 using System.Reflection;
+using MVVMAwesomium.Exceptions;
 
 namespace MVVMAwesomium
 {
@@ -22,14 +23,14 @@ namespace MVVMAwesomium
             }
             catch (ArgumentException)
             {
-                throw new ArgumentException("A same entity can not be registered twice");
+                throw ExceptionHelper.GetArgument(string.Format("A same ViewModel type can not be registered twice {0}", itype));
             }
         }
 
         private void CheckPath(string iPath)
         {
             if (!File.Exists(iPath))
-                throw new Exception(string.Format("Registered path does not exist: {0}", iPath));
+                throw ExceptionHelper.GetArgument(string.Format("Registered path does not exist: {0}", iPath));
         }
 
         private Uri CreateUri(string iPath)

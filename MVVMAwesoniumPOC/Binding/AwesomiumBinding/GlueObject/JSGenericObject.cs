@@ -66,7 +66,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public void UpdateCSharpProperty(string PropertyName, JSValue newValue, object simplevalue)
         {
-            if ((simplevalue == null) || (Object.Equals(simplevalue, _Attributes[PropertyName].CValue)))
+            if  (Object.Equals(simplevalue, _Attributes[PropertyName].CValue))
                 return;
 
             PropertyInfo propertyInfo = CValue.GetType().GetProperty(PropertyName, BindingFlags.Public | BindingFlags.Instance);

@@ -400,43 +400,6 @@ namespace MVVMAwesomium.Test
                     JSValue city3 = GetSafe(() => local3.Invoke("City"));
                     ((string)city3).Should().Be("Foz de Iguaçu");
 
-
-
-                    //JSValue res3 = GetSafe(() => js.Invoke("Name"));
-                    //((string)res3).Should().Be("23");
-
-                    //JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
-                    //((string)res4).Should().Be("Florianopolis");
-
-                    //_DataContext.Local.City = "Paris";
-                    //Thread.Sleep(50);
-
-                    //res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
-                    //((string)res4).Should().Be("Paris");
-
-                    //JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
-                    //((string)res5).Should().Be("Langage");
-
-                    //_DataContext.Skills[0].Name = "Ling";
-                    //Thread.Sleep(50);
-
-                    //res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
-                    //((string)res5).Should().Be("Ling");
-
-                    ////Teste Two Way
-                    //this.DoSafe(() => js.Invoke("Name", "resName"));
-                    //JSValue resName = GetSafe(() => js.Invoke("Name"));
-                    //((string)resName).Should().Be("resName");
-
-                    //Thread.Sleep(500);
-
-                    //_DataContext.Name.Should().Be("resName");
-
-                    //_DataContext.Name = "nnnnvvvvvvv";
-
-                    //Thread.Sleep(50);
-                    //res3 = GetSafe(() => js.Invoke("Name"));
-                    //((string)res3).Should().Be("nnnnvvvvvvv");
                 }
             }
         }
@@ -550,6 +513,91 @@ namespace MVVMAwesomium.Test
                 }
             }
         }
+
+        [Fact]
+        public void Test_AwesomeBinding_TwoWay_Set_Object_From_Javascipt()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                var datacontext = new Couple();
+                var p1 = new Person() { Name = "David" };
+                datacontext.One = p1;
+                var p2 = new Person() { Name = "Claudia" };
+                datacontext.Two = p2;
+
+                using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSValue res1 = GetSafe(() => Get(js, "One"));
+                    res1.Should().NotBeNull();
+                    var n1 = GetSafe(() => Get(res1, "Name"));
+                    ((string)n1).Should().Be("David");
+
+                    JSValue res2 = GetSafe(() => Get(js, "Two"));
+                    res2.Should().NotBeNull();
+                    var n2 = GetSafe(() => Get(res2, "Name"));
+                    ((string)n2).Should().Be("Claudia");
+                    
+                    DoSafe(() =>  js.Invoke("One", res2)  );
+
+                    JSValue res3 = GetSafe(() => Get(js, "One"));
+                    res3.Should().NotBeNull();
+                    var n3 = GetSafe(() => Get(res3, "Name"));
+                    ((string)n3).Should().Be("Claudia");
+
+                    Thread.Sleep(100);
+
+                    datacontext.One.Should().Be(p2);
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_TwoWay_Set_Object_From_Javascipt_Survive_MissUse()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                var datacontext = new Couple();
+                var p1 = new Person() { Name = "David" };
+                datacontext.One = p1;
+                var p2 = new Person() { Name = "Claudia" };
+                datacontext.Two = p2;
+
+                using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSValue res1 = GetSafe(() => Get(js, "One"));
+                    res1.Should().NotBeNull();
+                    var n1 = GetSafe(() => Get(res1, "Name"));
+                    ((string)n1).Should().Be("David");
+
+                    JSValue res2 = GetSafe(() => Get(js, "Two"));
+                    res2.Should().NotBeNull();
+                    var n2 = GetSafe(() => Get(res2, "Name"));
+                    ((string)n2).Should().Be("Claudia");
+
+                    DoSafe(() => js.Invoke("One", new JSValue("Dede")));
+
+                    JSValue res3 = GetSafe(() => Get(js, "One"));
+                    ((string)res3).Should().Be("Dede");
+
+                    Thread.Sleep(100);
+
+                    datacontext.One.Should().Be(p1);
+                }
+            }
+        }
+
 
         private void Check(JSValue[] coll, IList<Skill> iskill)
         {
@@ -948,11 +996,12 @@ namespace MVVMAwesomium.Test
                     int tcount =_DataContext.Skills.Count;
 
                     var stopWatch = new Stopwatch();
-                    stopWatch.Start();
+                    stopWatch.Start(); 
+                    
+                    Thread.Sleep(10);
 
                     while(notok)
-                    {
-                        Thread.Sleep(10);
+                    {   
                         res = GetSafe(() => Get(js, "Skills"));
                         res.Should().NotBeNull();
                         notok = ((JSValue[])res).Length != tcount;
@@ -1010,7 +1059,7 @@ namespace MVVMAwesomium.Test
 
                     Console.WriteLine("Perf: {0} sec for {1} iterations", ((double)(ts)) / 1000, iis);
 
-                    TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(3));
+                    TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(3.1));
                 
                 }
             }
@@ -1072,6 +1121,36 @@ namespace MVVMAwesomium.Test
                     res = GetSafe(() => Get(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Collection_JSUpdate_Should_Survive_ViewChanges()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var root = (mb as AwesomeBinding).JSBrideRootObject as JSGenericObject;
+                    var js = mb.JSRootObject;
+
+                    JSValue res = GetSafe(() => Get(js, "Skills"));
+                    res.Should().NotBeNull();
+                    var col = ((JSValue[])res);
+                    col.Length.Should().Be(2);
+
+                    Check(col, _DataContext.Skills);
+
+                    JSObject coll = GetSafe(() => ((JSObject)js)["Skills"]);
+                    DoSafe(() => coll.Invoke("push", new JSValue("Whatever")));
+
+                    Thread.Sleep(150);
+                    _DataContext.Skills.Should().HaveCount(2);
                 }
             }
         }

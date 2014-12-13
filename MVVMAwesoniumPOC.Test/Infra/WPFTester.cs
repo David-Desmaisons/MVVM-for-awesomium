@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MVVMAwesomium.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -79,7 +80,7 @@ namespace MVVMAwesomium.Test
         public void UpdateWindowLayout()
         {
             if (!this.IsInitialized)
-                throw new InvalidOperationException("You must initialize WPFTester before you can update the window layout.");
+                throw new Exception("You must initialize WPFTester before you can update the window layout.");
 
             this.Window.UpdateLayout();
         }
@@ -90,7 +91,7 @@ namespace MVVMAwesomium.Test
                 return;
 
             if (window == null)
-                throw new ArgumentNullException("window", "WPFTester must be initialized with a valid window");
+                throw new ArgumentNullException("window", "You must initialize WPFTester before you can update the window layout.");
 
             this.Window = window;
             this.Window.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
