@@ -61,9 +61,16 @@ namespace MVVMAwesomium
 
             view.ExecuteWhenReady(() =>
                     {
-                        if (First != null) First();
-                        var mapper = new BidirectionalMapper(iViewModel, view, iMode, additional);
-                        mapper.Init().ContinueWith(_ => tcs.SetResult(new AwesomeBinding(mapper, CleanUp)));
+                        try 
+                        { 
+                            if (First != null) First();
+                            var mapper = new BidirectionalMapper(iViewModel, view, iMode, additional);
+                            mapper.Init().ContinueWith(_ => tcs.SetResult(new AwesomeBinding(mapper, CleanUp)));
+                        }
+                        catch (Exception e)
+                        {
+                            tcs.SetException(e);
+                        }
                     });
 
             return tcs.Task;

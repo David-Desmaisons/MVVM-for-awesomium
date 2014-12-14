@@ -5,6 +5,7 @@ using System.Text;
 
 using Awesomium.Core;
 using MVVMAwesomium.Infra;
+using MVVMAwesomium.Exceptions;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
@@ -57,17 +58,32 @@ namespace MVVMAwesomium.AwesomiumBinding
         }
 
 
+        private JSValue Check(JSObject ires)
+        {
+            if (ires == null)
+                throw ExceptionHelper.NoKoExtension();
+
+            return ires;
+        }
+
+        private JSValue CheckUpdate(JSObject ires)
+        {
+            return UpdateObject(Check(ires));
+        }
+
+
+
         public JSValue CreateEnum(Enum ienum)
         {
             return _IWebView.EvaluateSafe(() =>
-                UpdateObject(_IWebView.ExecuteJavascriptWithResult(string.Format("new Enum('{0}',{1},'{2}','{3}')",
+                CheckUpdate(_IWebView.ExecuteJavascriptWithResult(string.Format("new Enum('{0}',{1},'{2}','{3}')",
                                 ienum.GetType().Name, Convert.ToInt32(ienum), ienum.ToString(), ienum.GetDescription()))));
         }
 
 
         public JSValue CreateNull()
         {
-            return _IWebView.EvaluateSafe(() => _IWebView.ExecuteJavascriptWithResult("new Null_reference()"));
+            return Check(_IWebView.EvaluateSafe(() => _IWebView.ExecuteJavascriptWithResult("new Null_reference()")));
         }
     }
 }

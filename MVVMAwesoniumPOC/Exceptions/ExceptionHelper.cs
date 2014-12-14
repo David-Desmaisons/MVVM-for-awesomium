@@ -15,10 +15,23 @@ namespace MVVMAwesomium.Exceptions
             Trace.WriteLine(string.Format("{0} - {1}", _Header,iMessageLog));
         }
 
+       
         static public Exception Get(string iMessage)
         {
             return new MVVMforAwesomiumException(iMessage);
         }
+
+         static public Exception NoKo()
+        {
+            return ExceptionHelper.Get("ko object not found! You should add a link to knockout.js script to the HML document!");
+        }
+
+        static public Exception NoKoExtension()
+        {
+           return Get("Critical error! You should add a link to knockout_Extension.js script to the HML document!");
+        }
+
+ 
 
         static public ArgumentException GetArgument(string iMessage)
         {

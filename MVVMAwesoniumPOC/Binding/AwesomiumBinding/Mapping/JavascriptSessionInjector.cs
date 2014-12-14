@@ -92,7 +92,11 @@ namespace MVVMAwesomium.AwesomiumBinding
         private JSObject GetKo()
         {
             if (_Ko == null)
+            {
                 _Ko = _IWebView.ExecuteJavascriptWithResult("ko");
+                if (_Ko == null)
+                    throw ExceptionHelper.NoKo();
+            }
 
             return _Ko;
         }
@@ -100,7 +104,10 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public JSObject Map(JSValue ihybridobject, IJavascriptMapper ijvm)
         {
-            return GetKo().Invoke("MapToObservable", ihybridobject, GetMapper(ijvm), _Listener);
+            JSObject res = GetKo().Invoke("MapToObservable", ihybridobject, GetMapper(ijvm), _Listener);
+            if (res == null)
+                throw ExceptionHelper.NoKoExtension();
+            return res;
         }
 
         public void RegisterInSession(JSObject iJSObject)

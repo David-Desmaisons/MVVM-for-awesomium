@@ -19,6 +19,7 @@ using MVVMAwesomium.ViewModel;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using MVVMAwesomium.ViewModel.Infra;
+using MVVMAwesomium.Exceptions;
 
 namespace MVVMAwesomium.Test
 {
@@ -128,6 +129,48 @@ namespace MVVMAwesomium.Test
                 }
             }
        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_HTML_Without_Correct_js_ShouldThrowException()
+        {
+            using (Tester("javascript/empty.html"))
+            {
+                var vm = new object();
+                IAwesomeBinding bd = null;
+
+                Action st = () => bd = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.OneTime).Result;
+
+                st.ShouldThrow<MVVMforAwesomiumException>();
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_HTML_Without_Correct_js_ShouldThrow_Correct_Exception2()
+        {
+            using (Tester("javascript/almost_empty.html"))
+            {
+                var vm = new object();
+                IAwesomeBinding bd = null;
+
+                Action st = () => bd = AwesomeBinding.Bind(_WebView, vm, JavascriptBindingMode.OneTime).Result;
+
+                st.ShouldThrow<MVVMforAwesomiumException>();
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_HTML_Without_Correct_js_ShouldThrowCorrectException()
+        {
+            using (Tester("javascript/empty.html"))
+            {
+                var vm = new object();
+                IAwesomeBinding bd =null;
+
+                Action st = () => bd = AwesomeBinding.Bind(_WebView, vm, JavascriptBindingMode.OneTime).Result;
+
+                st.ShouldThrow<MVVMforAwesomiumException>();
+            }
+        }
 
 
         [Fact]

@@ -57,7 +57,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
 #if DEBUG
             if (!ilist.Cast<object>().SequenceEqual(Current.Select(c => c.CValue)))
-                throw ExceptionHelper.Get("Unable to track collection changes");
+                throw ExceptionHelper.Get("Internal error: Unable to track collection changes");
 #endif
         }
 
