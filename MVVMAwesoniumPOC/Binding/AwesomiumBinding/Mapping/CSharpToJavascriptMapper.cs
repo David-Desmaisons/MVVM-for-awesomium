@@ -164,7 +164,9 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         private bool Convert(IEnumerable source, out IJSCSGlue res)
         {
-            return Convert(source.Cast<object>(), out  res);
+            res = new JSArray(source.Cast<object>().Select(s => Map(s)), source);
+            _Cacher.Cache(source, res);
+            return true;
         }
     }
 }

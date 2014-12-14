@@ -18,6 +18,25 @@ namespace MVVMAwesomium.AwesomiumBinding
             CValue = collection;
         }
 
+        private Type GetIndivualType<T>(IList<T> collection)
+        {
+            Type res = typeof(T);
+            if (res.Assembly == typeof(int).Assembly)
+                return res;
+
+            return null;
+        }
+
+        private Type GetIndivualType(object collection)
+        {
+            return null;
+        }
+
+        public CollectionChanges GetChanger(JSValue[] changes, IJSCBridgeCache bridge)
+        {
+            return new CollectionChanges(bridge, changes, GetIndivualType((dynamic)CValue));
+        }
+
         private void ReplayChanges(IndividualCollectionChange change, IList ilist)
         {
             switch (change.CollectionChangeType)
@@ -43,7 +62,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         }
 
 
-        public void UpdateEventArgsFromJavascript(IEnumerable<IndividualCollectionChange> iChanges, IEnumerable<IJSCSGlue> Current)
+        private void UpdateEventArgsFromJavascript(IEnumerable<IndividualCollectionChange> iChanges, IEnumerable<IJSCSGlue> Current)
         {
             IList ilist = CValue as IList;
             if (ilist == null) return;
@@ -60,6 +79,12 @@ namespace MVVMAwesomium.AwesomiumBinding
                 throw ExceptionHelper.Get("Internal error: Unable to track collection changes");
 #endif
         }
+
+        public void UpdateEventArgsFromJavascript(CollectionChanges iCollectionChanges, JSValue[] collectionvalue)
+        {
+            UpdateEventArgsFromJavascript(iCollectionChanges.GetIndividualChanges(), iCollectionChanges.ConvertCollection(collectionvalue));
+        }
+
 
 
         public void Add(IJSCSGlue iIJSCBridge, int Index)

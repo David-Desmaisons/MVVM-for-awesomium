@@ -14,19 +14,28 @@ namespace MVVMAwesomium.AwesomiumBinding
             _IWebView = iIWebView;
         }
 
-        public object GetSimpleValue(JSValue ijsvalue)
+        public object GetSimpleValue(JSValue ijsvalue, Type iTargetType=null)
         {
             if (ijsvalue.IsString)
                 return (string)ijsvalue;
 
-            if (ijsvalue.IsInteger)
-                return (int)ijsvalue;
-
             if (ijsvalue.IsBoolean)
                 return (bool)ijsvalue;
 
-            if (ijsvalue.IsDouble)
-                return (double)ijsvalue;
+            object res =null;
+
+            if (ijsvalue.IsNumber)
+            {
+                if (ijsvalue.IsInteger)
+                    res = (int)ijsvalue;
+                else if (ijsvalue.IsDouble)
+                    res = (double)ijsvalue;
+
+                if (iTargetType == null)
+                    return res;
+                else
+                    return Convert.ChangeType(res, iTargetType);
+            }
 
             var resdate =  GetDate(ijsvalue);
             if (resdate.HasValue)

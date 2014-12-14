@@ -64,26 +64,18 @@ namespace MVVMAwesomium.AwesomiumBinding
             return _Attributes.Values; 
         }
 
-        public void UpdateCSharpProperty(string PropertyName, JSValue newValue, object simplevalue)
+        public void UpdateCSharpProperty(string PropertyName, IJSCBridgeCache converter, JSValue newValue )
         {
-            if  (Object.Equals(simplevalue, _Attributes[PropertyName].CValue))
-                return;
-
             PropertyInfo propertyInfo = CValue.GetType().GetProperty(PropertyName, BindingFlags.Public | BindingFlags.Instance);
             if (!propertyInfo.CanWrite)
                 return;
-           
-            _Attributes[PropertyName] = new JSBasicObject(newValue, simplevalue);
 
-            try
-            {
-                propertyInfo.SetValue(CValue, simplevalue, null);
-            }
-            catch(ArgumentException)
-            {
-                propertyInfo.SetValue(CValue, Convert.ChangeType(simplevalue, propertyInfo.PropertyType), null);      
-            }
+            IJSCSGlue glue = converter.GetCachedOrCreateBasic(newValue, propertyInfo.PropertyType);
+            _Attributes[PropertyName] = glue;
+            propertyInfo.SetValue(CValue, glue.CValue, null);
         }
+
+        
 
         public void Reroot(string PropertyName, IJSCSGlue newValue)
         { 

@@ -174,12 +174,9 @@ namespace MVVMAwesomium.AwesomiumBinding
                 if (res == null)
                     return;
 
-                IJSCSGlue glue = GetCachedOrCreateBasic(newValue);
-                object ores = glue.CValue;
-
                 INotifyPropertyChanged inc = res.CValue as INotifyPropertyChanged;
                 if (inc != null) inc.PropertyChanged -= Object_PropertyChanged;
-                res.UpdateCSharpProperty(PropertyName, newValue, ores);
+                res.UpdateCSharpProperty(PropertyName, this, newValue);
                 if (inc != null) inc.PropertyChanged += Object_PropertyChanged;
             }
             catch (Exception e)
@@ -195,13 +192,13 @@ namespace MVVMAwesomium.AwesomiumBinding
                 var res = GetFromJavascript(collectionchanged) as JSArray;
                 if (res == null) return;
 
-                CollectionChanges cc = new CollectionChanges(this);
+                CollectionChanges cc = res.GetChanger(changes, this);
 
                 using (ReListen(null))
                 {
                     INotifyCollectionChanged inc = res.CValue as INotifyCollectionChanged;
                     if (inc != null) inc.CollectionChanged -= CollectionChanged;
-                    res.UpdateEventArgsFromJavascript(cc.GetIndividualChanges(changes), collectionvalue.Select(cv => GetCachedOrCreateBasic(cv)));
+                     res.UpdateEventArgsFromJavascript(cc, collectionvalue);
                     if (inc != null) inc.CollectionChanged += CollectionChanged;
                 }
             }
@@ -403,7 +400,7 @@ namespace MVVMAwesomium.AwesomiumBinding
             return res;
         }
 
-        public IJSCSGlue GetCachedOrCreateBasic(JSValue globalkey)
+        public IJSCSGlue GetCachedOrCreateBasic(JSValue globalkey,Type iTargetType)
         {
             IJSCSGlue res = null;
             JSObject obj = globalkey;
@@ -412,7 +409,11 @@ namespace MVVMAwesomium.AwesomiumBinding
             if ((obj != null) &&  ((res = GetCached(globalkey) ?? GetCachedLocal(globalkey)) != null) )
                     return res;
 
-            return new JSBasicObject(globalkey, _JavascriptToCSharpMapper.GetSimpleValue(globalkey));
+            object targetvalue = _JavascriptToCSharpMapper.GetSimpleValue(globalkey, iTargetType);
+            if ((targetvalue == null) && (!globalkey.IsNull))
+                throw ExceptionHelper.Get(string.Format("Unable to convert javascript object: {0}", globalkey));
+
+            return new JSBasicObject(globalkey, targetvalue);
         }
 
         private IJSCSGlue GetCachedLocal(JSObject localkey)

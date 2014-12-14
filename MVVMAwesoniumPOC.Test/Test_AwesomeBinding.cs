@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -601,6 +602,48 @@ namespace MVVMAwesomium.Test
             }
         }
 
+
+        [Fact]
+        public void Test_AwesomeBinding_TwoWay_Set_Null_From_Javascipt()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                var datacontext = new Couple();
+                var p1 = new Person() { Name = "David" };
+                datacontext.One = p1;
+                var p2 = new Person() { Name = "Claudia" };
+                datacontext.Two = p2;
+
+                using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSValue res1 = GetSafe(() => Get(js, "One"));
+                    res1.Should().NotBeNull();
+                    var n1 = GetSafe(() => Get(res1, "Name"));
+                    ((string)n1).Should().Be("David");
+
+                    JSValue res2 = GetSafe(() => Get(js, "Two"));
+                    res2.Should().NotBeNull();
+                    var n2 = GetSafe(() => Get(res2, "Name"));
+                    ((string)n2).Should().Be("Claudia");
+
+                    DoSafe(() => js.Invoke("One", JSValue.Null));
+
+                    JSValue res3 = GetSafe(() => Get(js, "One"));
+                    res3.IsNull.Should().BeTrue();
+    
+                    Thread.Sleep(100);
+
+                    datacontext.One.Should().BeNull();
+                }
+            }
+        }
+
         [Fact]
         public void Test_AwesomeBinding_TwoWay_Set_Object_From_Javascipt_Survive_MissUse()
         {
@@ -634,6 +677,47 @@ namespace MVVMAwesomium.Test
 
                     JSValue res3 = GetSafe(() => Get(js, "One"));
                     ((string)res3).Should().Be("Dede");
+
+                    Thread.Sleep(100);
+
+                    datacontext.One.Should().Be(p1);
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_TwoWay_Set_Object_From_Javascipt_Survive_MissUse_NoReset_OnAttribute()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                var datacontext = new Couple();
+                var p1 = new Person() { Name = "David" };
+                datacontext.One = p1;
+                var p2 = new Person() { Name = "Claudia" };
+                datacontext.Two = p2;
+
+                using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSValue res1 = GetSafe(() => Get(js, "One"));
+                    res1.Should().NotBeNull();
+                    var n1 = GetSafe(() => Get(res1, "Name"));
+                    ((string)n1).Should().Be("David");
+
+                    JSValue res2 = GetSafe(() => Get(js, "Two"));
+                    res2.Should().NotBeNull();
+                    var n2 = GetSafe(() => Get(res2, "Name"));
+                    ((string)n2).Should().Be("Claudia");
+
+                    DoSafe(() => js.Invoke("One", new JSValue(new JSObject())));
+
+                    JSValue res3 = GetSafe(() => Get(js, "One"));
+                    res3.IsObject.Should().BeTrue();
 
                     Thread.Sleep(100);
 
@@ -1239,6 +1323,16 @@ namespace MVVMAwesomium.Test
 
         }
 
+        private class VMWithListNonGeneric : ViewModelBase
+        {
+            public VMWithListNonGeneric()
+            {
+                List = new ArrayList();
+            }
+            public ArrayList List { get; private set; }
+
+        }
+
         private class VMwithdecimal : ViewModelBase
         {
             public VMwithdecimal()
@@ -1424,8 +1518,111 @@ namespace MVVMAwesomium.Test
                     res = GetSafe(() => Get(js, "List"));
                     col = ((JSValue[])res);
 
-                    comp.Should().Equal(datacontext.List);
+                    datacontext.List.Should().Equal(comp);
                     Checkstring(col, datacontext.List);
+
+                }
+            }
+        }
+
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Collection_NoneGenericList()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                var datacontext = new VMWithListNonGeneric();
+                datacontext.List.Add(888);
+
+                using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSValue res = GetSafe(() => Get(js, "List"));
+                    res.Should().NotBeNull();
+                    var col = ((JSValue[])res);
+                    col.Length.Should().Be(1);
+
+                    res = GetSafe(() => js["List"]);
+                    DoSafe(() =>
+                    ((JSObject)res).Invoke("push", new JSValue("newvalue")));
+
+                    res = GetSafe(() => Get(js, "List"));
+                    res.Should().NotBeNull();
+                    col = ((JSValue[])res);
+                    col.Length.Should().Be(2);
+
+                    Thread.Sleep(350);
+
+                    datacontext.List.Should().HaveCount(2);
+                    datacontext.List[1].Should().Be("newvalue");
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Collection_decimal()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                var datacontext = new VMWithList<decimal>();
+
+                using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSValue res = GetSafe(() => Get(js, "List"));
+                    res.Should().NotBeNull();
+                    var col = ((JSValue[])res);
+                    col.Length.Should().Be(0);
+
+                    Checkdecimal(col, datacontext.List);
+
+                    datacontext.List.Add(3);
+
+                    Thread.Sleep(150);
+                    res = GetSafe(() => Get(js, "List"));
+                    col = ((JSValue[])res);
+
+                    Checkdecimal(col, datacontext.List);
+
+                    datacontext.List.Add(10.5m);
+                    datacontext.List.Add(126);
+
+                    Thread.Sleep(150);
+                    res = GetSafe(() => Get(js, "List"));
+                    col = ((JSValue[])res);
+
+                    Checkdecimal(col, datacontext.List);
+
+                    Thread.Sleep(100);
+                    res = GetSafe(() => Get(js, "List"));
+                    col = ((JSValue[])res);
+
+                    Checkdecimal(col, datacontext.List);
+
+                    var comp = new List<decimal>(datacontext.List);
+                    comp.Add(0.55m);
+
+                    res = GetSafe(() => js["List"]);
+                    DoSafe(() =>
+                    ((JSObject)res).Invoke("push", new JSValue(0.55)));
+
+                    Thread.Sleep(350);
+
+                    res = GetSafe(() => Get(js, "List"));
+                    col = ((JSValue[])res);
+
+                    comp.Should().Equal(datacontext.List);
+                    Checkdecimal(col, datacontext.List);
 
                 }
             }
