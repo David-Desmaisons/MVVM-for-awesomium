@@ -111,6 +111,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="javascript\almost_empty.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="javascript\empty.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Navigation data\js\Ko_Extension.min.js.map">
       <DependentUpon>Ko_Extension.min.js</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

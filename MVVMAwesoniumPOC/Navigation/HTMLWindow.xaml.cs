@@ -168,8 +168,7 @@ namespace MVVMAwesomium
 
         private void Root_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.F5)
-                e.Handled = true;
+            if (e.Key == Key.F5) e.Handled = true;
         }
     }
 }

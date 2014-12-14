@@ -18,21 +18,19 @@ namespace MVVMAwesomium.Test
 
         public Awesomium_Test_Base()
         {
-            //_SynchronizationContext = Init().Result;
-           //DoSafe(()=> Console.WriteLine("Init Awesonium Thread"));
         }
 
         private class TestContext : IDisposable
         {
             private Task _EndTask;
             private Awesomium_Test_Base _Father;
-            public TestContext(Awesomium_Test_Base Father)
+            public TestContext(Awesomium_Test_Base Father,string ipath)
             {
                 _Father = Father;
-                _Father._SynchronizationContext = InitTask().Result;
+                _Father._SynchronizationContext = InitTask(ipath).Result;
             }
 
-            private Task<SynchronizationContext> InitTask()
+            private Task<SynchronizationContext> InitTask(string ipath)
             {
                 TaskCompletionSource<SynchronizationContext> tcs = new TaskCompletionSource<SynchronizationContext>();
                 TaskCompletionSource<object> complete = new TaskCompletionSource<object>();
@@ -44,7 +42,8 @@ namespace MVVMAwesomium.Test
                     _EndTask = complete.Task;
 
                     _Father._WebView = WebCore.CreateWebView(500, 500);
-                    _Father._WebView.Source = new Uri(string.Format("{0}\\javascript\\index.html", Assembly.GetExecutingAssembly().GetPath()));
+                    ipath = ipath?? "javascript\\index.html";
+                    _Father._WebView.Source = new Uri(string.Format("{0}\\{1}", Assembly.GetExecutingAssembly().GetPath(), ipath));
 
                     WebCore.Started += (o, e) => { tcs.SetResult(SynchronizationContext.Current); };
 
@@ -66,35 +65,10 @@ namespace MVVMAwesomium.Test
             }
         }
 
-        protected IDisposable Tester()
+        protected IDisposable Tester(string ihtlmpath=null)
         {
-            return new TestContext(this);
+            return new TestContext(this, ihtlmpath);
         }
-      
-        //private Task<SynchronizationContext> Init()
-        //{
-        //    //TaskCompletionSource<SynchronizationContext> tcs = new TaskCompletionSource<SynchronizationContext>();
-        //    //Task.Factory.StartNew(() =>
-        //    //{
-        //    //    WebCore.Initialize(new WebConfig());
-        //    //    WebSession session = WebCore.CreateWebSession(WebPreferences.Default);
-
-        //    //    _WebView = WebCore.CreateWebView(500, 500);
-        //    //    _WebView.Source = new Uri(string.Format("{0}\\javascript\\index.html", Assembly.GetExecutingAssembly().GetPath()));
-
-        //    //    WebCore.Started += (o, e) => { tcs.SetResult(SynchronizationContext.Current); };
-
-        //    //    while (_WebView.IsLoading)
-        //    //    {
-        //    //        WebCore.Run();
-        //    //    }
-        //    //}
-        //    //);
-
-        //    //return tcs.Task;
-        //}
-
-      
 
         protected T GetSafe<T>(Func<T> UnsafeGet)
         {
