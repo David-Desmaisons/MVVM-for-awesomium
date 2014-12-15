@@ -67,7 +67,7 @@ namespace MVVMAwesomium.AwesomiumBinding
             IList ilist = CValue as IList;
             if (ilist == null) return;
 
-            var old = Items.ToList();
+            //var old = Items.ToList();
 
             var changes = iChanges.ToList();
 
