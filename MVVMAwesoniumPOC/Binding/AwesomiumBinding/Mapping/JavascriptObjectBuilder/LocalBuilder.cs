@@ -80,10 +80,14 @@ namespace MVVMAwesomium.AwesomiumBinding
                                 ienum.GetType().Name, Convert.ToInt32(ienum), ienum.ToString(), ienum.GetDescription()))));
         }
 
+        private JSValue? _JSNull = null;
 
         public JSValue CreateNull()
         {
-            return Check(_IWebView.EvaluateSafe(() => _IWebView.ExecuteJavascriptWithResult("new Null_reference()")));
+            if (!_JSNull.HasValue)
+                _JSNull = Check(_IWebView.EvaluateSafe(() => _IWebView.ExecuteJavascriptWithResult("new Null_reference()")));
+
+            return _JSNull.Value;
         }
     }
 }

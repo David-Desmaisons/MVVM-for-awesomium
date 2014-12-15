@@ -1212,43 +1212,7 @@ namespace MVVMAwesomium.Test
                     var col = ((JSValue[])res);
                     col.Length.Should().Be(100);
 
-                    //Check(col, _DataContext.Skills);
-
-                    //_DataContext.Skills.Add(new Skill() { Name = "C++", Type = "Info" });
-
-                    //Thread.Sleep(150);
-                    //res = GetSafe(() => Get(js, "Skills"));
-                    //res.Should().NotBeNull();
-                    //Check((JSValue[])res, _DataContext.Skills);
-
-                    //_DataContext.Skills[0] = new Skill() { Name = "HTML5", Type = "Info" };
-                    //int iis = 500;
-                    //for (int i = 0; i < iis; i++)
-                    //{
-                    //    _DataContext.Skills.Insert(0, new Skill() { Name = "HTML5", Type = "Info" });
-                    //}
-
-                    //bool notok = true;
-                    //int tcount = _DataContext.Skills.Count;
-
-                    //var stopWatch = new Stopwatch();
-                    //stopWatch.Start();
-
-                    //Thread.Sleep(10);
-
-                    //while (notok)
-                    //{
-                    //    res = GetSafe(() => Get(js, "Skills"));
-                    //    res.Should().NotBeNull();
-                    //    notok = ((JSValue[])res).Length != tcount;
-                    //}
-                    //stopWatch.Stop();
-                    //var ts = stopWatch.ElapsedMilliseconds;
-
-                    //Console.WriteLine("Perf: {0} sec for {1} items", ((double)(ts)) / 1000, iis);
-                    //Check((JSValue[])res, _DataContext.Skills);
-
-                    //TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(4.5));
+                  
                 }
             }
         }
