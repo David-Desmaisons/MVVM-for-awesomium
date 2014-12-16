@@ -94,7 +94,15 @@ function Null_reference() {
 
         var res = {};
         MapToObservable.Cache[or._MappedId] = res;
-        if (Mapper.Register) Mapper.Register(res, context);
+        if (Mapper.Register){
+            if (context===null) 
+                Mapper.Register(res);
+            else if (context.index === undefined)
+                Mapper.Register(res, context.object, context.attribute);
+            else
+                Mapper.Register(res, context.object, context.attribute, context.index);
+        }
+
 
         for (var att in or) {
             if ((att !== "_MappedId") && (or.hasOwnProperty(att))) {
@@ -118,10 +126,7 @@ function Null_reference() {
                         }
 
                         res[att] = ko.observableArray(nar);
-                        if (Mapper.Register) Mapper.Register(res[att], {
-                            object: res,
-                            attribute: att
-                        });
+                        if (Mapper.Register) Mapper.Register(res[att], res, att);
                         createCollectionSubsription(res[att], Listener, res, att);
                     }
                 } else {

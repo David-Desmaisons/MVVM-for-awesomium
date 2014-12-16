@@ -23,24 +23,43 @@ function Null_reference() {
         };
     }
 
-     //if (Listener.TrackChanges) {
-     //                   createSubsription(res[att], PropertyListener(res, att, Listener));
-     //               }
-     //               else res[att].silent = res[att];
+    function createSubsription(observable, tracker, res, att) {
+        if (tracker.TrackChanges) {
+            listener = PropertyListener(res, att, tracker);
+            observable.listener = listener;
+            observable.subscriber = observable.subscribe(listener);
+            observable.silent = function (v) {
+                observable.subscriber.dispose();
+                observable(v);
+                observable.subscriber = observable.subscribe(observable.listener);
+            };
+        }
+        else
+            observable.silent = observable;
+    }
 
-     function createSubsription(observable, tracker,res,att) {
-         if (tracker.TrackChanges) {
-             listener = PropertyListener(res, att, tracker);
-             observable.Listener = listener;
-             observable.subscriber = observable.subscribe(listener);
-             observable.silent = function (v) {
-                 observable.subscriber.dispose();
-                 observable(v);
-                 observable.subscriber = observable.subscribe(observable.Listener);
-             };
-         }
-         else
-             observable.silent = observable;
+    function createCollectionSubsription(observable, tracker, res, att) {
+        if (tracker.TrackCollectionChanges) {
+            var collectionlistener = CollectionListener(res[att], tracker);
+            observable.listener = collectionlistener;
+            observable.subscriber = observable.subscribe(collectionlistener, null, 'arrayChange');
+            observable.silent = function (fn) {
+                return function () {
+                    observable.subscriber.dispose();
+                    fn.apply(observable, arguments);
+                    observable.subscriber = observable.subscribe(collectionlistener, null, 'arrayChange');
+                };
+            };
+        }
+        else
+            observable.silent = function (fn) {
+                return function () {
+                    fn.apply(observable, arguments);
+                };
+            };
+
+        observable.silentsplice = observable.silent(observable.splice);
+        observable.silentremoveAll = observable.silent(observable.removeAll);
     }
 
 
@@ -75,7 +94,15 @@ function Null_reference() {
 
         var res = {};
         MapToObservable.Cache[or._MappedId] = res;
-        if (Mapper.Register) Mapper.Register(res, context);
+        if (Mapper.Register) {
+            if (context === null)
+                Mapper.Register(res);
+            else if (context.index === undefined)
+                Mapper.Register(res, context.object, context.attribute);
+            else
+                Mapper.Register(res, context.object, context.attribute, context.index);
+        }
+
 
         for (var att in or) {
             if ((att !== "_MappedId") && (or.hasOwnProperty(att))) {
@@ -87,14 +114,7 @@ function Null_reference() {
                             attribute: att
                         }, Mapper, Listener);
                         res[att] = ko.observable(comp);
-                        if (((comp instanceof Date) || (comp instanceof Enum) || (value instanceof Null_reference))) {
-                            //res[att].subscribe(PropertyListener(res, att, Listener));
-                            //createSubsription(res[att], PropertyListener(res, att, Listener));
-                            createSubsription(res[att], Listener, res, att);
-                            //(Listener.TrackChanges) &&
-
-                        }
-
+                        createSubsription(res[att], Listener, res, att);
                     } else {
                         var nar = [];
                         for (var i = 0; i < value.length; ++i) {
@@ -106,33 +126,12 @@ function Null_reference() {
                         }
 
                         res[att] = ko.observableArray(nar);
-                        if (Mapper.Register) Mapper.Register(res[att], {
-                            object: res,
-                            attribute: att
-                        });
-                        if (Listener.TrackCollectionChanges) {
-                            res[att].subscribe(CollectionListener(res[att], Listener), null, 'arrayChange');
-                        }
+                        if (Mapper.Register) Mapper.Register(res[att], res, att);
+                        createCollectionSubsription(res[att], Listener, res, att);
                     }
                 } else {
                     res[att] = ko.observable(value);
                     createSubsription(res[att], Listener, res, att);
-
-                    //if (Listener.TrackChanges) {
-                    //    createSubsription(res[att], PropertyListener(res, att, Listener));
-                    //    //var current = res[att];
-                    //    //var f = PropertyListener(res, att, Listener);
-                    //    //current.Listener = f;
-                    //    //current.subscriber = current.subscribe(f);
-                    //    //current.silent = (function (c) {
-                    //    //    return function (v) {
-                    //    //        c.subscriber.dispose();
-                    //    //        c(v);
-                    //    //        c.subscriber = c.subscribe(c.Listener);
-                    //    //    };
-                    //    //})(current);
-                    //}
-                    //else res[att].silent = res[att];
                 }
             }
         }
@@ -183,7 +182,7 @@ function Null_reference() {
         update: function (element, valueAccessor) {
             var v = ko.utils.unwrapObservable(valueAccessor());
             var imagepath = ko.getimage(v);
-            if (imagepath) element.src=imagepath;
+            if (imagepath) element.src = imagepath;
         }
     };
 
@@ -192,11 +191,11 @@ function Null_reference() {
             return '{when: $data.__window__().State, do: ' + value + '}';
         },
 
-        init: function (element, valueAccessor,allBindings,viewModel,bindingContext) {
+        init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
             bindingContext.$data.__window__().IsListeningClose(true);
         },
 
-        update: function (element, valueAccessor,allBindings,viewModel,bindingContext) {
+        update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
             var v = ko.utils.unwrapObservable(valueAccessor());
             if (v.when().name !== 'Closing')
                 return;
@@ -205,7 +204,7 @@ function Null_reference() {
         }
     };
 
-    ko.bindingHandlers.onopened= {
+    ko.bindingHandlers.onopened = {
         preprocess: function (value) {
             return '{when: $data.__window__().State, do: ' + value + '}';
         },
@@ -223,25 +222,25 @@ function Null_reference() {
     //allow parcial binding even if somebinding are KO
     var existing = ko.bindingProvider.instance;
 
-        ko.bindingProvider.instance = {
-            nodeHasBindings: existing.nodeHasBindings,
-            getBindings: function(node, bindingContext) {
-                var bindings;
-                try {
-                   bindings = existing.getBindings(node, bindingContext);
-                }
-                catch (ex) {
-                   if (window.console && console.log) {
-                       console.log("binding error", ex.message, node, bindingContext);
-                   }
-
-                   if (ko.log)
-                       ko.log("MVVM for awesomium binding error: '" + ex.message+"'", "node HTLM: " + node.outerHTML, "context:" + ko.toJSON(bindingContext.$data));
-                }
-
-                return bindings;
+    ko.bindingProvider.instance = {
+        nodeHasBindings: existing.nodeHasBindings,
+        getBindings: function (node, bindingContext) {
+            var bindings;
+            try {
+                bindings = existing.getBindings(node, bindingContext);
             }
-        };
+            catch (ex) {
+                if (window.console && console.log) {
+                    console.log("binding error", ex.message, node, bindingContext);
+                }
+
+                if (ko.log)
+                    ko.log("ko binding error: '" + ex.message + "'", "node HTLM: " + node.outerHTML, "context:" + ko.toJSON(bindingContext.$data));
+            }
+
+            return bindings;
+        }
+    };
 
 
 }());

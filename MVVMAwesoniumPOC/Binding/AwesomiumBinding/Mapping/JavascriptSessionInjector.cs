@@ -58,21 +58,25 @@ namespace MVVMAwesomium.AwesomiumBinding
                 if (_Current == null)
                     return;
 
+                int count = e.Arguments.Length;
                 JSObject registered = (JSObject)e.Arguments[0];
-                JSObject Context = (JSObject)e.Arguments[1];
 
-                if (Context == null)
+                switch (count)
                 {
-                    _Current.RegisterFirst(registered);
-                    return;
-                }
+                    case 1:
+                        _Current.RegisterFirst(registered);
+                        break;
 
-                if (Context.HasProperty("index"))
-                    _Current.RegisterCollectionMapping((JSObject)Context["object"],
-                        (string)Context["attribute"], (int)Context["index"], registered);
-                else
-                    _Current.RegisterMapping((JSObject)Context["object"], (string)Context["attribute"], registered);
-            });
+                    case 3:
+                        _Current.RegisterMapping((JSObject)e.Arguments[1], (string)e.Arguments[2], registered);
+                        break;
+
+                    case 4:
+                        _Current.RegisterCollectionMapping((JSObject)e.Arguments[1],
+                            (string)e.Arguments[2], (int)e.Arguments[3], registered);
+                        break;
+                }
+             });
 
             _Mapper.Bind("End", false, (o, e) =>
                 {
@@ -106,7 +110,12 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             JSObject res = GetKo().Invoke("MapToObservable", ihybridobject, GetMapper(ijvm), _Listener);
             if (res == null)
+            { 
+                if (_IWebView.GetLastError()==Error.TimedOut)
+                    throw ExceptionHelper.TimeOut();
+                
                 throw ExceptionHelper.NoKoExtension();
+            }
             return res;
         }
 

@@ -82,7 +82,7 @@ describe("Map To Observable", function () {
         var mapped = ko.MapToObservable(basicmaped, mapper);
 
         expect(mapper.Register).toHaveBeenCalled();
-        expect(mapper.Register).toHaveBeenCalledWith(mapped, null);
+        expect(mapper.Register).toHaveBeenCalledWith(mapped);
         expect(mapper.Register.calls.count()).toEqual(1);
     });
 
@@ -96,9 +96,9 @@ describe("Map To Observable", function () {
         var mapped_Two = ko.MapToObservable(basicmaped4.Two, mapper);
 
         expect(mapper.Register).toHaveBeenCalled();
-        expect(mapper.Register).toHaveBeenCalledWith(mapped, null);
-        expect(mapper.Register).toHaveBeenCalledWith(mapped_One, { object: mapped, attribute: 'One' });
-        expect(mapper.Register).toHaveBeenCalledWith(mapped_Two, { object: mapped, attribute: 'Two' });
+        expect(mapper.Register).toHaveBeenCalledWith(mapped);
+        expect(mapper.Register).toHaveBeenCalledWith(mapped_One,mapped,  'One' );
+        expect(mapper.Register).toHaveBeenCalledWith(mapped_Two, mapped, 'Two' );
 
         expect(mapper.Register.calls.count()).toEqual(3);
     });
@@ -111,8 +111,8 @@ describe("Map To Observable", function () {
         var mapped_One = ko.MapToObservable(basicmaped3.One);
   
         expect(mapper.Register).toHaveBeenCalled();
-        expect(mapper.Register).toHaveBeenCalledWith(mapped, null);
-        expect(mapper.Register).toHaveBeenCalledWith(mapped_One, { object: mapped, attribute: 'One' });
+        expect(mapper.Register).toHaveBeenCalledWith(mapped);
+        expect(mapper.Register).toHaveBeenCalledWith(mapped_One,  mapped, 'One' );
   
         expect(mapper.Register.calls.count()).toEqual(2);
     });
@@ -131,11 +131,11 @@ describe("Map To Observable", function () {
         expect(mapped.List()[2]).toBe(mapped_Three);
 
         expect(mapper.Register).toHaveBeenCalled();
-        expect(mapper.Register).toHaveBeenCalledWith(mapped, null);
-        expect(mapper.Register).toHaveBeenCalledWith(mapped_One, { object: mapped, attribute: 'List', index:0 });
-        expect(mapper.Register).toHaveBeenCalledWith(mapped_Two, { object: mapped, attribute: 'List', index: 1 });
-        expect(mapper.Register).toHaveBeenCalledWith(mapped_Three, { object: mapped, attribute: 'List', index: 2 });
-        expect(mapper.Register).toHaveBeenCalledWith(mapped.List, { object: mapped, attribute: 'List'});
+        expect(mapper.Register).toHaveBeenCalledWith(mapped);
+        expect(mapper.Register).toHaveBeenCalledWith(mapped_One,  mapped, 'List', 0 );
+        expect(mapper.Register).toHaveBeenCalledWith(mapped_Two,  mapped, 'List',  1 );
+        expect(mapper.Register).toHaveBeenCalledWith(mapped_Three,  mapped, 'List',  2 );
+        expect(mapper.Register).toHaveBeenCalledWith(mapped.List, mapped,  'List');
 
 
         expect(mapper.Register.calls.count()).toEqual(5);

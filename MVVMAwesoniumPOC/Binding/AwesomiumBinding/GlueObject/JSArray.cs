@@ -67,8 +67,6 @@ namespace MVVMAwesomium.AwesomiumBinding
             IList ilist = CValue as IList;
             if (ilist == null) return;
 
-            //var old = Items.ToList();
-
             var changes = iChanges.ToList();
 
             changes.Where(c => c.CollectionChangeType == CollectionChangeType.Remove).OrderByDescending(c => c.Index).ForEach(c => ReplayChanges(c, ilist));

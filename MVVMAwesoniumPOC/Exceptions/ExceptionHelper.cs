@@ -31,6 +31,14 @@ namespace MVVMAwesomium.Exceptions
            return Get("Critical error! You should add a link to knockout_Extension.js script to the HML document!");
         }
 
+        static public Exception TimeOut()
+        {
+           return Get("Critical error! Javascript timeOut! Try set IWebSession Synchroneous TimeOut to 0.");
+        }
+
+
+        
+
  
 
         static public ArgumentException GetArgument(string iMessage)

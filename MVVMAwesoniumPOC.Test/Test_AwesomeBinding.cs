@@ -160,6 +160,27 @@ namespace MVVMAwesomium.Test
         }
 
         [Fact]
+        public void Test_AwesomeBinding_Basic_HTML_Without_Correct_js_ShouldThrow_TimeOut_Exception()
+        {
+
+            int r = 1000;
+            var datacontext = new TwoList();
+            datacontext.L1.AddRange(Enumerable.Range(0, r).Select(i => new Skill()));
+
+
+            using (Tester())
+            {
+                IAwesomeBinding bd = null;
+                DoSafe( ()=>
+                _WebView.SynchronousMessageTimeout = 10);
+
+                Action st = () => bd = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.OneTime).Result;
+
+                st.ShouldThrow<MVVMforAwesomiumException>();
+            }
+        }
+
+        [Fact]
         public void Test_AwesomeBinding_Basic_HTML_Without_Correct_js_ShouldThrowCorrectException()
         {
             using (Tester("javascript/empty.html"))
@@ -1191,29 +1212,36 @@ namespace MVVMAwesomium.Test
         {
             using (Tester())
             {
-
+                int r = 100;
                 var datacontext = new TwoList();
-                datacontext.L1.AddRange(Enumerable.Range(0, 100).Select(i => new Skill()));
+                datacontext.L1.AddRange(Enumerable.Range(0, r).Select(i => new Skill()));
 
                 var stopWatch = new Stopwatch();
                 stopWatch.Start();
 
+                DoSafe( ()=>
+                _WebView.SynchronousMessageTimeout = 0);
+                long ts = 0;
+
                 using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
                 {
                     stopWatch.Stop();
-                    var ts = stopWatch.ElapsedMilliseconds;
+                    ts = stopWatch.ElapsedMilliseconds;
 
-                    Console.WriteLine("Perf: {0} sec for {1} items", ((double)(ts)) / 1000, 100);
+                    Console.WriteLine("Perf: {0} sec for {1} items", ((double)(ts)) / 1000, r);
 
                     var js = mb.JSRootObject;
 
                     JSValue res = GetSafe(() => Get(js, "L1"));
                     res.Should().NotBeNull();
                     var col = ((JSValue[])res);
-                    col.Length.Should().Be(100);
+                    col.Length.Should().Be(r);
 
                   
                 }
+
+                TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(1));
+            
             }
         }
 
