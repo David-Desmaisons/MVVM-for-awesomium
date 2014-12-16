@@ -1145,6 +1145,8 @@ namespace MVVMAwesomium.Test
 
                 bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
                 isValidSynchronizationContext.Should().BeTrue();
+                DoSafe(()=>
+                _WebView.SynchronousMessageTimeout = 0);
 
                 using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
                 {
@@ -1191,7 +1193,8 @@ namespace MVVMAwesomium.Test
                     Console.WriteLine("Perf: {0} sec for {1} items", ((double)(ts))/1000, iis);
                     Check((JSValue[])res, _DataContext.Skills);
 
-                    TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(4.5));
+                    //TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(4.5));
+                    TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(4.7));
                 }
             }
         }
@@ -1208,7 +1211,18 @@ namespace MVVMAwesomium.Test
         }
 
         [Fact]
-        public void Test_AwesomeBinding_Stress_TwoWay_Collection_FromView_to_ViewModel()
+        public void Test_AwesomeBinding_Stress_TwoWay_Collection_CreateBinding()
+        {
+            Test_AwesomeBinding_Stress_Collection_CreateBinding(JavascriptBindingMode.TwoWay, 1.5); 
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Stress_OneWay_Collection_CreateBinding()
+        {
+            Test_AwesomeBinding_Stress_Collection_CreateBinding(JavascriptBindingMode.OneWay, 1.5); 
+        }
+
+        public void Test_AwesomeBinding_Stress_Collection_CreateBinding(JavascriptBindingMode imode,double excpected)
         {
             using (Tester())
             {
@@ -1216,14 +1230,14 @@ namespace MVVMAwesomium.Test
                 var datacontext = new TwoList();
                 datacontext.L1.AddRange(Enumerable.Range(0, r).Select(i => new Skill()));
 
-                var stopWatch = new Stopwatch();
-                stopWatch.Start();
-
-                DoSafe( ()=>
+                DoSafe(() =>
                 _WebView.SynchronousMessageTimeout = 0);
                 long ts = 0;
 
-                using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
+                var stopWatch = new Stopwatch();
+                stopWatch.Start();
+
+                using (var mb = AwesomeBinding.Bind(_WebView, datacontext, imode).Result)
                 {
                     stopWatch.Stop();
                     ts = stopWatch.ElapsedMilliseconds;
@@ -1237,12 +1251,18 @@ namespace MVVMAwesomium.Test
                     var col = ((JSValue[])res);
                     col.Length.Should().Be(r);
 
-                  
+
                 }
 
-                TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(1));
-            
+                TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(excpected));
+
             }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Stress_OneTime_Collection_CreateBinding()
+        {
+            Test_AwesomeBinding_Stress_Collection_CreateBinding(JavascriptBindingMode.OneTime,1.5);     
         }
 
 
@@ -1254,6 +1274,9 @@ namespace MVVMAwesomium.Test
 
                 bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
                 isValidSynchronizationContext.Should().BeTrue();
+
+                DoSafe(()=>
+                _WebView.SynchronousMessageTimeout = 0);
 
                 using (var mb = AwesomeBinding.Bind(_WebView, _DataContext, JavascriptBindingMode.TwoWay).Result)
                 {
