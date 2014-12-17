@@ -10,6 +10,6 @@ namespace MVVMAwesomium.AwesomiumBinding
     {
         void OnJavaScriptObjectChanges(JSObject objectchanged, string PropertyName, JSValue newValue);
 
-        void OnJavaScriptCollectionChanges(JSObject collectionchanged, JSValue[] collectionvalue, JSValue[] changes);
+        void OnJavaScriptCollectionChanges(JSObject collectionchanged, JSValue[] collectionvalue, JSValue[] value, JSValue[] status, JSValue[] index);
     }
 }

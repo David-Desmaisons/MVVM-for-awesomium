@@ -1067,7 +1067,7 @@ namespace MVVMAwesomium.Test
 
                     JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("Command"));
                     JSValue res = GetSafe(() => mycommand.Invoke("Execute",null));
-                    Thread.Sleep(100);
+                    Thread.Sleep(150);
                     command.Received().Execute(null);
                 }
             }
@@ -1255,6 +1255,73 @@ namespace MVVMAwesomium.Test
                 }
 
                 TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(excpected));
+
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Stress_Collection_Update_From_Javascript()
+        {
+            using (Tester())
+            {
+                int r = 100;
+                var datacontext = new TwoList();
+                datacontext.L1.AddRange(Enumerable.Range(0, r).Select(i => new Skill()));
+
+                DoSafe(() =>
+                _WebView.SynchronousMessageTimeout = 0);
+                long ts = 0;
+
+                using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
+                {              
+                    var js = mb.JSRootObject;
+
+                    JSValue res1 = GetSafe(() => Get(js, "L1"));
+                    res1.Should().NotBeNull();
+                    var col1 = ((JSValue[])res1);
+                    col1.Length.Should().Be(r);
+
+                    JSValue res2 = GetSafe(() => Get(js, "L2"));
+                    res2.Should().NotBeNull();
+                    var col2 = ((JSValue[])res2);
+                    col2.Length.Should().Be(0);
+
+                    JSObject l2c = (JSObject)GetSafe(() => js["L2"]);
+                    l2c.Should().NotBeNull();
+
+                    string javascript ="window.app = function(value,coll){var args = []; args.push(0);args.push(0);for (var i = 0; i < value.length; i++) { args.push(value[i]);} coll.splice.apply(coll, args);};";
+                    DoSafe(()=>_WebView.ExecuteJavascript(javascript));
+                    JSObject win = null;
+                    win = GetSafe( ()=> (JSObject)_WebView.ExecuteJavascriptWithResult("window"));
+
+                    bool notok = true;
+                    var stopWatch = new Stopwatch();
+                    stopWatch.Start();
+                    
+                    DoSafe(() => win.Invoke("app", res1, l2c));
+                   
+                    ////Error er = GetSafe( ()=> _WebView.GetLastError());
+                    ////er.Should().Be(Error.None);
+                    //res2 = GetSafe(() => Get(js, "L2"));
+                    //res2.Should().NotBeNull();
+                    //col2 = ((JSValue[])res2);
+                    //col2.Length.Should().Be(r);                
+
+                    Thread.Sleep(10);
+
+                    while (notok)
+                    {
+                        notok = datacontext.L2.Count != r;
+                    }
+                    stopWatch.Stop();
+                    ts = stopWatch.ElapsedMilliseconds;
+
+                    Console.WriteLine("Perf: {0} sec for {1} items", ((double)(ts)) / 1000, r);
+
+
+                }
+
+                TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(0.15));
 
             }
         }

@@ -185,20 +185,21 @@ namespace MVVMAwesomium.AwesomiumBinding
             }
         }
 
-        public void OnJavaScriptCollectionChanges(JSObject collectionchanged, JSValue[] collectionvalue, JSValue[] changes)
+     
+        public void OnJavaScriptCollectionChanges(JSObject collectionchanged, JSValue[] collectionvalue, JSValue[] value, JSValue[] status, JSValue[] index)
         {
             try
             {
                 var res = GetFromJavascript(collectionchanged) as JSArray;
                 if (res == null) return;
 
-                CollectionChanges cc = res.GetChanger(changes, this);
+                CollectionChanges cc = res.GetChanger(value, status, index,this);
 
                 using (ReListen(null))
                 {
                     INotifyCollectionChanged inc = res.CValue as INotifyCollectionChanged;
                     if (inc != null) inc.CollectionChanged -= CollectionChanged;
-                     res.UpdateEventArgsFromJavascript(cc, collectionvalue);
+                    res.UpdateEventArgsFromJavascript(cc, collectionvalue);
                     if (inc != null) inc.CollectionChanged += CollectionChanged;
                 }
             }
@@ -425,6 +426,8 @@ namespace MVVMAwesomium.AwesomiumBinding
             _FromJavascript_Local.TryGetValue(_LocalBuilder.GetID(localkey), out res);
             return res;
         }
+
+
 
     }
 }
