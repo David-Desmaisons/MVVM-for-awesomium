@@ -19,7 +19,14 @@ function Null_reference() {
 
     function CollectionListener(object, listener) {
         return function (changes) {
-            listener.TrackCollectionChanges(object, object(), changes);
+            var arg_value = [], arg_status = [], arg_index = [];
+            var length= changes.length;
+            for (var i = 0; i < length; i++) {
+                arg_value.push(changes[i].value);
+                arg_status.push(changes[i].status);
+                arg_index.push(changes[i].index);
+            }
+            listener.TrackCollectionChanges(object, object(), arg_value, arg_status, arg_index);
         };
     }
 

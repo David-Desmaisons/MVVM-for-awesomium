@@ -10,23 +10,26 @@ namespace MVVMAwesomium.AwesomiumBinding
     {
         private IJSCBridgeCache _IJSCBridgeCache;
         private Type _TargetedType;
-        private JSValue[] _Changes;
-
-        public CollectionChanges(IJSCBridgeCache iJSCBridgeCache, JSValue[] ichanges, Type iTargetedType)
+      
+        public CollectionChanges(IJSCBridgeCache iJSCBridgeCache, JSValue[] value, JSValue[] status, JSValue[] index, Type iTargetedType)
         {
             _IJSCBridgeCache = iJSCBridgeCache;
-            _Changes = ichanges;
             _TargetedType = iTargetedType;
+            IndividualChanges = GetIndividualChanges(value, status, index).ToList();    
         }
 
-        public IEnumerable<IndividualCollectionChange> GetIndividualChanges()
+
+        public IList<IndividualCollectionChange> IndividualChanges { get; private set; }
+
+        public IEnumerable<IndividualCollectionChange> GetIndividualChanges(JSValue[] value, JSValue[] status, JSValue[] index)
         {
-            foreach (JSObject ic in _Changes)
+            int Length = value.Length;
+            for (int i=0;i<Length;i++)
             {
                 yield return new IndividualCollectionChange(
-                    (string)ic["status"] == "added" ? CollectionChangeType.Add : CollectionChangeType.Remove,
-                    (int)ic["index"],
-                    _IJSCBridgeCache.GetCachedOrCreateBasic(ic["value"], _TargetedType));
+                    (string)status[i] == "added" ? CollectionChangeType.Add : CollectionChangeType.Remove,
+                    (int)index[i],
+                    _IJSCBridgeCache.GetCachedOrCreateBasic(value[i], _TargetedType));
             }
         }
 

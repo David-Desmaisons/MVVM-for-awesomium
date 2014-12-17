@@ -19,48 +19,55 @@ function Null_reference() {
 
     function CollectionListener(object, listener) {
         return function (changes) {
-            listener.TrackCollectionChanges(object, object(), changes);
+            var arg_value = [], arg_status = [], arg_index = [];
+            var length= changes.length;
+            for (var i = 0; i < length; i++) {
+                arg_value.push(changes[i].value);
+                arg_status.push(changes[i].status);
+                arg_index.push(changes[i].index);
+            }
+            listener.TrackCollectionChanges(object, object(), arg_value, arg_status, arg_index);
         };
     }
 
-    function createSubsription(observable, tracker, res, att) {
-        if (tracker.TrackChanges) {
-            listener = PropertyListener(res, att, tracker);
-            observable.listener = listener;
-            observable.subscriber = observable.subscribe(listener);
-            observable.silent = function (v) {
-                observable.subscriber.dispose();
-                observable(v);
-                observable.subscriber = observable.subscribe(observable.listener);
-            };
-        }
-        else
-            observable.silent = observable;
-    }
+     function createSubsription(observable, tracker,res,att) {
+         if (tracker.TrackChanges) {
+             listener = PropertyListener(res, att, tracker);
+             observable.listener = listener;
+             observable.subscriber = observable.subscribe(listener);
+             observable.silent = function (v) {
+                 observable.subscriber.dispose();
+                 observable(v);
+                 observable.subscriber = observable.subscribe(observable.listener);
+             };
+         }
+         else
+             observable.silent = observable;
+     }
 
-    function createCollectionSubsription(observable, tracker, res, att) {
-        if (tracker.TrackCollectionChanges) {
-            var collectionlistener = CollectionListener(res[att], tracker);
-            observable.listener = collectionlistener;
-            observable.subscriber = observable.subscribe(collectionlistener, null, 'arrayChange');
-            observable.silent = function (fn) {
-                return function () {
-                    observable.subscriber.dispose();
-                    fn.apply(observable, arguments);
-                    observable.subscriber = observable.subscribe(collectionlistener, null, 'arrayChange');
-                };
-            };
-        }
-        else
-            observable.silent = function (fn) {
-                return function () {
-                    fn.apply(observable, arguments);
-                };
-            };
+     function createCollectionSubsription(observable, tracker, res, att) {
+         if (tracker.TrackCollectionChanges) {
+             var collectionlistener = CollectionListener(res[att], tracker);
+             observable.listener = collectionlistener;
+             observable.subscriber = observable.subscribe(collectionlistener, null, 'arrayChange');
+             observable.silent = function (fn) {
+                 return function () {
+                     observable.subscriber.dispose();
+                     fn.apply(observable, arguments);
+                     observable.subscriber = observable.subscribe(collectionlistener, null, 'arrayChange');
+                 };
+             };
+         }
+         else
+             observable.silent = function (fn) {
+                 return function () {
+                     fn.apply(observable, arguments);
+                 };
+             };
 
-        observable.silentsplice = observable.silent(observable.splice);
-        observable.silentremoveAll = observable.silent(observable.removeAll);
-    }
+         observable.silentsplice = observable.silent(observable.splice);
+         observable.silentremoveAll = observable.silent(observable.removeAll);
+     }
 
 
     function MapToObservable(or, context, Mapper, Listener) {
@@ -94,8 +101,8 @@ function Null_reference() {
 
         var res = {};
         MapToObservable.Cache[or._MappedId] = res;
-        if (Mapper.Register) {
-            if (context === null)
+        if (Mapper.Register){
+            if (context===null) 
                 Mapper.Register(res);
             else if (context.index === undefined)
                 Mapper.Register(res, context.object, context.attribute);
@@ -182,7 +189,7 @@ function Null_reference() {
         update: function (element, valueAccessor) {
             var v = ko.utils.unwrapObservable(valueAccessor());
             var imagepath = ko.getimage(v);
-            if (imagepath) element.src = imagepath;
+            if (imagepath) element.src=imagepath;
         }
     };
 
@@ -191,11 +198,11 @@ function Null_reference() {
             return '{when: $data.__window__().State, do: ' + value + '}';
         },
 
-        init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        init: function (element, valueAccessor,allBindings,viewModel,bindingContext) {
             bindingContext.$data.__window__().IsListeningClose(true);
         },
 
-        update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        update: function (element, valueAccessor,allBindings,viewModel,bindingContext) {
             var v = ko.utils.unwrapObservable(valueAccessor());
             if (v.when().name !== 'Closing')
                 return;
@@ -204,7 +211,7 @@ function Null_reference() {
         }
     };
 
-    ko.bindingHandlers.onopened = {
+    ko.bindingHandlers.onopened= {
         preprocess: function (value) {
             return '{when: $data.__window__().State, do: ' + value + '}';
         },
@@ -222,25 +229,25 @@ function Null_reference() {
     //allow parcial binding even if somebinding are KO
     var existing = ko.bindingProvider.instance;
 
-    ko.bindingProvider.instance = {
-        nodeHasBindings: existing.nodeHasBindings,
-        getBindings: function (node, bindingContext) {
-            var bindings;
-            try {
-                bindings = existing.getBindings(node, bindingContext);
-            }
-            catch (ex) {
-                if (window.console && console.log) {
-                    console.log("binding error", ex.message, node, bindingContext);
+        ko.bindingProvider.instance = {
+            nodeHasBindings: existing.nodeHasBindings,
+            getBindings: function(node, bindingContext) {
+                var bindings;
+                try {
+                   bindings = existing.getBindings(node, bindingContext);
+                }
+                catch (ex) {
+                   if (window.console && console.log) {
+                       console.log("binding error", ex.message, node, bindingContext);
+                   }
+
+                   if (ko.log)
+                       ko.log("ko binding error: '" + ex.message+"'", "node HTLM: " + node.outerHTML, "context:" + ko.toJSON(bindingContext.$data));
                 }
 
-                if (ko.log)
-                    ko.log("ko binding error: '" + ex.message + "'", "node HTLM: " + node.outerHTML, "context:" + ko.toJSON(bindingContext.$data));
+                return bindings;
             }
-
-            return bindings;
-        }
-    };
+        };
 
 
 }());

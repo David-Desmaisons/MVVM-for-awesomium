@@ -32,9 +32,9 @@ namespace MVVMAwesomium.AwesomiumBinding
             return null;
         }
 
-        public CollectionChanges GetChanger(JSValue[] changes, IJSCBridgeCache bridge)
+        public CollectionChanges GetChanger(JSValue[] value, JSValue[] status, JSValue[] index, IJSCBridgeCache bridge)
         {
-            return new CollectionChanges(bridge, changes, GetIndivualType((dynamic)CValue));
+            return new CollectionChanges(bridge, value, status, index, GetIndivualType((dynamic)CValue));
         }
 
         private void ReplayChanges(IndividualCollectionChange change, IList ilist)
@@ -62,15 +62,13 @@ namespace MVVMAwesomium.AwesomiumBinding
         }
 
 
-        private void UpdateEventArgsFromJavascript(IEnumerable<IndividualCollectionChange> iChanges, IEnumerable<IJSCSGlue> Current)
+        private void UpdateEventArgsFromJavascript(IList<IndividualCollectionChange> iChanges, IEnumerable<IJSCSGlue> Current)
         {
             IList ilist = CValue as IList;
             if (ilist == null) return;
 
-            var changes = iChanges.ToList();
-
-            changes.Where(c => c.CollectionChangeType == CollectionChangeType.Remove).OrderByDescending(c => c.Index).ForEach(c => ReplayChanges(c, ilist));
-            changes.Where(c => c.CollectionChangeType == CollectionChangeType.Add).OrderBy(c => c.Index).ForEach(c => ReplayChanges(c, ilist));
+            iChanges.Where(c => c.CollectionChangeType == CollectionChangeType.Remove).OrderByDescending(c => c.Index).ForEach(c => ReplayChanges(c, ilist));
+            iChanges.Where(c => c.CollectionChangeType == CollectionChangeType.Add).OrderBy(c => c.Index).ForEach(c => ReplayChanges(c, ilist));
 
 #if DEBUG
             if (!ilist.Cast<object>().SequenceEqual(Current.Select(c => c.CValue)))
@@ -80,7 +78,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public void UpdateEventArgsFromJavascript(CollectionChanges iCollectionChanges, JSValue[] collectionvalue)
         {
-            UpdateEventArgsFromJavascript(iCollectionChanges.GetIndividualChanges(), iCollectionChanges.ConvertCollection(collectionvalue));
+            UpdateEventArgsFromJavascript(iCollectionChanges.IndividualChanges, iCollectionChanges.ConvertCollection(collectionvalue));
         }
 
 
