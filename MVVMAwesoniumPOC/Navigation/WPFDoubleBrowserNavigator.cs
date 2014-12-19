@@ -34,11 +34,23 @@ namespace MVVMAwesomium
             _CurrentWebControl = iWebControl;
             _NextWebControl = iWebControlSecond;
 
+            iWebControl.ConsoleMessage += ConsoleMessage;
+            iWebControlSecond.ConsoleMessage += ConsoleMessage;
+
             _CurrentWebControl.Visibility = Visibility.Hidden;
             _NextWebControl.Visibility = Visibility.Hidden;
 
             _INavigationBuilder = inb;
             _IAwesomiumBindingFactory = iAwesomiumBindingFactory ?? new AwesomiumBindingFactory() { ManageWebSession = false };
+        }
+
+        private void ConsoleMessage(object sender, ConsoleMessageEventArgs e)
+        {
+            try
+            {
+                Trace.WriteLine(string.Format("MVVM for awesomium: WebSession log message: {0}, event name: {1}, event type {2}, source {3}, line number {4}", e.Message, e.EventName, e.EventType, e.Source, e.LineNumber));
+            }
+            catch{ }
         }
 
         private IAwesomeBinding Binding
