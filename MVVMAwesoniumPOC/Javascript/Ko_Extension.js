@@ -1,3 +1,4 @@
+
 function Enum(Type, intValue, name, displayName) {
     this.intValue = intValue;
     this.displayName = displayName;
@@ -157,6 +158,60 @@ function Null_reference() {
         return MapToObservable(o, null, mapper, listener);
     };
 
+    ko.toJSONreplacer = function () {
+        var keys = [];
+        var valuesforkeys = [];
+
+        function visit(localroot, pn, found) {
+            found = found || [];
+
+            if (found.indexOf(localroot) !== -1) {
+                var existingIndex = keys.indexOf(localroot);
+                if (existingIndex >= 0) valuesforkeys[existingIndex].push(pn);
+                else {
+                    keys.push(localroot);
+                    valuesforkeys.push([pn]);
+                }
+                return;
+            }
+
+            var index = found.push(localroot);
+
+            for (var att in localroot) {
+                if (localroot.hasOwnProperty(att)) {
+                    var value = localroot[att];
+                    if ((value !== null) && (typeof value === 'object')) {
+                        if (Array.isArray(value)) {
+                            for (var i = 0; i < value.length; ++i) {
+                                visit(value[i], att, found);
+                            }
+                        } else {
+                            visit(value, att, found);
+                        }
+                    }
+                }
+            }
+
+            found.splice(index - 1, 1);
+        }
+
+        var first = true;
+
+
+        return function replacer(key, value) {
+
+            if (first) {
+                first = false;
+                visit(value);
+            }
+
+            var existingIndex = keys.indexOf(value);
+            if ((existingIndex >= 0) && (valuesforkeys[existingIndex].indexOf(key) >= 0)) return "[Circular]";
+
+            return value;
+        };
+    };
+
     ko.bindingHandlers.command = {
         preprocess: function (value, name, addBinding) {
             addBinding('enable', value + '().CanExecute($data)===undefined &&' + value + '().CanExecuteCount() &&' + value + '().CanExecuteValue()');
@@ -238,11 +293,11 @@ function Null_reference() {
                 }
                 catch (ex) {
                    if (window.console && console.log) {
-                       console.log("binding error", ex.message, node, bindingContext);
+                       console.log("binding error : "+ ex.message, node, bindingContext);
                    }
 
                    if (ko.log)
-                       ko.log("ko binding error: '" + ex.message+"'", "node HTLM: " + node.outerHTML, "context:" + ko.toJSON(bindingContext.$data));
+                       ko.log("ko binding error: '" + ex.message + "'", "node HTLM: " + node.outerHTML, "context:" + ko.toJSON(bindingContext.$data, ko.toJSONreplacer()));
                 }
 
                 return bindings;

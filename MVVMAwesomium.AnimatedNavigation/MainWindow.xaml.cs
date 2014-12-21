@@ -36,7 +36,7 @@ namespace MVVMAwesomium.AnimatedNavigation
         private void SetUpRoute(INavigationBuilder iNavigationBuilder)
         { 
             iNavigationBuilder.Register<Nav>("HTML\\index.html");
-         }
+        }
 
         public MainWindow()
         {

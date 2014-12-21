@@ -9,14 +9,16 @@ ko.dodebug = function()
 {
   
 
-(function( ko ) {
+    (function (ko) {
 
-  if (first){
-    document.addEventListener( 'click', generalClick, false );
-    first=false;
-  }
+    "use strict";
 
-  "use strict";
+    if (first){
+        document.addEventListener( 'click', generalClick, false );
+        first=false;
+    }
+
+  
 
   var trackmove=false,oldp = null;
 
@@ -219,11 +221,6 @@ ko.dodebug = function()
   }
 
   function getKvovDOM(value, keyName, parentKeyName, depth) {
-
-    // depth         = ( exists(depth) )         ? depth         : 0;
-    // parentKeyName = ( exists(parentKeyName) ) ? parentKeyName + "-" + parentKeyName : "root";
-    // console.log(keyName, parentKeyName, exists(parentKeyName)); 
-
     var type,
     kvov,
     nonZeroSize,
@@ -254,7 +251,6 @@ ko.dodebug = function()
 
     // Root node for this kvov
       kvov = templates.t_kvov.cloneNode(false);
-      // kvov.classList.add("c"+"-"+parentKeyName);
     
     // Add an 'expander' first (if this is object/array with non-zero size)
       if (type === TYPE_OBJECT || type === TYPE_ARRAY) {

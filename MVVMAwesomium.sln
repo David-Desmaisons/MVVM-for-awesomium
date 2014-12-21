@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVM.Navigation2", "MVVM.Na
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.AnimatedNavigation", "MVVMAwesomium.AnimatedNavigation\MVVMAwesomium.AnimatedNavigation.csproj", "{890F0720-601B-4868-AD9A-9527CA9F0BAC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Navigation_HTMLWindow", "Navigation_HTMLWindow\Navigation_HTMLWindow.csproj", "{CD1977DD-3299-46CE-8550-C11F1E9F0F7C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -170,6 +172,17 @@ Global
 		{890F0720-601B-4868-AD9A-9527CA9F0BAC}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{890F0720-601B-4868-AD9A-9527CA9F0BAC}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{890F0720-601B-4868-AD9A-9527CA9F0BAC}.Release|x86.ActiveCfg = Release|Any CPU
+		{CD1977DD-3299-46CE-8550-C11F1E9F0F7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD1977DD-3299-46CE-8550-C11F1E9F0F7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD1977DD-3299-46CE-8550-C11F1E9F0F7C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{CD1977DD-3299-46CE-8550-C11F1E9F0F7C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{CD1977DD-3299-46CE-8550-C11F1E9F0F7C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CD1977DD-3299-46CE-8550-C11F1E9F0F7C}.Debug|x86.Build.0 = Debug|Any CPU
+		{CD1977DD-3299-46CE-8550-C11F1E9F0F7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD1977DD-3299-46CE-8550-C11F1E9F0F7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD1977DD-3299-46CE-8550-C11F1E9F0F7C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{CD1977DD-3299-46CE-8550-C11F1E9F0F7C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{CD1977DD-3299-46CE-8550-C11F1E9F0F7C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -184,6 +197,7 @@ Global
 		{129B5DE2-523B-48EA-8676-1291D9A4DE0C} = {0F0F34BE-CD06-4C13-967D-BB0760617486}
 		{94FF7C56-B2B3-4E56-8E6F-8401E3E224EB} = {0F0F34BE-CD06-4C13-967D-BB0760617486}
 		{890F0720-601B-4868-AD9A-9527CA9F0BAC} = {0F0F34BE-CD06-4C13-967D-BB0760617486}
+		{CD1977DD-3299-46CE-8550-C11F1E9F0F7C} = {0F0F34BE-CD06-4C13-967D-BB0760617486}
 	EndGlobalSection
 	GlobalSection(CodealikeProperties) = postSolution
 		SolutionGuid = 21ee2d50-c4fe-49f3-a899-1dc535d57fcf
