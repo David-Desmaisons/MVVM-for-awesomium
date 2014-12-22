@@ -106,6 +106,12 @@ namespace MVVMAwesomium.AwesomiumBinding
             return true;
         }
 
+        private bool BasicConvert(ulong source, out JSValue res)
+        {
+            res = new JSValue(source);
+            return true;
+        }
+
 
         private bool BasicConvert(int source, out JSValue res)
         {
