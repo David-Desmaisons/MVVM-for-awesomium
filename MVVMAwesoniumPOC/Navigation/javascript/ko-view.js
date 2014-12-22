@@ -220,7 +220,7 @@ ko.dodebug = function()
     return (object !== null && typeof object !== 'undefined');
   }
 
-  function getKvovDOM(value, keyName, parentKeyName, depth) {
+  function getKvovDOM(value, keyName, parentKeyName, found,circular) {
     var type,
     kvov,
     nonZeroSize,
@@ -228,6 +228,9 @@ ko.dodebug = function()
     objKey,
     keySpan,
     valueElement;
+    found = found || [];
+
+    circular = (circular === undefined) ? false : circular;
 
     // Establish value type
       if (typeof value === 'string') {
@@ -249,6 +252,11 @@ ko.dodebug = function()
         type = TYPE_OBJECT;
       }
 
+      var index, ncircular =(type===TYPE_OBJECT) && (found.indexOf(value) !== -1);
+     
+      if ((type === TYPE_OBJECT) && (!ncircular))
+          index = found.push(value);
+   
     // Root node for this kvov
       kvov = templates.t_kvov.cloneNode(false);
     
@@ -273,9 +281,9 @@ ko.dodebug = function()
         // Create a span for the key name
           keySpan = templates.t_key.cloneNode(false);
           keySpan.textContent = JSON.stringify(keyName).slice(1,-1); // remove quotes
-        // Add it to kvov, with quote marks
+          // Add it to kvov, with quote marks
           kvov.appendChild(templates.t_dblqText.cloneNode(false));
-          kvov.appendChild( keySpan );
+          kvov.appendChild(keySpan);
           kvov.appendChild(templates.t_dblqText.cloneNode(false));
         // Also add ":&nbsp;" (colon and non-breaking space)
           kvov.appendChild( templates.t_colonAndSpace.cloneNode(false) );
@@ -291,8 +299,8 @@ ko.dodebug = function()
         case TYPE_STRING:
           // If string is a URL, get a link, otherwise get a span
             var innerStringEl = baseSpan.cloneNode(false),
-                escapedString = JSON.stringify(value)
-           ;
+                escapedString = JSON.stringify(value);
+
             escapedString = escapedString.substring(1, escapedString.length-1); // remove quotes
             if (value[0] === 'h' && value.substring(0, 4) === 'http') { // crude but fast - some false positives, but rare, and UX doesn't suffer terribly from them.
               var innerStringA = document.createElement('A');
@@ -304,9 +312,11 @@ ko.dodebug = function()
               innerStringEl.innerText = escapedString;
             }
             valueElement = templates.t_string.cloneNode(false);
-            valueElement.appendChild(templates.t_dblqText.cloneNode(false));
+            if(!circular)
+                valueElement.appendChild(templates.t_dblqText.cloneNode(false));
             valueElement.appendChild(innerStringEl);
-            valueElement.appendChild(templates.t_dblqText.cloneNode(false));
+            if (!circular)
+                valueElement.appendChild(templates.t_dblqText.cloneNode(false));
             kvov.appendChild(valueElement);
           break;
         
@@ -330,8 +340,13 @@ ko.dodebug = function()
                 var count = 0, k, comma;
                 for (k in value) {
                   if (value.hasOwnProperty(k)) {
-                    count++;
-                    childKvov =  getKvovDOM(value[k], k, keyName+"0", depth+1);
+                      count++;
+                      var valuek = value[k],stopped=false;
+                      if ((ncircular === true) && (valuek != null) && (typeof (valuek) === "object")){
+                          valuek = "{...}";
+                          stopped = true;
+                      }
+                      childKvov = getKvovDOM(valuek, k, keyName + "0", found, stopped);
                     // Add comma
                       comma = templates.t_commaText.cloneNode();
                       childKvov.appendChild(comma);
@@ -359,8 +374,17 @@ ko.dodebug = function()
                 blockInner = templates.t_blockInner.cloneNode(false);
               // For each key/value pair, add the markup
                 for (var i=0, length=value.length, lastIndex=length-1; i<length; i++) {
-                  // Make a new kvov, with no key
-                    childKvov = getKvovDOM(value[i], false, keyName+"0", depth+1);
+                    // Make a new kvov, with no key
+
+                    var valuei = value[i], stopped = false;;
+                    if ((ncircular === true) && (valuei != null) && (typeof (valuei) === "object")) {
+                        valuei = "{...}";
+                        stopped = true;
+                    }
+                        
+
+                    childKvov = getKvovDOM(valuei, false, keyName + "0", found, stopped);
+
                   // Add comma if not last one
                     if (i < lastIndex) {
                       childKvov.appendChild( templates.t_commaText.cloneNode() );
@@ -388,6 +412,9 @@ ko.dodebug = function()
           kvov.appendChild( templates.t_null.cloneNode(true) );
           break;
       }
+
+      if ((type === TYPE_OBJECT) && (!ncircular))
+        found.splice(index - 1, 1);
 
     return kvov;
   }
