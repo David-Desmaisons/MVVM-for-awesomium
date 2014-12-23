@@ -30,6 +30,11 @@ namespace MVVMAwesomium
             get { return _BirectionalMapper.JSValueRoot.GetJSSessionValue(); }
         }
 
+        public object Root
+        {
+            get { return _BirectionalMapper.JSValueRoot.CValue; }
+        }
+
         public IJSCSGlue JSBrideRootObject
         {
             get { return _BirectionalMapper.JSValueRoot; }

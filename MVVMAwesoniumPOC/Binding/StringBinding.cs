@@ -45,6 +45,11 @@ namespace MVVMAwesomium
             get { return _Root; }
         }
 
+        public object Root
+        {
+            get { return null; }
+        }
+
         public static Task<IAwesomeBinding> Bind(IWebView view, string iViewModel, Action First = null, Action CleanUp = null)
         {
             TaskCompletionSource<IAwesomeBinding> tcs = new TaskCompletionSource<IAwesomeBinding>();

@@ -197,7 +197,8 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(() =>
                 {
                     //a1.Navigation.Should().Be(wpfnav);
-                    a1.Navigation.Should().NotBeNull();
+                    a2.Navigation.Should().NotBeNull();
+                    a1.Navigation.Should().BeNull();
                 });
 
                 WindowTest.RunOnUIThread(() =>
@@ -250,12 +251,14 @@ namespace MVVMAwesomium.Test
                 WindowTest.RunOnUIThread(() =>
                 {
                     //a1.Navigation.Should().Be(wpfnav);
-                    a1.Navigation.Should().NotBeNull();
+                    a2.Navigation.Should().NotBeNull();
+                    a1.Navigation.Should().BeNull();
                 });
 
                 WindowTest.RunOnUIThread(() =>
                      wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_2.html"));
 
+                mre = new ManualResetEvent(false);
 
                 WindowTest.RunOnUIThread(
                () =>
@@ -269,6 +272,7 @@ namespace MVVMAwesomium.Test
                 {
                     //a1.Navigation.Should().Be(wpfnav);
                     a1.Navigation.Should().NotBeNull();
+                    a2.Navigation.Should().BeNull();
                 });
 
                 Thread.Sleep(1000);
@@ -325,7 +329,8 @@ namespace MVVMAwesomium.Test
 
                 WindowTest.RunOnUIThread(() =>
                 {
-                    a1.Navigation.Should().NotBeNull();
+                    a2.Navigation.Should().NotBeNull();
+                    a1.Navigation.Should().BeNull();
                 });
 
                 WindowTest.RunOnUIThread(() =>
@@ -341,6 +346,7 @@ namespace MVVMAwesomium.Test
                {
                    //a1.Navigation.Should().Be(wpfnav);
                    a1.Navigation.Should().NotBeNull();
+                   a2.Navigation.Should().BeNull();
                    mre.Set();
                });
             });

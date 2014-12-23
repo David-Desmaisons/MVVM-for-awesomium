@@ -7,5 +7,7 @@ namespace MVVMAwesomium
     public interface IAwesomeBinding : IDisposable
     {
         JSObject JSRootObject { get; }
+
+        object Root { get; }
     }
 }

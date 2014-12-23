@@ -70,8 +70,15 @@ namespace MVVMAwesomium
             }
         }
 
+        private void FireNavigate(object inewvm, object ioldvm=null) 
+        {
+            if (OnNavigate != null)
+                OnNavigate(this, new NavigationEvent(inewvm, ioldvm));
+        }
+
         private void Switch(Task<IAwesomeBinding> iBinding, HTMLLogicWindow iwindow, TaskCompletionSource<object> tcs = null)
         {
+            object oldvm = (Binding != null) ? Binding.Root : null;
             Binding = iBinding.Result;
             if (tcs!=null) tcs.SetResult(Binding);
             _CurrentWebControl.Visibility = Visibility.Hidden;
@@ -85,6 +92,7 @@ namespace MVVMAwesomium
             _Window.State = WindowLogicalState.Opened;
             _NextWebControl.Source = null;
             _Navigating = false;
+            FireNavigate(Binding.Root, oldvm);
         }
  
         public Task Navigate(Uri iUri, object iViewModel, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
@@ -92,10 +100,7 @@ namespace MVVMAwesomium
             if (iUri == null)
                 throw ExceptionHelper.GetArgument(string.Format("ViewModel not registered: {0}", iViewModel.GetType()));
 
-            _Navigating = true;
-
-            if (OnNavigate != null)
-                OnNavigate(this, new NavigationEvent(iViewModel));
+            _Navigating = true;           
 
             var wh = new WindowHelper(new HTMLLogicWindow());
 
@@ -113,6 +118,7 @@ namespace MVVMAwesomium
                                     _Window.State = WindowLogicalState.Opened;
                                     _CurrentWebControl.Visibility = Visibility.Visible;
                                     _Navigating = false;
+                                    FireNavigate(iViewModel);
                                 }, TaskScheduler.FromCurrentSynchronizationContext());
             }
 
@@ -193,9 +199,16 @@ namespace MVVMAwesomium
 
         private void WPFBrowserNavigator_OnNavigate(object sender, NavigationEvent e)
         {
-            INavigable nv = e.ViewModel as INavigable;
+            if (object.ReferenceEquals(e.NewViewModel, e.OldViewModel))
+                return;
+
+            INavigable nv = e.NewViewModel as INavigable;
             if (nv != null)
                 nv.Navigation = this;
+
+            nv = e.OldViewModel as INavigable;
+            if (nv != null)
+                nv.Navigation = null;
         }
 
         public event EventHandler<NavigationEvent> OnNavigate;

@@ -1955,6 +1955,8 @@ namespace MVVMAwesomium.Test
                 {
                     var js = mb.JSRootObject;
 
+                    mb.Root.Should().BeNull();
+
 
                     JSValue res = GetSafe(() => js.Invoke("Name"));
                     ((string)res).Should().Be("O Monstro");

@@ -7,11 +7,14 @@ namespace MVVMAwesomium
 {
     public class NavigationEvent : EventArgs
     {
-        public object ViewModel { get; private set; }
+        public object NewViewModel { get; private set; }
 
-        public NavigationEvent(object iViewModel)
+        public object OldViewModel { get; private set; }
+
+        public NavigationEvent(object iNewViewModel, object iOldViewModel)
         {
-            ViewModel = iViewModel;
+            NewViewModel = iNewViewModel;
+            OldViewModel = iOldViewModel;
         }
     }
 }

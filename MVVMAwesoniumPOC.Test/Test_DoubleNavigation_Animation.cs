@@ -103,13 +103,14 @@ namespace MVVMAwesomium.Test
                     (
                         t =>
                         {
-                            vm.Navigation.Should().Be(wpfnav);
+                           
                             mre.Set();
                         });
                  });
 
                     mre.WaitOne();
-                    Thread.Sleep(500);
+                    Thread.Sleep(500); 
+                    vm.Navigation.Should().Be(wpfnav);
                 });
 
 

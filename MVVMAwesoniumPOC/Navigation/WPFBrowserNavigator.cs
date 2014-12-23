@@ -35,6 +35,7 @@ namespace MVVMAwesomium
             get { return _IAwesomeBinding; }
             set
             {
+                var oldvm = VM;
                 if (_IAwesomeBinding != null)
                     _IAwesomeBinding.Dispose();
 
@@ -44,7 +45,17 @@ namespace MVVMAwesomium
                     _IAwesomeBinding.Dispose();
                     _IAwesomeBinding = null;
                 }
+                else
+                { 
+                    if (OnNavigate != null)
+                        OnNavigate(this, new NavigationEvent(VM, oldvm));
+                }
             }
+        }
+
+        private object VM
+        {
+            get { return (_IAwesomeBinding == null) ? null : _IAwesomeBinding.Root; }
         }
  
         public Task Navigate(Uri iUri, object iViewModel, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
@@ -52,9 +63,7 @@ namespace MVVMAwesomium
             if (iUri == null)
                 throw ExceptionHelper.GetArgument(string.Format("ViewModel type not registered: {0}", iViewModel.GetType()));
 
-            if (OnNavigate != null)
-                OnNavigate(this, new NavigationEvent(iViewModel));
-
+         
             if (!_WebControl.IsDocumentReady)
             {
                 _WebControl.Source = iUri;
@@ -126,7 +135,7 @@ namespace MVVMAwesomium
 
         private void WPFBrowserNavigator_OnNavigate(object sender, NavigationEvent e)
         {
-            INavigable nv = e.ViewModel as INavigable;
+            INavigable nv = e.NewViewModel as INavigable;
             if (nv != null)
                 nv.Navigation = this;
         }
