@@ -106,10 +106,10 @@ namespace MVVMAwesomium.AwesomiumBinding
         }
 
 
-        public JSObject Map(JSValue ihybridobject, IJavascriptMapper ijvm)
+        public JSObject Map(JSValue ihybridobject, IJavascriptMapper ijvm,bool checknullvalue=true)
         {
             JSObject res = GetKo().Invoke("MapToObservable", ihybridobject, GetMapper(ijvm), _Listener);
-            if (res == null)
+            if ((res == null) && checknullvalue)
             { 
                 if (_IWebView.GetLastError()==Error.TimedOut)
                     throw ExceptionHelper.TimeOut();

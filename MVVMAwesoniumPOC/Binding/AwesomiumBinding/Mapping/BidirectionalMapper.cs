@@ -152,13 +152,13 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         private Task InjectInHTLMSession(IJSCSGlue iroot, bool isroot = false)
         {
-            if ((iroot == null) || (iroot.Type != JSCSGlueType.Object) || (iroot.CValue==null))
+            if ((iroot == null) || (iroot.Type != JSCSGlueType.Object))
             {
                 return TaskHelper.Ended();
             }
 
             var jvm = new JavascriptMapper(iroot as IJSObservableBridge, this);
-            var res = _SessionInjector.Map(iroot.JSValue, jvm);
+            var res = _SessionInjector.Map(iroot.JSValue, jvm,(iroot.CValue!=null));
             if (!isroot)
                 return jvm.UpdateTask;
             else
