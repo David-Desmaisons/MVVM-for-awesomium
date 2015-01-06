@@ -45,7 +45,7 @@ namespace MVVMAwesomium
         public Boolean IsHTMLLoaded
         {
             get { return (Boolean)this.GetValue(IsHTMLLoadedProperty); }
-            set { this.SetValue(IsHTMLLoadedProperty, value); }
+            private set { this.SetValue(IsHTMLLoadedProperty, value); }
         }
 
         public static readonly DependencyProperty IsHTMLLoadedProperty =
