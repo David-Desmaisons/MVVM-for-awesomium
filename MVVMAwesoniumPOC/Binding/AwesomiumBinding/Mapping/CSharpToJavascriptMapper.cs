@@ -8,6 +8,7 @@ using System.Collections;
 
 using MVVMAwesomium.Infra;
 using System.Windows.Input;
+using System.Diagnostics;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
@@ -76,7 +77,16 @@ namespace MVVMAwesomium.AwesomiumBinding
             foreach (PropertyInfo propertyInfo in propertyInfos.Where(p => p.CanRead))
             {
                 string pn = propertyInfo.Name;
-                var childvalue = propertyInfo.GetValue(ifrom, null);
+                object childvalue = null;
+                try
+                {
+                    childvalue = propertyInfo.GetValue(ifrom, null); 
+                }
+                catch(Exception e)
+                {
+                    Trace.WriteLine(string.Format("MVVM for awesomium:Unable to convert property {0} from {1} exception {2}", pn, ifrom, e));
+                    continue;
+                }
 
                 IJSCSGlue childres = Map(childvalue);
 
