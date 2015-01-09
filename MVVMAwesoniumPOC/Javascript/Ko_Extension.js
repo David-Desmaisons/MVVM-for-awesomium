@@ -248,6 +248,14 @@ function Null_reference() {
         }
     };
 
+    ko.bindingHandlers.enumimagewithfallback = {
+        update: function (element, valueAccessor) {
+            var v = ko.utils.unwrapObservable(valueAccessor());
+            var imagepath = ko.getimage(v.image) || v.fallback;
+            element.src = imagepath;
+        }
+    };
+
     ko.bindingHandlers.onclose = {
         preprocess: function (value) {
             return '{when: $data.__window__().State, do: ' + value + '}';
