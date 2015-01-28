@@ -13,10 +13,11 @@ using System.Windows;
 using MVVMAwesomium.Navigation.Window;
 using System.Diagnostics;
 using MVVMAwesomium.Exceptions;
+using MVVMAwesomium.Navigation;
 
 namespace MVVMAwesomium
 {
-    public class WPFDoubleBrowserNavigator :  INavigationSolver
+    public class WPFDoubleBrowserNavigator : INavigationSolver, IWebViewProvider
     {
         private WebControl _CurrentWebControl;
         private WebControl _NextWebControl;
@@ -214,5 +215,10 @@ namespace MVVMAwesomium
         public event EventHandler<NavigationEvent> OnNavigate;
 
         public event EventHandler OnFirstLoad;
+
+        public IWebView WebView
+        {
+            get { return this._CurrentWebControl; }
+        }
     }
 }
