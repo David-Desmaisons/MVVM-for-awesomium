@@ -13,13 +13,18 @@ using System.Windows;
 using MVVMAwesomium.Navigation.Window;
 using System.Diagnostics;
 using MVVMAwesomium.Exceptions;
+using MVVMAwesomium.Navigation;
 
 namespace MVVMAwesomium
 {
     public class WPFDoubleBrowserNavigator :  INavigationSolver
     {
-        private WebControl _CurrentWebControl;
-        private WebControl _NextWebControl;
+        private IWebViewLifeCycleManager _IWebViewLifeCycleManager;
+
+        private IWebView _CurrentWebControl;
+        private IWebView _NextWebControl;
+
+
         private IAwesomiumBindingFactory _IAwesomiumBindingFactory;
         private IAwesomeBinding _IAwesomeBinding;
         private IUrlSolver _INavigationBuilder;
@@ -27,19 +32,16 @@ namespace MVVMAwesomium
         private HTMLLogicWindow _Window;
         private bool _Navigating = false;
 
-        internal WebControl WebControl { get { return _CurrentWebControl; } }
+        internal IWebView WebControl { get { return _CurrentWebControl; } }
 
-        public WPFDoubleBrowserNavigator(WebControl iWebControl, WebControl iWebControlSecond, IUrlSolver inb, IAwesomiumBindingFactory iAwesomiumBindingFactory = null)
+        public WPFDoubleBrowserNavigator(WebControl iWebControl, WebControl iWebControlSecond, IUrlSolver inb, IAwesomiumBindingFactory iAwesomiumBindingFactory = null):
+            this( new WebViewSimpleLifeCycleManager(iWebControl,iWebControlSecond),inb,iAwesomiumBindingFactory)
         {
-            _CurrentWebControl = iWebControl;
-            _NextWebControl = iWebControlSecond;
+        }
 
-            iWebControl.ConsoleMessage += ConsoleMessage;
-            iWebControlSecond.ConsoleMessage += ConsoleMessage;
-
-            _CurrentWebControl.Visibility = Visibility.Hidden;
-            _NextWebControl.Visibility = Visibility.Hidden;
-
+        public WPFDoubleBrowserNavigator(IWebViewLifeCycleManager lifecycler, IUrlSolver inb, IAwesomiumBindingFactory iAwesomiumBindingFactory = null)
+        {
+            _IWebViewLifeCycleManager = lifecycler;
             _INavigationBuilder = inb;
             _IAwesomiumBindingFactory = iAwesomiumBindingFactory ?? new AwesomiumBindingFactory() { ManageWebSession = false };
         }
@@ -80,19 +82,27 @@ namespace MVVMAwesomium
         {
             object oldvm = (Binding != null) ? Binding.Root : null;
             Binding = iBinding.Result;
-            if (tcs!=null) tcs.SetResult(Binding);
-            _CurrentWebControl.Visibility = Visibility.Hidden;
-            _NextWebControl.Visibility = Visibility.Visible;
-            var tmp = _NextWebControl;
-            _NextWebControl = _CurrentWebControl;
-            _NextWebControl.WebSession.ClearCache();
-            _CurrentWebControl = tmp;
+          
+            if (_CurrentWebControl!=null)
+            {
+                _IWebViewLifeCycleManager.Dispose(_CurrentWebControl);
+                _CurrentWebControl.ConsoleMessage -= ConsoleMessage;
+            }
+            else if (OnFirstLoad != null)
+                OnFirstLoad(this, EventArgs.Empty);
+
+            _CurrentWebControl = _NextWebControl;     
+            _NextWebControl = null;
+
+            _IWebViewLifeCycleManager.Display(_CurrentWebControl);
             if (_Window != null) _Window.State = WindowLogicalState.Closed;
             _Window = iwindow;
             _Window.State = WindowLogicalState.Opened;
-            _NextWebControl.Source = null;
+
             _Navigating = false;
             FireNavigate(Binding.Root, oldvm);
+            
+            if (tcs != null) tcs.SetResult(Binding);
         }
  
         public Task Navigate(Uri iUri, object iViewModel, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
@@ -104,35 +114,11 @@ namespace MVVMAwesomium
 
             var wh = new WindowHelper(new HTMLLogicWindow());
 
-            if (!_CurrentWebControl.IsDocumentReady)
-            {
-                _CurrentWebControl.Source = iUri;
-                return _IAwesomiumBindingFactory.Bind(_CurrentWebControl, iViewModel, wh, iMode).
-                                ContinueWith(t =>
-                                {
-                                    if (OnFirstLoad != null)
-                                        OnFirstLoad(this, EventArgs.Empty);
+            Task closetask = (_CurrentWebControl!=null) ? _Window.CloseAsync() : TaskHelper.Ended();
 
-                                    Binding = t.Result;
-                                    _Window = wh.__window__;
-                                    _Window.State = WindowLogicalState.Opened;
-                                    _CurrentWebControl.Visibility = Visibility.Visible;
-                                    _Navigating = false;
-                                    FireNavigate(iViewModel);
-                                }, TaskScheduler.FromCurrentSynchronizationContext());
-            }
+            _NextWebControl = _IWebViewLifeCycleManager.Create();
+            _NextWebControl.ConsoleMessage += ConsoleMessage;
 
-            Task closetask = _Window.CloseAsync();
-
-            if (!_NextWebControl.IsDocumentReady)
-            {
-                _NextWebControl.Source = iUri;
-
-                return _IAwesomiumBindingFactory.Bind(_NextWebControl, iViewModel, wh, iMode).WaitWith(closetask,
-                                t => Switch(t, wh.__window__));
-
-            }
-                
             TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
 
             UrlEventHandler sourceupdate = null;

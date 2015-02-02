@@ -130,8 +130,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Navigation\IUrlSolver.cs" />
+    <Compile Include="Navigation\WebViewLifeCycle\IWebViewLifeCycleManager.cs" />
     <Compile Include="Navigation\NavigationEvent.cs" />
     <Compile Include="Navigation\NavigationBuilder.cs" />
+    <Compile Include="Navigation\WebViewLifeCycle\WebViewSimpleLifeCycleManager.cs" />
     <Compile Include="Navigation\Window\HTMLWindow.cs" />
     <Compile Include="Navigation\Window\WindowHelper.cs" />
     <Compile Include="Navigation\Window\WindowState.cs" />

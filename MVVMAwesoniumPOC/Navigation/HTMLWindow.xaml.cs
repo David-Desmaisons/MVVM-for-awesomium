@@ -17,10 +17,12 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using MVVMAwesomium.Infra.VM;
+using MVVMAwesomium.Navigation;
+using Awesomium.Windows.Controls;
 
 namespace MVVMAwesomium
 {
-    public partial class HTMLWindow : UserControl, INavigationSolver
+    public partial class HTMLWindow : UserControl, INavigationSolver, IWebViewLifeCycleManager
     {
         private WebConfig _WebConfig =
                 new WebConfig() { RemoteDebuggingPort = 8001, RemoteDebuggingHost = "127.0.0.1" };
@@ -75,7 +77,7 @@ namespace MVVMAwesomium
             DebugBrowser = new BasicRelayCommand(() => OpenDebugBrowser()); 
 
             InitializeComponent();
-            _WPFDoubleBrowserNavigator = new WPFDoubleBrowserNavigator(this.First, this.Second, _IUrlSolver);
+            _WPFDoubleBrowserNavigator = new WPFDoubleBrowserNavigator(this, _IUrlSolver);
             _WPFDoubleBrowserNavigator.OnFirstLoad += FirstLoad;
            
         }
@@ -169,6 +171,39 @@ namespace MVVMAwesomium
         private void Root_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.F5) e.Handled = true;
+        }
+
+        IWebView IWebViewLifeCycleManager.Create()
+        {
+            var websession = WebCore.CreateWebSession(new WebPreferences());
+            WebControl nw = new WebControl()
+            {
+                WebSession = websession,
+                Visibility = Visibility.Hidden,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                ContextMenu = new ContextMenu() { Visibility=Visibility.Collapsed}
+            };
+            Grid.SetColumnSpan(nw, 2);
+            Grid.SetRowSpan(nw, 2);
+            Panel.SetZIndex(nw,0);
+            this.MainGrid.Children.Add(nw);
+            return nw;
+        }
+
+        void IWebViewLifeCycleManager.Display(IWebView webview)
+        {
+            (webview as WebControl).Visibility = Visibility.Visible;
+        }
+
+        void IWebViewLifeCycleManager.Dispose(IWebView ioldwebview)
+        {
+            ioldwebview.Source = new Uri("about:blank");
+            var wb = (ioldwebview as WebControl);
+            wb.Visibility = Visibility.Hidden;
+            this.MainGrid.Children.Remove(wb);
+            wb.Dispose();
+            wb.WebSession.Dispose();
         }
     }
 }
