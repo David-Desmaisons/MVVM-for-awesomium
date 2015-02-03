@@ -78,7 +78,7 @@ namespace MVVMAwesomium
                 OnNavigate(this, new NavigationEvent(inewvm, ioldvm));
         }
 
-        private void Switch(Task<IAwesomeBinding> iBinding, HTMLLogicWindow iwindow, TaskCompletionSource<object> tcs = null)
+        private void Switch(Task<IAwesomeBinding> iBinding, HTMLLogicWindow iwindow, TaskCompletionSource<object> tcs)
         {
             object oldvm = (Binding != null) ? Binding.Root : null;
             Binding = iBinding.Result;
@@ -93,14 +93,14 @@ namespace MVVMAwesomium
 
             _CurrentWebControl = _NextWebControl;     
             _NextWebControl = null;
+            _CurrentWebControl.Crashed += Crashed;
 
             _IWebViewLifeCycleManager.Display(_CurrentWebControl);
             if (_Window != null) _Window.State = WindowLogicalState.Closed;
             _Window = iwindow;
             _Window.State = WindowLogicalState.Opened;
 
-            _Navigating = false;
-            FireNavigate(Binding.Root, oldvm);
+            _Navigating = false;      
 
             if (_UseINavigable)
             {
@@ -108,10 +108,28 @@ namespace MVVMAwesomium
                 if (inav != null)
                     inav.Navigation = this;
             }
+
+            FireNavigate(Binding.Root, oldvm);
             
             if (tcs != null) tcs.SetResult(Binding);
         }
- 
+
+        private void Crashed(object sender, CrashedEventArgs e)
+        {
+            var dest = _CurrentWebControl.Source;
+            var vm = Binding.Root;
+
+            _IWebViewLifeCycleManager.Dispose(_CurrentWebControl);
+            _CurrentWebControl.ConsoleMessage -= ConsoleMessage;
+            _CurrentWebControl.Crashed -= Crashed;
+            _CurrentWebControl = null;
+
+            Binding = null;
+
+            WebCore.QueueWork(() =>
+            Navigate(dest, vm, JavascriptBindingMode.TwoWay));
+        }
+
         public Task Navigate(Uri iUri, object iViewModel, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
         {
             if (iUri == null)
@@ -128,7 +146,10 @@ namespace MVVMAwesomium
 
             var wh = new WindowHelper(new HTMLLogicWindow());
 
-            Task closetask = (_CurrentWebControl!=null) ? _Window.CloseAsync() : TaskHelper.Ended();
+            if (_CurrentWebControl != null)
+                _CurrentWebControl.Crashed -= Crashed;
+
+            Task closetask = ( _CurrentWebControl!=null) ? _Window.CloseAsync() : TaskHelper.Ended();
 
             _NextWebControl = _IWebViewLifeCycleManager.Create();
             _NextWebControl.ConsoleMessage += ConsoleMessage;
@@ -140,7 +161,7 @@ namespace MVVMAwesomium
             {
                 _NextWebControl.AddressChanged -= sourceupdate;
                 _IAwesomiumBindingFactory.Bind(_NextWebControl, iViewModel, wh, iMode).WaitWith(closetask,
-                     t => Switch(t, wh.__window__,tcs));
+                     t => Switch(t, wh.__window__, tcs));
             };
 
             _NextWebControl.AddressChanged += sourceupdate;
@@ -185,32 +206,8 @@ namespace MVVMAwesomium
         public bool UseINavigable
         {
             get { return _UseINavigable; }
-            set
-            {
-                _UseINavigable = value;
-                //if (_UseINavigable == value)
-                //    return;
-
-                //if (_UseINavigable=value)
-                //    OnNavigate += WPFBrowserNavigator_OnNavigate;
-                //else
-                //    OnNavigate -= WPFBrowserNavigator_OnNavigate;
-            }
+            set { _UseINavigable = value; }
         }
-
-        //private void WPFBrowserNavigator_OnNavigate(object sender, NavigationEvent e)
-        //{
-        //    if (object.ReferenceEquals(e.NewViewModel, e.OldViewModel))
-        //        return;
-
-        //    INavigable nv = e.NewViewModel as INavigable;
-        //    if (nv != null)
-        //        nv.Navigation = this;
-
-        //    nv = e.OldViewModel as INavigable;
-        //    if (nv != null)
-        //        nv.Navigation = null;
-        //}
 
         public event EventHandler<NavigationEvent> OnNavigate;
 

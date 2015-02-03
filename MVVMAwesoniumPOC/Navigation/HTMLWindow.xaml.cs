@@ -198,12 +198,22 @@ namespace MVVMAwesomium
 
         void IWebViewLifeCycleManager.Dispose(IWebView ioldwebview)
         {
-            ioldwebview.Source = new Uri("about:blank");
             var wb = (ioldwebview as WebControl);
-            wb.Visibility = Visibility.Hidden;
+
+            if (!ioldwebview.IsCrashed)
+            {
+                ioldwebview.Source = new Uri("about:blank");
+                wb.Visibility = Visibility.Hidden;
+            }
+          
+          
             this.MainGrid.Children.Remove(wb);
-            wb.Dispose();
-            wb.WebSession.Dispose();
+
+            //WebCore.QueueWork(() =>
+            //{
+                wb.Dispose();
+                wb.WebSession.Dispose();
+            //});
         }
     }
 }
