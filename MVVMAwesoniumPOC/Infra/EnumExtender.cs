@@ -16,8 +16,10 @@ namespace MVVMAwesomium.Infra
             string valuename = o.ToString();
             Type EnumType = o.GetType();
             FieldInfo fi = EnumType.GetField(valuename);
+            if (fi == null)
+                return valuename;
+            
             DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-
             return (attributes != null && attributes.Length > 0) ? attributes[0].Description : valuename;
         }
 

@@ -131,6 +131,7 @@
   <ItemGroup>
     <Compile Include="Navigation\IUrlSolver.cs" />
     <Compile Include="Navigation\WebViewLifeCycle\IWebViewLifeCycleManager.cs" />
+    <Compile Include="Navigation\IWebViewProvider.cs" />
     <Compile Include="Navigation\NavigationEvent.cs" />
     <Compile Include="Navigation\NavigationBuilder.cs" />
     <Compile Include="Navigation\WebViewLifeCycle\WebViewSimpleLifeCycleManager.cs" />

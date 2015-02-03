@@ -248,13 +248,21 @@ function Null_reference() {
         }
     };
 
+    ko.bindingHandlers.enumimagewithfallback = {
+        update: function (element, valueAccessor) {
+            var v = ko.utils.unwrapObservable(valueAccessor());
+            var imagepath = ko.getimage(v.image) || v.fallback;
+            element.src = imagepath;
+        }
+    };
+
     ko.bindingHandlers.onclose = {
         preprocess: function (value) {
-            return '{when: $data.__window__().State, do: ' + value + '}';
+            return '{when: $root.__window__().State, do: ' + value + '}';
         },
 
         init: function (element, valueAccessor,allBindings,viewModel,bindingContext) {
-            bindingContext.$data.__window__().IsListeningClose(true);
+            bindingContext.$root.__window__().IsListeningClose(true);
         },
 
         update: function (element, valueAccessor,allBindings,viewModel,bindingContext) {
@@ -262,13 +270,13 @@ function Null_reference() {
             if (v.when().name !== 'Closing')
                 return;
 
-            v.do(function () { bindingContext.$data.__window__().CloseReady().Execute(); }, element);
+            v.do(function () { bindingContext.$root.__window__().CloseReady().Execute(); }, element);
         }
     };
 
     ko.bindingHandlers.onopened= {
         preprocess: function (value) {
-            return '{when: $data.__window__().State, do: ' + value + '}';
+            return '{when:  $root.__window__().State, do: ' + value + '}';
         },
 
         update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {

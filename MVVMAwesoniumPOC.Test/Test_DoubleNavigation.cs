@@ -575,7 +575,7 @@ namespace MVVMAwesomium.Test
                 () =>
                 wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
 
-
+                mre = new ManualResetEvent(false);
                 WindowTest.RunOnUIThread(
                 () =>
                 {
@@ -583,6 +583,7 @@ namespace MVVMAwesomium.Test
                 });
 
                 mre.WaitOne();
+
 
                 WindowTest.RunOnUIThread(() =>
                 {
@@ -637,7 +638,7 @@ namespace MVVMAwesomium.Test
                 wpfnav.Source.LocalPath.Should().EndWith("javascript\\navigation_1.html"));
 
 
-
+                mre = new ManualResetEvent(false);
 
                 WindowTest.RunOnUIThread(
              () =>

@@ -17,7 +17,7 @@ using MVVMAwesomium.Navigation;
 
 namespace MVVMAwesomium
 {
-    public class WPFDoubleBrowserNavigator :  INavigationSolver
+    public class WPFDoubleBrowserNavigator : INavigationSolver, IWebViewProvider
     {
         private IWebViewLifeCycleManager _IWebViewLifeCycleManager;
 
@@ -101,6 +101,13 @@ namespace MVVMAwesomium
 
             _Navigating = false;
             FireNavigate(Binding.Root, oldvm);
+
+            if (_UseINavigable)
+            {
+                var inav = Binding.Root as INavigable;
+                if (inav != null)
+                    inav.Navigation = this;
+            }
             
             if (tcs != null) tcs.SetResult(Binding);
         }
@@ -110,7 +117,14 @@ namespace MVVMAwesomium
             if (iUri == null)
                 throw ExceptionHelper.GetArgument(string.Format("ViewModel not registered: {0}", iViewModel.GetType()));
 
-            _Navigating = true;           
+            _Navigating = true;
+
+            INavigable oldvm = (Binding != null) ? Binding.Root as INavigable : null;
+
+            if (_UseINavigable && (oldvm!=null))
+            {
+                oldvm.Navigation = null;
+            }
 
             var wh = new WindowHelper(new HTMLLogicWindow());
 
@@ -173,32 +187,38 @@ namespace MVVMAwesomium
             get { return _UseINavigable; }
             set
             {
-                if (_UseINavigable == value)
-                    return;
+                _UseINavigable = value;
+                //if (_UseINavigable == value)
+                //    return;
 
-                if (_UseINavigable=value)
-                    OnNavigate += WPFBrowserNavigator_OnNavigate;
-                else
-                    OnNavigate -= WPFBrowserNavigator_OnNavigate;
+                //if (_UseINavigable=value)
+                //    OnNavigate += WPFBrowserNavigator_OnNavigate;
+                //else
+                //    OnNavigate -= WPFBrowserNavigator_OnNavigate;
             }
         }
 
-        private void WPFBrowserNavigator_OnNavigate(object sender, NavigationEvent e)
-        {
-            if (object.ReferenceEquals(e.NewViewModel, e.OldViewModel))
-                return;
+        //private void WPFBrowserNavigator_OnNavigate(object sender, NavigationEvent e)
+        //{
+        //    if (object.ReferenceEquals(e.NewViewModel, e.OldViewModel))
+        //        return;
 
-            INavigable nv = e.NewViewModel as INavigable;
-            if (nv != null)
-                nv.Navigation = this;
+        //    INavigable nv = e.NewViewModel as INavigable;
+        //    if (nv != null)
+        //        nv.Navigation = this;
 
-            nv = e.OldViewModel as INavigable;
-            if (nv != null)
-                nv.Navigation = null;
-        }
+        //    nv = e.OldViewModel as INavigable;
+        //    if (nv != null)
+        //        nv.Navigation = null;
+        //}
 
         public event EventHandler<NavigationEvent> OnNavigate;
 
         public event EventHandler OnFirstLoad;
+
+        public IWebView WebView
+        {
+            get { return this._CurrentWebControl; }
+        }
     }
 }
