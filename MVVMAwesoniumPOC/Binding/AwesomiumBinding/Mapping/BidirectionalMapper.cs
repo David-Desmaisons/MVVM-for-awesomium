@@ -25,7 +25,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         private IJSOLocalBuilder _LocalBuilder;
         private IJSOBuilder _GlobalBuilder;
-
+        private bool _IsListening = false;
 
         private IDictionary<object, IJSCSGlue> _FromCSharp = new Dictionary<object, IJSCSGlue>();
         private IDictionary<uint, IJSCSGlue> _FromJavascript_Global = new Dictionary<uint, IJSCSGlue>();
@@ -61,6 +61,7 @@ namespace MVVMAwesomium.AwesomiumBinding
                        {
                            ListenToCSharpChanges(_Root);
                        }
+                       _IsListening = true;
                        tcs.SetResult(null);
                    });
                 }
@@ -174,7 +175,7 @@ namespace MVVMAwesomium.AwesomiumBinding
                 if (res == null)
                     return;
 
-                INotifyPropertyChanged inc = res.CValue as INotifyPropertyChanged;
+                INotifyPropertyChanged inc = (!_IsListening)? null :res.CValue as INotifyPropertyChanged;
                 if (inc != null) inc.PropertyChanged -= Object_PropertyChanged;
                 res.UpdateCSharpProperty(PropertyName, this, newValue);
                 if (inc != null) inc.PropertyChanged += Object_PropertyChanged;

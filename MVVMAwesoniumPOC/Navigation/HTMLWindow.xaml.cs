@@ -205,15 +205,11 @@ namespace MVVMAwesomium
                 ioldwebview.Source = new Uri("about:blank");
                 wb.Visibility = Visibility.Hidden;
             }
-          
-          
+                 
             this.MainGrid.Children.Remove(wb);
 
-            //WebCore.QueueWork(() =>
-            //{
-                wb.Dispose();
-                wb.WebSession.Dispose();
-            //});
+            wb.Dispose();
+            wb.WebSession.Dispose();
         }
     }
 }
