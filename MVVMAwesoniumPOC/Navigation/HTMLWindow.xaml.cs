@@ -173,12 +173,16 @@ namespace MVVMAwesomium
             if (e.Key == Key.F5) e.Handled = true;
         }
 
+        private static WebSession _Session = null;
+
         IWebView IWebViewLifeCycleManager.Create()
         {
-            var websession = WebCore.CreateWebSession(new WebPreferences());
+            if (_Session==null)
+                _Session = WebCore.CreateWebSession(new WebPreferences());
+     
             WebControl nw = new WebControl()
             {
-                WebSession = websession,
+                WebSession = _Session,
                 Visibility = Visibility.Hidden,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
@@ -209,7 +213,7 @@ namespace MVVMAwesomium
             this.MainGrid.Children.Remove(wb);
 
             wb.Dispose();
-            wb.WebSession.Dispose();
+            
         }
     }
 }

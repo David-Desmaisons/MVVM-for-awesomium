@@ -85,8 +85,8 @@ namespace MVVMAwesomium
           
             if (_CurrentWebControl!=null)
             {
-                _IWebViewLifeCycleManager.Dispose(_CurrentWebControl);
                 _CurrentWebControl.ConsoleMessage -= ConsoleMessage;
+                _IWebViewLifeCycleManager.Dispose(_CurrentWebControl);
             }
             else if (OnFirstLoad != null)
                 OnFirstLoad(this, EventArgs.Empty);
@@ -96,7 +96,7 @@ namespace MVVMAwesomium
             _CurrentWebControl.Crashed += Crashed;
 
             _IWebViewLifeCycleManager.Display(_CurrentWebControl);
-  
+    
             _Window = iwindow;
             _Window.State = WindowLogicalState.Opened;
 
