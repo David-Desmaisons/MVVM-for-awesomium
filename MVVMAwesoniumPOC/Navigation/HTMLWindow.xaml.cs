@@ -199,11 +199,11 @@ namespace MVVMAwesomium
         void IWebViewLifeCycleManager.Dispose(IWebView ioldwebview)
         {
             var wb = (ioldwebview as WebControl);
+            wb.Visibility = Visibility.Hidden;
 
             if (!ioldwebview.IsCrashed)
             {
                 ioldwebview.Source = new Uri("about:blank");
-                wb.Visibility = Visibility.Hidden;
             }
                  
             this.MainGrid.Children.Remove(wb);
