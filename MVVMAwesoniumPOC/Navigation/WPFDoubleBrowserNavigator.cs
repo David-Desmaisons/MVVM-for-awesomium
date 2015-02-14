@@ -91,14 +91,12 @@ namespace MVVMAwesomium
             else if (OnFirstLoad != null)
                 OnFirstLoad(this, EventArgs.Empty);
 
-            var oldrelevant = (_CurrentWebControl != null);
-
             _CurrentWebControl = _NextWebControl;     
             _NextWebControl = null;
             _CurrentWebControl.Crashed += Crashed;
 
             _IWebViewLifeCycleManager.Display(_CurrentWebControl);
-            if ((_Window != null) && (oldrelevant)) _Window.State = WindowLogicalState.Closed;
+  
             _Window = iwindow;
             _Window.State = WindowLogicalState.Opened;
 
