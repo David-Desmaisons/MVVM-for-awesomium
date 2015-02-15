@@ -28,6 +28,14 @@ namespace MVVMAwesomium
                 new WebConfig() { RemoteDebuggingPort = 8001, RemoteDebuggingHost = "127.0.0.1" };
 
         private Boolean _EnableBrowserDebug;
+        private IWebSessionWatcher _IWebSessionWatcher = new NullWatcher();
+
+        public IWebSessionWatcher WebSessionWatcher
+        {
+            get { return _IWebSessionWatcher; }
+            set { _IWebSessionWatcher = value; _WPFDoubleBrowserNavigator.WebSessionWatcher = value; }
+        }
+
         public Boolean EnableBrowserDebug
         {
             get { return _EnableBrowserDebug; }
@@ -62,8 +70,7 @@ namespace MVVMAwesomium
         private IUrlSolver _IUrlSolver;
 
         private WPFDoubleBrowserNavigator _WPFDoubleBrowserNavigator;
-        public HTMLWindow()
-            : this(null)
+        public HTMLWindow(): this(null)
         {
         }
 
@@ -149,8 +156,6 @@ namespace MVVMAwesomium
             return _WPFDoubleBrowserNavigator.NavigateAsync(iViewModel, Id, iMode);
         }
 
-      
-
         public void Dispose()
         {
             _WPFDoubleBrowserNavigator.Dispose();
@@ -178,7 +183,10 @@ namespace MVVMAwesomium
         IWebView IWebViewLifeCycleManager.Create()
         {
             if (_Session==null)
+            {
                 _Session = WebCore.CreateWebSession(new WebPreferences());
+                WebCore.ShuttingDown += WebCore_ShuttingDown;
+            }
      
             WebControl nw = new WebControl()
             {
@@ -193,6 +201,15 @@ namespace MVVMAwesomium
             Panel.SetZIndex(nw,0);
             this.MainGrid.Children.Add(nw);
             return nw;
+        }
+
+        private  void WebCore_ShuttingDown(object sender, CoreShutdownEventArgs e)
+        {
+            _IWebSessionWatcher.LogCritical("Critical: WebCore ShuttingDown!!");
+
+            Trace.WriteLine(string.Format("MVVM for awesomium: WebCoreShutting Down exception: {0}", e.Exception));
+
+            _IWebSessionWatcher.OnSessionError(e.Exception, () => e.Cancel = true);
         }
 
         void IWebViewLifeCycleManager.Display(IWebView webview)

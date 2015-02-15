@@ -34,6 +34,14 @@ namespace MVVMAwesomium
 
         internal IWebView WebControl { get { return _CurrentWebControl; } }
 
+        private IWebSessionWatcher _IWebSessionWatcher = new NullWatcher();
+
+        public IWebSessionWatcher WebSessionWatcher
+        {
+            get { return _IWebSessionWatcher; }
+            set { _IWebSessionWatcher = value; }
+        }
+
         public WPFDoubleBrowserNavigator(WebControl iWebControl, WebControl iWebControlSecond, IUrlSolver inb, IAwesomiumBindingFactory iAwesomiumBindingFactory = null):
             this( new WebViewSimpleLifeCycleManager(iWebControl,iWebControlSecond),inb,iAwesomiumBindingFactory)
         {
@@ -50,7 +58,7 @@ namespace MVVMAwesomium
         {
             try
             {
-                Trace.WriteLine(string.Format("MVVM for awesomium: WebSession log message: {0}, event name: {1}, event type {2}, source {3}, line number {4}", e.Message, e.EventName, e.EventType, e.Source, e.LineNumber));
+                LogBrowser(string.Format("{0}, event name: {1}, event type {2}, source {3}, line number {4}", e.Message, e.EventName, e.EventType, e.Source, e.LineNumber));
             }
             catch{ }
         }
@@ -114,11 +122,27 @@ namespace MVVMAwesomium
             if (tcs != null) tcs.SetResult(Binding);
         }
 
+        private void LogCritical(string iMessage)
+        {
+            _IWebSessionWatcher.LogCritical(iMessage);
+
+            Trace.WriteLine(string.Format("MVVM for awesomium: Critical: {0}", iMessage));
+        }
+
+        private void LogBrowser(string iMessage)
+        {
+            _IWebSessionWatcher.LogBrowser(iMessage);
+
+            Trace.WriteLine(string.Format("MVVM for awesomium: WebSession log message: {0}", iMessage));
+        }
+
         private void Crashed(object sender, CrashedEventArgs e)
         {
             var dest = _CurrentWebControl.Source;
             var vm = Binding.Root;
 
+            LogCritical("WebView crashed trying recover");
+   
             _IWebViewLifeCycleManager.Dispose(_CurrentWebControl);
             _CurrentWebControl.ConsoleMessage -= ConsoleMessage;
             _CurrentWebControl.Crashed -= Crashed;
@@ -126,8 +150,7 @@ namespace MVVMAwesomium
 
             Binding = null;
 
-            WebCore.QueueWork(() =>
-            Navigate(dest, vm, JavascriptBindingMode.TwoWay));
+            WebCore.QueueWork(() => Navigate(dest, vm, JavascriptBindingMode.TwoWay));
         }
 
         public Task Navigate(Uri iUri, object iViewModel, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
@@ -182,7 +205,7 @@ namespace MVVMAwesomium
             }
             catch(Exception e)
             {
-                Trace.WriteLine(string.Format("MVVM for awesomium: Can not execute javascript: {0}, reason: {1}",icode,e));
+                LogBrowser(string.Format("Can not execute javascript: {0}, reason: {1}",icode,e));
             }
             
         }
