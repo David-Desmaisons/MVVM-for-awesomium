@@ -180,11 +180,20 @@ namespace MVVMAwesomium
 
         private static WebSession _Session = null;
 
+        public string _WebSessionPath = null;
+        public string SessionPath
+        {
+            get { return _WebSessionPath; }
+            set { _WebSessionPath = value; }
+        }
+
         IWebView IWebViewLifeCycleManager.Create()
         {
             if (_Session==null)
             {
-                _Session = WebCore.CreateWebSession(new WebPreferences());
+                _Session = (_WebSessionPath!=null) ? WebCore.CreateWebSession(_WebSessionPath,new WebPreferences()) :
+                        WebCore.CreateWebSession(new WebPreferences());
+
                 WebCore.ShuttingDown += WebCore_ShuttingDown;
             }
      
