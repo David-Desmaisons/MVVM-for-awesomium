@@ -38,7 +38,7 @@ function Null_reference() {
              observable.subscriber = observable.subscribe(listener);
              observable.silent = function (v) {
                  observable.subscriber.dispose();
-                 observable(v);
+                 observable((v instanceof Null_reference) ? null : v);
                  observable.subscriber = observable.subscribe(observable.listener);
              };
          }
@@ -86,6 +86,15 @@ function Null_reference() {
         if (!Mapper) Mapper = {};
         if (!Listener) Listener = {};
 
+        if (or instanceof Null_reference) {
+            if (context === null) {
+                if (Mapper.Register) Mapper.Register(or);
+                if (Mapper.End) Mapper.End(or);
+                return or;
+            }
+
+            return null;
+        }
         //Look in cache
         //not very clean implementation, but must handle "read-only" object with predefined _MappedId
         if (or._MappedId !== undefined) {
