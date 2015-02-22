@@ -223,6 +223,20 @@ namespace MVVMAwesomium
             _Disposed = true;
             Binding = null;
             UseINavigable = false;
+
+            CleanWebControl(ref _CurrentWebControl);
+            CleanWebControl(ref _NextWebControl);
+        }
+
+        private void CleanWebControl(ref IWebView iWebControl)
+        {
+            if (iWebControl == null)
+                return;
+
+            iWebControl.Crashed -= Crashed;
+            iWebControl.ConsoleMessage -= ConsoleMessage;
+            _IWebViewLifeCycleManager.Dispose(iWebControl);
+            iWebControl = null;
         }
 
         private bool _UseINavigable = false;

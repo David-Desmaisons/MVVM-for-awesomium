@@ -8,6 +8,7 @@ using Awesomium.Windows.Controls;
 using FluentAssertions;
 using MVVMAwesomium.ViewModel;
 using Xunit;
+using Awesomium.Core;
 
 namespace MVVMAwesomium.Test
 {
@@ -54,10 +55,11 @@ namespace MVVMAwesomium.Test
             {
                 WPFDoubleBrowserNavigator res = null;
                 wcontext.RunOnUIThread(() => res = new WPFDoubleBrowserNavigator(wc1, wc2, _INavigationBuilder));
-                using (res)
-                {
+                //using (res)
+                //{
                     Test(res, wcontext);
-                }
+                //}
+                    WebCore.QueueWork(() => res.Dispose());
             }
         }
 

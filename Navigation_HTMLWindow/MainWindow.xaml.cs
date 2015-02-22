@@ -46,6 +46,12 @@ namespace Navigation_HTMLWindow
 
         }
 
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            this.HTMLWindow.Dispose();
+        } 
+
             
     }
 }

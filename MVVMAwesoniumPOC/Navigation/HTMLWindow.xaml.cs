@@ -22,7 +22,7 @@ using Awesomium.Windows.Controls;
 
 namespace MVVMAwesomium
 {
-    public partial class HTMLWindow : UserControl, INavigationSolver, IWebViewLifeCycleManager
+    public partial class HTMLWindow : UserControl, INavigationSolver, IWebViewLifeCycleManager, IDisposable
     {
         private WebConfig _WebConfig =
                 new WebConfig() { RemoteDebuggingPort = 8001, RemoteDebuggingHost = "127.0.0.1" };
@@ -70,7 +70,8 @@ namespace MVVMAwesomium
         private IUrlSolver _IUrlSolver;
 
         private WPFDoubleBrowserNavigator _WPFDoubleBrowserNavigator;
-        public HTMLWindow(): this(null)
+        public HTMLWindow()
+            : this(null)
         {
         }
 
@@ -81,12 +82,12 @@ namespace MVVMAwesomium
 
             DebugWindow = new BasicRelayCommand(() => ShowDebugWindow());
 
-            DebugBrowser = new BasicRelayCommand(() => OpenDebugBrowser()); 
+            DebugBrowser = new BasicRelayCommand(() => OpenDebugBrowser());
 
             InitializeComponent();
             _WPFDoubleBrowserNavigator = new WPFDoubleBrowserNavigator(this, _IUrlSolver);
             _WPFDoubleBrowserNavigator.OnFirstLoad += FirstLoad;
-           
+
         }
 
         private void FirstLoad(object sender, EventArgs e)
@@ -159,6 +160,11 @@ namespace MVVMAwesomium
         public void Dispose()
         {
             _WPFDoubleBrowserNavigator.Dispose();
+            if (_Session != null)
+            {
+                _Session.Dispose();
+                _Session = null;
+            }
         }
 
         public event EventHandler<NavigationEvent> OnNavigate
@@ -189,30 +195,30 @@ namespace MVVMAwesomium
 
         IWebView IWebViewLifeCycleManager.Create()
         {
-            if (_Session==null)
+            if (_Session == null)
             {
-                _Session = (_WebSessionPath!=null) ? WebCore.CreateWebSession(_WebSessionPath,new WebPreferences()) :
+                _Session = (_WebSessionPath != null) ? WebCore.CreateWebSession(_WebSessionPath, new WebPreferences()) :
                         WebCore.CreateWebSession(new WebPreferences());
 
                 WebCore.ShuttingDown += WebCore_ShuttingDown;
             }
-     
+
             WebControl nw = new WebControl()
             {
                 WebSession = _Session,
                 Visibility = Visibility.Hidden,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
-                ContextMenu = new ContextMenu() { Visibility=Visibility.Collapsed}
+                ContextMenu = new ContextMenu() { Visibility = Visibility.Collapsed }
             };
             Grid.SetColumnSpan(nw, 2);
             Grid.SetRowSpan(nw, 2);
-            Panel.SetZIndex(nw,0);
+            Panel.SetZIndex(nw, 0);
             this.MainGrid.Children.Add(nw);
             return nw;
         }
 
-        private  void WebCore_ShuttingDown(object sender, CoreShutdownEventArgs e)
+        private void WebCore_ShuttingDown(object sender, CoreShutdownEventArgs e)
         {
             _IWebSessionWatcher.LogCritical("Critical: WebCore ShuttingDown!!");
 
@@ -235,11 +241,11 @@ namespace MVVMAwesomium
             {
                 ioldwebview.Source = new Uri("about:blank");
             }
-                 
+
             this.MainGrid.Children.Remove(wb);
 
             wb.Dispose();
-            
+
         }
     }
 }

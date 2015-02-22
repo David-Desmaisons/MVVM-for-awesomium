@@ -1237,7 +1237,7 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_AwesomeBinding_Stress_TwoWay_Collection()
         {
-            using (Tester())
+            using (Tester("javascript/simple.html"))
             {
 
                 bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
@@ -1310,18 +1310,18 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_AwesomeBinding_Stress_TwoWay_Collection_CreateBinding()
         {
-            Test_AwesomeBinding_Stress_Collection_CreateBinding(JavascriptBindingMode.TwoWay, 1.5);
+            Test_AwesomeBinding_Stress_Collection_CreateBinding(JavascriptBindingMode.TwoWay, 1.5, "javascript/simple.html");
         }
 
         [Fact]
         public void Test_AwesomeBinding_Stress_OneWay_Collection_CreateBinding()
         {
-            Test_AwesomeBinding_Stress_Collection_CreateBinding(JavascriptBindingMode.OneWay, 1.5);
+            Test_AwesomeBinding_Stress_Collection_CreateBinding(JavascriptBindingMode.OneWay, 1.5,"javascript/simple.html");
         }
 
-        public void Test_AwesomeBinding_Stress_Collection_CreateBinding(JavascriptBindingMode imode, double excpected)
+        public void Test_AwesomeBinding_Stress_Collection_CreateBinding(JavascriptBindingMode imode, double excpected,string ipath=null)
         {
-            using (Tester())
+            using (Tester(ipath))
             {
                 int r = 100;
                 var datacontext = new TwoList();
@@ -1359,7 +1359,7 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_AwesomeBinding_Stress_Collection_Update_From_Javascript()
         {
-            using (Tester())
+            using (Tester("javascript/simple.html"))
             {
                 int r = 100;
                 var datacontext = new TwoList();
@@ -1397,13 +1397,6 @@ namespace MVVMAwesomium.Test
 
                     DoSafe(() => win.Invoke("app", res1, l2c));
 
-                    ////Error er = GetSafe( ()=> _WebView.GetLastError());
-                    ////er.Should().Be(Error.None);
-                    //res2 = GetSafe(() => Get(js, "L2"));
-                    //res2.Should().NotBeNull();
-                    //col2 = ((JSValue[])res2);
-                    //col2.Length.Should().Be(r);                
-
                     Thread.Sleep(10);
 
                     while (notok)
@@ -1426,7 +1419,7 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_AwesomeBinding_Stress_OneTime_Collection_CreateBinding()
         {
-            Test_AwesomeBinding_Stress_Collection_CreateBinding(JavascriptBindingMode.OneTime, 1.5);
+            Test_AwesomeBinding_Stress_Collection_CreateBinding(JavascriptBindingMode.OneTime, 1.5,"javascript/simple.html");
         }
 
 

@@ -70,7 +70,7 @@ namespace MVVMAwesomium.Test
             if (this.Window == null)
                 return;
 
-            this.Window.Content = null;
+            //this.Window.Content = null;
             this.Window.Close();
             this.Window.Dispatcher.UnhandledException -= OnDispatcherUnhandledException;
             this.Window = null;

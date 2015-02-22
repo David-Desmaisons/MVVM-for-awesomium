@@ -75,9 +75,6 @@ function Null_reference() {
 
         if ((typeof or !== 'object') || (or instanceof Date) || (or instanceof Enum)) return or;
 
-        if (or instanceof Null_reference)
-            return null;
-
         if (!MapToObservable.Cache) {
             MapToObservable.Cache = {};
             MapToObservable._MappedId = 0;

@@ -45,6 +45,7 @@ namespace MVVMAwesomium.Test
                     w.Content = stackPanel;
                     var iWebControl = iWebControlFac();
                     w.RegisterName(iWebControl.Name, iWebControl);
+                    w.Closed += (o, e) => { iWebControl.Dispose(); };
                     stackPanel.Children.Add(iWebControl);
                 }
                 );
@@ -65,11 +66,8 @@ namespace MVVMAwesomium.Test
 
             using (var wcontext = BuildWindow(iWebControlFac))
             {
-                using (wc1)
-                {
-
                     Test(wc1.NavigationBuilder, wc1, wcontext);
-                }
+                    //wcontext.RunOnUIThread(() => wc1.Dispose());
             }
         }
 

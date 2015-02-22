@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Awesomium.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,9 +39,9 @@ namespace MVVMAwesomium.Test
 
         public void Dispose()
         {
-            Action End = () => _WPFThreadingHelper.Close();
+            Action End = () => { _WPFThreadingHelper.Close(); };
             Dispatcher.Invoke(End);
-            _WPFThreadingHelper.Dispose();
+            WebCore.QueueWork(()  =>_WPFThreadingHelper.Dispose());
         }
     }
 }
