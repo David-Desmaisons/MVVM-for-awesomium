@@ -761,7 +761,8 @@ namespace MVVMAwesomium.Test
 
         private class ViewModelTest : ViewModelBase
         {
-            public ICommand Command { get; set; }
+            private ICommand _ICommand;
+            public ICommand Command { get { return _ICommand; } set { Set(ref _ICommand, value, "Command"); } }
 
             public string Name { get { return "NameTest"; } }
 
@@ -912,6 +913,32 @@ namespace MVVMAwesomium.Test
                 }
             }
         }
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Command_Uptate_From_Null()
+        {
+            using (Tester())
+            {
+                var command = Substitute.For<ICommand>();
+                command.CanExecute(Arg.Any<object>()).Returns(true);
+                var test = new ViewModelTest();
+
+                using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("Command"));
+                    
+                    DoSafe(() => test.Command = command);
+                    Thread.Sleep(200);
+
+                    mycommand = (JSObject)GetSafe(() => js.Invoke("Command"));
+                    JSValue res = GetSafe(() => mycommand.Invoke("Execute", js));
+                    Thread.Sleep(100);
+                    command.Received().Execute(test);
+                }
+            }
+        }
+
 
         private void CheckIntValue(JSObject js, string pn, int value)
         {

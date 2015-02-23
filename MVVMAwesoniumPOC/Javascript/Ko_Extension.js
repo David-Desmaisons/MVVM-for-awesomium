@@ -220,8 +220,8 @@ function Null_reference() {
 
     ko.bindingHandlers.command = {
         preprocess: function (value, name, addBinding) {
-            addBinding('enable', value + '().CanExecute($data)===undefined &&' + value + '().CanExecuteCount() &&' + value + '().CanExecuteValue()');
-            addBinding('click', 'function(){' + value + '().Execute($data);}');
+            addBinding('enable', value + '()!==null && '+ value + '().CanExecute($data)===undefined &&' + value + '().CanExecuteCount() &&' + value + '().CanExecuteValue()');
+            addBinding('click', 'function(){ if ('+value+'()!==null) {' + value + '().Execute($data);}}');
             return value;
         }
     };
@@ -229,11 +229,11 @@ function Null_reference() {
 
     ko.bindingHandlers.execute = {
         preprocess: function (value, name, addBinding) {
-            addBinding('click', 'function(){' + value + '().Execute($data);}');
+            addBinding('click', 'function(){ if (' + value + '()!==null) {' + value + '().Execute($data);}}');
             return value;
         }
     };
-
+     
     ko.getimage = function (Enumvalue) {
         if ((!Enumvalue instanceof Enum) || (!ko.Enumimages))
             return null;
