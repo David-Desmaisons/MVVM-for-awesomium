@@ -16,10 +16,12 @@ namespace MVVMAwesomium.AwesomiumBinding
     {
         private readonly IJSOLocalBuilder _IJSOBuilder;
         private readonly IJSCBridgeCache _Cacher;
+        private readonly BasicCSharpToJavascriptConverter _Basic;
         public CSharpToJavascriptMapper(IJSOLocalBuilder Builder, IJSCBridgeCache icacher)
         {
             _IJSOBuilder = Builder;
             _Cacher = icacher;
+            _Basic = new BasicCSharpToJavascriptConverter(Builder);
         }
 
         internal IJSCSGlue Map(object ifrom, object iadditional=null)
@@ -37,21 +39,22 @@ namespace MVVMAwesomium.AwesomiumBinding
             if (ifrom is ICommand)
                 return new JSCommand(_IJSOBuilder, ifrom as ICommand);
 
-            dynamic dfr = ifrom;
+           
             JSValue value;
-            if (BasicConvert(dfr, out value))
+            if (_Basic.Solve(ifrom, out value))
             {
                 return new JSBasicObject(value, ifrom);
             }
 
-            if (ConvertWithCache(dfr, out value))
+            if (ifrom.GetType().IsEnum)
             {
-                var trueres = new JSBasicObject(value, ifrom);
+                var trueres = new JSBasicObject(_IJSOBuilder.CreateEnum((Enum)ifrom), ifrom);
                 _Cacher.CacheLocal(ifrom, trueres);
                 return trueres;
             }
-          
-            if (Convert(dfr, out res))
+
+            IEnumerable ienfro = ifrom as IEnumerable;
+            if ((ienfro!=null) && Convert(ienfro, out res))
             {
                 return res;
             }
@@ -95,92 +98,36 @@ namespace MVVMAwesomium.AwesomiumBinding
             }
 
             return gres;
-        }
+        }      
 
+        //private bool ConvertWithCache(Enum source, out JSValue res)
+        //{
+        //    res = _IJSOBuilder.CreateEnum(source);
+        //    return true;
+        //}
 
-        private bool BasicConvert(object source, out JSValue res)
-        {
-            res = new JSValue();
-            return false;
-        }
+        //private bool ConvertWithCache(object source, out JSValue res)
+        //{
+        //    res = new JSValue();
+        //    return false;
+        //}
 
-        private bool BasicConvert(string source, out JSValue res)
-        {
-            res = new JSValue(source);
-            return true;
-        }
+        //private bool Convert(object source, out IJSCSGlue res)
+        //{
+        //    res = null;
+        //    return false;
+        //}
 
-        private bool BasicConvert(long source, out JSValue res)
-        {
-            res = new JSValue(source);
-            return true;
-        }
-
-        private bool BasicConvert(ulong source, out JSValue res)
-        {
-            res = new JSValue(source);
-            return true;
-        }
-
-
-        private bool BasicConvert(int source, out JSValue res)
-        {
-            res = new JSValue(source);
-            return true;
-        }
-
-        private bool BasicConvert(double source, out JSValue res)
-        {
-            res = new JSValue(source);
-            return true;
-        }
-
-        private bool BasicConvert(decimal source, out JSValue res)
-        {
-            res = new JSValue((double)source);
-            return true;
-        }
-
-        private bool BasicConvert(bool source, out JSValue res)
-        {
-            res = new JSValue(source);
-            return true;
-        }
-
-        private bool BasicConvert(DateTime source, out JSValue res)
-        {
-            res = _IJSOBuilder.CreateDate(source);
-            return true;
-        }
-
-        private bool ConvertWithCache(Enum source, out JSValue res)
-        {
-            res = _IJSOBuilder.CreateEnum(source);
-            return true;
-        }
-
-        private bool ConvertWithCache(object source, out JSValue res)
-        {
-            res = new JSValue();
-            return false;
-        }
-
-        private bool Convert(object source, out IJSCSGlue res)
-        {
-            res = null;
-            return false;
-        }
-
-        private bool Convert<T>(IEnumerable<T> source, out IJSCSGlue res)
-        {
-            res = new JSArray(source.Select(s => Map(s)), source);
-            _Cacher.Cache(source, res);
-            return true;
-        }
+        //private bool Convert<T>(IEnumerable<T> source, out IJSCSGlue res)
+        //{
+        //    res = new JSArray(source.Select(s => Map(s)), source);
+        //    _Cacher.Cache(source, res);
+        //    return true;
+        //}
 
         private bool Convert(IEnumerable source, out IJSCSGlue res)
         {
-            res = new JSArray(source.Cast<object>().Select(s => Map(s)), source);
+            res = new JSArray(source.Cast<object>().Select(s => Map(s)), source, _Basic.GetElementType(source));
             _Cacher.Cache(source, res);
             return true;
         }

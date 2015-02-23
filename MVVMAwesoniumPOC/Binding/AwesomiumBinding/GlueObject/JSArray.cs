@@ -11,21 +11,15 @@ namespace MVVMAwesomium.AwesomiumBinding
 {
     internal class JSArray : GlueBase, IJSObservableBridge
     {
-        public JSArray(IEnumerable<IJSCSGlue> values,object collection)
+        public JSArray(IEnumerable<IJSCSGlue> values, IEnumerable collection, Type ElementType)
         {
-            JSValue = new JSValue(values.Select(v=>v.JSValue).ToArray());
+            JSValue = new JSValue(values.Select(v => v.JSValue).ToArray());
             Items = new List<IJSCSGlue>(values);
             CValue = collection;
+            IndividualType = ElementType;
         }
 
-        private Type GetIndivualType<T>(IList<T> collection)
-        {
-            Type res = typeof(T);
-            if (res.Assembly == typeof(int).Assembly)
-                return res;
-
-            return null;
-        }
+        private Type IndividualType { get; set; }
 
         private Type GetIndivualType(object collection)
         {
@@ -34,7 +28,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public CollectionChanges GetChanger(JSValue[] value, JSValue[] status, JSValue[] index, IJSCBridgeCache bridge)
         {
-            return new CollectionChanges(bridge, value, status, index, GetIndivualType((dynamic)CValue));
+            return new CollectionChanges(bridge, value, status, index, IndividualType);
         }
 
         private void ReplayChanges(IndividualCollectionChange change, IList ilist)
@@ -61,24 +55,12 @@ namespace MVVMAwesomium.AwesomiumBinding
             }
         }
 
-
-        private void UpdateEventArgsFromJavascript(IList<IndividualCollectionChange> iChanges, IEnumerable<IJSCSGlue> Current)
+        public void UpdateEventArgsFromJavascript(CollectionChanges iCollectionChanges)
         {
             IList ilist = CValue as IList;
             if (ilist == null) return;
 
-            iChanges.Where(c => c.CollectionChangeType == CollectionChangeType.Remove).OrderByDescending(c => c.Index).ForEach(c => ReplayChanges(c, ilist));
-            iChanges.Where(c => c.CollectionChangeType == CollectionChangeType.Add).OrderBy(c => c.Index).ForEach(c => ReplayChanges(c, ilist));
-
-#if DEBUG
-            if (!ilist.Cast<object>().SequenceEqual(Current.Select(c => c.CValue)))
-                throw ExceptionHelper.Get("Internal error: Unable to track collection changes");
-#endif
-        }
-
-        public void UpdateEventArgsFromJavascript(CollectionChanges iCollectionChanges, JSValue[] collectionvalue)
-        {
-            UpdateEventArgsFromJavascript(iCollectionChanges.IndividualChanges, iCollectionChanges.ConvertCollection(collectionvalue));
+            iCollectionChanges.IndividualChanges.ForEach(c => ReplayChanges(c, ilist));
         }
 
 
@@ -95,10 +77,10 @@ namespace MVVMAwesomium.AwesomiumBinding
         public void Insert(IJSCSGlue iIJSCBridge, int Index)
         {
             ((JSObject)MappedJSValue).InvokeAsync("silentsplice", new JSValue(Index), new JSValue(1), iIJSCBridge.GetJSSessionValue());
-            Items[Index]=iIJSCBridge;
+            Items[Index] = iIJSCBridge;
         }
 
-        public void Remove( int Index)
+        public void Remove(int Index)
         {
             ((JSObject)MappedJSValue).InvokeAsync("silentsplice", new JSValue(Index), new JSValue(1));
             Items.RemoveAt(Index);
@@ -114,7 +96,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             sb.Append("[");
             bool f = true;
-            foreach(var it in Items)
+            foreach (var it in Items)
             {
                 if (!f)
                     sb.Append(",");

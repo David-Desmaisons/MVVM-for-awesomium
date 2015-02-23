@@ -95,6 +95,7 @@
     <Compile Include="Binding\AwesomiumBinding\Mapping\IJavascriptListener.cs" />
     <Compile Include="Binding\AwesomiumBinding\Mapping\JavascriptObjectBuilder\IJSOLocalBuilder.cs" />
     <Compile Include="Binding\AwesomiumBinding\Mapping\JavascriptToCSharpMapper.cs" />
+    <Compile Include="Binding\AwesomiumBinding\Mapping\SimpleCSharpMapping\BasicCSharpToJavascriptConverter.cs" />
     <Compile Include="Binding\IAwesomeBinding.cs" />
     <Compile Include="Binding\IAwesomiumBindingFactory.cs" />
     <Compile Include="Exceptions\MVVMforAwesomiumException.cs" />

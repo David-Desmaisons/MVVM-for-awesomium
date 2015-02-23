@@ -27,7 +27,7 @@ function Null_reference() {
                 arg_status.push(changes[i].status);
                 arg_index.push(changes[i].index);
             }
-            listener.TrackCollectionChanges(object, object(), arg_value, arg_status, arg_index);
+            listener.TrackCollectionChanges(object, arg_value, arg_status, arg_index);
         };
     }
 

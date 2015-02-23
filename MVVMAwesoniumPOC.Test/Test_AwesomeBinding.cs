@@ -1396,19 +1396,16 @@ namespace MVVMAwesomium.Test
                     stopWatch.Start();
 
                     DoSafe(() => win.Invoke("app", res1, l2c));
-
-                    Thread.Sleep(10);
-
+                    Thread.Sleep(100);
                     while (notok)
                     {
+                        //Thread.Sleep(30);
                         notok = datacontext.L2.Count != r;
                     }
                     stopWatch.Stop();
                     ts = stopWatch.ElapsedMilliseconds;
 
                     Console.WriteLine("Perf: {0} sec for {1} items", ((double)(ts)) / 1000, r);
-
-
                 }
 
                 TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(0.15));
@@ -1454,20 +1451,19 @@ namespace MVVMAwesomium.Test
 
                     while (notok)
                     {
-                        Thread.Sleep(0);
+                        Thread.Sleep(500);
                         JSValue res = GetSafe(() => Get(js, "Age"));
                         res.Should().NotBeNull();
                         res.IsNumber.Should().BeTrue();
                         var doublev = (int)res;
                         notok = doublev != tg;
-                        Console.WriteLine(doublev);
                     }
                     stopWatch.Stop();
                     var ts = stopWatch.ElapsedMilliseconds;
 
                     Console.WriteLine("Perf: {0} sec for {1} iterations", ((double)(ts)) / 1000, iis);
 
-                    TimeSpan.FromMilliseconds(ts).Should().BeLessThan(TimeSpan.FromSeconds(3.1));
+                    TimeSpan.FromMilliseconds(ts).Should().BeLessOrEqualTo(TimeSpan.FromSeconds(3.1));
 
                 }
             }
@@ -1497,7 +1493,7 @@ namespace MVVMAwesomium.Test
                     JSObject coll = GetSafe(() => ((JSObject)js)["Skills"]);
                     DoSafe(() => coll.Invoke("push", (root.Attributes["Skills"] as JSArray).Items[0].GetJSSessionValue()));
 
-                    Thread.Sleep(150);
+                    Thread.Sleep(5000);
                     _DataContext.Skills.Should().HaveCount(3);
                     _DataContext.Skills[2].Should().Be(_DataContext.Skills[0]);
                     res = GetSafe(() => Get(js, "Skills"));

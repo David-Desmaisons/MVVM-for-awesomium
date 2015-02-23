@@ -27,7 +27,7 @@ namespace MVVMAwesomium.AwesomiumBinding
             {
                 _Listener = _GlobalBuilder.CreateJSO();
                 _Listener.Bind("TrackChanges", false, (o, e) => _IJavascriptListener.OnJavaScriptObjectChanges((JSObject)e.Arguments[0], (string)e.Arguments[1], e.Arguments[2]));
-                _Listener.Bind("TrackCollectionChanges", false, (o, e) => _IJavascriptListener.OnJavaScriptCollectionChanges((JSObject)e.Arguments[0], (JSValue[])e.Arguments[1], (JSValue[])e.Arguments[2], (JSValue[])e.Arguments[3], (JSValue[])e.Arguments[4]));
+                _Listener.Bind("TrackCollectionChanges", false, (o, e) => _IJavascriptListener.OnJavaScriptCollectionChanges((JSObject)e.Arguments[0], (JSValue[])e.Arguments[1], (JSValue[])e.Arguments[2], (JSValue[])e.Arguments[3]));
            }
             else
                 _Listener = new JSObject();

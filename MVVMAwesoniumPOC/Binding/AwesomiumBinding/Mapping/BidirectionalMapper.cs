@@ -187,7 +187,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         }
 
      
-        public void OnJavaScriptCollectionChanges(JSObject collectionchanged, JSValue[] collectionvalue, JSValue[] value, JSValue[] status, JSValue[] index)
+        public void OnJavaScriptCollectionChanges(JSObject collectionchanged, JSValue[] value, JSValue[] status, JSValue[] index)
         {
             try
             {
@@ -200,13 +200,13 @@ namespace MVVMAwesomium.AwesomiumBinding
                 {
                     INotifyCollectionChanged inc = res.CValue as INotifyCollectionChanged;
                     if (inc != null) inc.CollectionChanged -= CollectionChanged;
-                    res.UpdateEventArgsFromJavascript(cc, collectionvalue);
+                    res.UpdateEventArgsFromJavascript(cc);
                     if (inc != null) inc.CollectionChanged += CollectionChanged;
                 }
             }
             catch (Exception e)
             {
-                ExceptionHelper.Log(string.Format("Unable to update ViewModel from View, excepetion raised: {0}", e));
+                ExceptionHelper.Log(string.Format("Unable to update ViewModel from View, exception raised: {0}", e));
             }
         }
 
