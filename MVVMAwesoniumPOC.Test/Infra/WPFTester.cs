@@ -103,9 +103,12 @@ namespace MVVMAwesomium.Test
             this.Window.BringIntoView();
         }
 
+        public static bool ShouldReceivedError=false;
+
         private static void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            Assert.False(true,e.Exception.ToString());
+            if (!ShouldReceivedError)
+                Assert.False(true,e.Exception.ToString());
         }
 
         #endregion

@@ -233,6 +233,20 @@ function Null_reference() {
             return value;
         }
     };
+
+    ko.bindingHandlers.numberInput = {
+        init: function (element, valueAccessor, allBindingsAccessor) {
+            var value = valueAccessor();
+            element.addEventListener('change', function () {
+                value(Number(element.value));
+            }, false);
+        },
+
+        update: function (element, valueAccessor, allBindingsAccessor) {
+            var value = valueAccessor();
+            element.value = value();
+        }
+    };
      
     ko.getimage = function (Enumvalue) {
         if ((!Enumvalue instanceof Enum) || (!ko.Enumimages))
