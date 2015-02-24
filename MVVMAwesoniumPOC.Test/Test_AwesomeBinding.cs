@@ -322,6 +322,26 @@ namespace MVVMAwesomium.Test
 
                     JSValue res = GetSafe(() => Get(js, "MainSkill"));
                     res.IsNull.Should().BeTrue();
+
+                    DoSafe(()=>
+                    _DataContext.MainSkill = new Skill() { Name = "C++", Type = "Info" });
+                    Thread.Sleep(100);
+
+                    res = GetSafe(() => Get(js, "MainSkill"));
+                    res.IsNull.Should().BeFalse();
+                    JSObject obj = res;
+                    obj.Should().NotBeNull();
+
+                    JSValue inf = GetSafe(() => obj.Invoke("Type"));
+                    ((string)inf).Should().Be("Info");
+
+                    DoSafe(()=>
+                    _DataContext.MainSkill = null);
+                    Thread.Sleep(100);
+
+                    res = GetSafe(() => Get(js, "MainSkill"));
+                    res.IsNull.Should().BeTrue();
+
                 }
             }
         }
