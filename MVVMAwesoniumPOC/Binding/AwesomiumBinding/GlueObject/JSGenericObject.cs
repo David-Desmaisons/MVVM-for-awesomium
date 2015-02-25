@@ -70,7 +70,8 @@ namespace MVVMAwesomium.AwesomiumBinding
             if (!propertyInfo.CanWrite)
                 return;
 
-            IJSCSGlue glue = converter.GetCachedOrCreateBasic(newValue, propertyInfo.PropertyType);
+            var type = propertyInfo.PropertyType.GetUnderlyingNullableType() ?? propertyInfo.PropertyType;
+            IJSCSGlue glue = converter.GetCachedOrCreateBasic(newValue, type);
             _Attributes[PropertyName] = glue;
             propertyInfo.SetValue(CValue, glue.CValue, null);
         }

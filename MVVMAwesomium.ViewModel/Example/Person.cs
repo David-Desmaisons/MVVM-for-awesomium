@@ -72,6 +72,13 @@ namespace MVVMAwesomium.ViewModel.Example
             set { Set(ref _Age, value, "Age"); }
         }
 
+        private int? _ChildrenNumber;
+        public int? ChildrenNumber
+        {
+            get { return _ChildrenNumber; }
+            set { Set(ref _ChildrenNumber, value, "ChildrenNumber"); }
+        }
+
         private Local _Local;
         public Local Local
         {

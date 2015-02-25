@@ -16,7 +16,6 @@ namespace MVVMAwesomium.AwesomiumBinding
             _IJSCBridgeCache = iJSCBridgeCache;
             _TargetedType = iTargetedType;
             IndividualChanges = GetIndividualChanges(value, status, index).OrderBy(idc => idc, this);
-            //IndividualChanges = GetIndividualChanges(value, status, index).ToList();
         }
 
 

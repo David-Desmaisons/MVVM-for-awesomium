@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MVVMAwesomium.Infra;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
@@ -16,22 +17,19 @@ namespace MVVMAwesomium.AwesomiumBinding
         }
 
         private static IDictionary<Type, Func<object, IJSOLocalBuilder, JSValue>> _Converters = new Dictionary<Type, Func<object, IJSOLocalBuilder, JSValue>>();
-        private static List<Tuple<Type, Type>> _EnumeToElement = new List<Tuple<Type, Type>>();
         private static void Register<T>(Func<T, IJSOLocalBuilder, JSValue> Factory)
         {
             _Converters.Add(typeof(T), (o, b) => Factory((T)o,b));
-            _EnumeToElement.Add(new Tuple<Type, Type>(typeof(IEnumerable<T>), typeof(T)));
         }
 
         public Type GetElementType(IEnumerable collection)
         {
             var typeo = collection.GetType();
-            foreach (var tup in _EnumeToElement)
-            {
-                if (tup.Item1.IsAssignableFrom(typeo))
-                    return tup.Item2;
-            }
-            return null;
+            var elementtype = typeo.GetEnumerableBase();
+            if (elementtype == null)
+                return null;
+            var almost = elementtype.GetUnderlyingNullableType() ?? elementtype;
+            return _Converters.ContainsKey(almost) ? almost : null;
         }
 
         static BasicCSharpToJavascriptConverter()

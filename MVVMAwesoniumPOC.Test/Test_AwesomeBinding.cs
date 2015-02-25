@@ -251,6 +251,37 @@ namespace MVVMAwesomium.Test
             }
         }
 
+        private class Dummy
+        {
+            internal Dummy()
+            {
+                Int = 5;
+            }
+            public int Int { get; set; }
+            public int Explosive { get { throw new Exception();} }
+        }
+
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_OneWay_Property_With_Exception()
+        {
+            using (Tester())
+            {
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+                var dt = new Dummy();
+
+                using (var mb = AwesomeBinding.Bind(_WebView, dt, JavascriptBindingMode.OneWay).Result)
+                {
+                    var jsbridge = (mb as AwesomeBinding).JSBrideRootObject;
+                    var js = mb.JSRootObject;
+
+                    JSValue res = GetSafe(() => js.Invoke("Int"));
+                    ((int)res).Should().Be(5);
+                }
+            }
+        }
+
         [Fact]
         public void Test_AwesomeBinding_Basic_Regsiter_Additional_property()
         {
@@ -1492,13 +1523,14 @@ namespace MVVMAwesomium.Test
 
                     bool notok = true;
                     var tg = _DataContext.Age;
+                    Thread.Sleep(700);
 
                     var stopWatch = new Stopwatch();
                     stopWatch.Start();
 
                     while (notok)
                     {
-                        Thread.Sleep(500);
+                        Thread.Sleep(100);
                         JSValue res = GetSafe(() => Get(js, "Age"));
                         res.Should().NotBeNull();
                         res.IsNumber.Should().BeTrue();

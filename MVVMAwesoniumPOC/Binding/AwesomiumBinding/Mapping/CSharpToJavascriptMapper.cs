@@ -99,32 +99,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
             return gres;
         }      
-
-        //private bool ConvertWithCache(Enum source, out JSValue res)
-        //{
-        //    res = _IJSOBuilder.CreateEnum(source);
-        //    return true;
-        //}
-
-        //private bool ConvertWithCache(object source, out JSValue res)
-        //{
-        //    res = new JSValue();
-        //    return false;
-        //}
-
-        //private bool Convert(object source, out IJSCSGlue res)
-        //{
-        //    res = null;
-        //    return false;
-        //}
-
-        //private bool Convert<T>(IEnumerable<T> source, out IJSCSGlue res)
-        //{
-        //    res = new JSArray(source.Select(s => Map(s)), source);
-        //    _Cacher.Cache(source, res);
-        //    return true;
-        //}
-
+ 
         private bool Convert(IEnumerable source, out IJSCSGlue res)
         {
             res = new JSArray(source.Cast<object>().Select(s => Map(s)), source, _Basic.GetElementType(source));
