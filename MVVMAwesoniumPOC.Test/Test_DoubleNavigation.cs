@@ -22,6 +22,7 @@ using MVVMAwesomium.ViewModel.Infra;
 using MVVMAwesomium.Navigation;
 using System.Windows.Forms;
 using System.Windows.Automation;
+using System.Diagnostics;
 
 namespace MVVMAwesomium.Test
 {
@@ -147,6 +148,75 @@ namespace MVVMAwesomium.Test
                     mre.WaitOne();
 
                 });
+        }
+
+        [Fact]
+        public void Test_HTMLWindowRecovery_Capacity()
+        {
+            bool fl = false;
+            EventHandler ea = null;
+            var a = new A1();
+
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
+                =>
+            {
+                ea = (o, e) => { fl = true; wpfnav.OnFirstLoad -= ea; };
+                wpfnav.OnFirstLoad += ea;
+                wpfnav.Should().NotBeNull();
+                SetUpRoute(wpfbuild);
+                wpfnav.UseINavigable = true;
+
+                var mre = new ManualResetEvent(false);
+                WindowTest.RunOnUIThread(() => wpfnav.IsHTMLLoaded.Should().BeFalse());
+
+                WindowTest.RunOnUIThread(
+           () =>
+           {
+               wpfnav.NavigateAsync(a).ContinueWith(t => mre.Set());
+           });
+
+                mre.WaitOne();
+
+                fl.Should().BeTrue();
+
+                WindowTest.RunOnUIThread(() =>
+                {
+                    wpfnav.IsHTMLLoaded.Should().BeTrue();
+                    //a1.Navigation.Should().Be(wpfnav);
+                    a.Navigation.Should().NotBeNull();
+                });
+
+
+                mre.WaitOne();
+                var webv = (a.Navigation as IWebViewProvider).WebView;
+
+                mre = new ManualResetEvent(false);
+                Process p =  null;
+                 WindowTest.RunOnUIThread(() =>
+                {
+                    p = webv.RenderProcess;
+                   p.Kill();
+                    mre.Set();
+                });
+
+                 mre.WaitOne();
+                 Thread.Sleep(500);
+                 p.WaitForExit();
+
+
+                 Process np = null;
+                 mre = new ManualResetEvent(false);
+                 WindowTest.RunOnUIThread(() =>
+                 {
+                     np = webv.RenderProcess;
+                     mre.Set();
+                 });
+
+                 np.Should().NotBe(p);
+
+                
+
+            });
         }
 
 
