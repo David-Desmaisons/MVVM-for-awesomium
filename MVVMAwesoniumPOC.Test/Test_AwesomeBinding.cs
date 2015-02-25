@@ -670,7 +670,17 @@ namespace MVVMAwesomium.Test
                     Thread.Sleep(100);
 
                     datacontext.One.Should().Be(p2);
-                }
+
+                    JSValue res4 = GetSafe(() => Get(res3, "ChildrenNumber"));
+                    res4.IsNull.Should().BeTrue();
+
+                    JSValue five = new JSValue(5);
+                    DoSafe(() => ((JSObject)res3).Invoke("ChildrenNumber", five));
+                    Thread.Sleep(100);
+
+                    datacontext.One.ChildrenNumber.Should().Be(5);
+
+                   }
             }
         }
 
