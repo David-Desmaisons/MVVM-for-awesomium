@@ -19,6 +19,7 @@
         <!--<h2><span data-bind="text: name"></span></h2>-->
         <h2><span data-bind="text: LastName"></span></h2>
         <h2><span data-bind="text: PersonalState().displayName"></span></h2>
+        <input type="range" min="0" max="130" data-bind="numberInput: Age">
     </div>
     <div id="Local">
         <h2><span data-bind="text: Local().City"></span></h2>
@@ -26,6 +27,7 @@
         <!-- ko if: $data.MainSkill()!==null -->
         <input type="text" data-bind="value: $data.MainSkill().Type, valueUpdate:'afterkeydown'" placeholder="Main Skill Type">
         <input type="text" data-bind="value: $data.MainSkill().Name, valueUpdate:'afterkeydown'" placeholder="Main Skill">
+      
         <!-- /ko -->
     </div>
     <div>

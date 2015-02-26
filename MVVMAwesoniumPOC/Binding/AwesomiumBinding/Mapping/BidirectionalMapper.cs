@@ -213,7 +213,7 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         private void Object_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            string pn = e.PropertyName;
+           string pn = e.PropertyName;
 
             PropertyInfo propertyInfo = sender.GetType().GetProperty(pn, BindingFlags.Public | BindingFlags.Instance);
             if (propertyInfo == null)

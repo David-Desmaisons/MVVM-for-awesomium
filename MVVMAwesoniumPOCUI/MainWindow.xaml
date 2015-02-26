@@ -18,6 +18,7 @@
             <TextBlock Text="{Binding Path=LastName}"/>
             <TextBlock Text="{Binding Path=PersonalState}"/>
             <TextBox Text="{Binding Path=Local.City,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Text="{Binding Path=Age,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
             <ListBox ItemsSource="{Binding Path=Skills}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
