@@ -211,7 +211,6 @@ namespace MVVMAwesomium.Test
                      np = webv.RenderProcess;
                      mre.Set();
                  });
-
                  np.Should().NotBe(p);
 
                 

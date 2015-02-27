@@ -220,17 +220,32 @@ function Null_reference() {
 
     ko.bindingHandlers.command = {
         preprocess: function (value, name, addBinding) {
-            addBinding('enable', value + '()!==null && '+ value + '().CanExecute($data)===undefined &&' + value + '().CanExecuteCount() &&' + value + '().CanExecuteValue()');
-            addBinding('click', 'function(){ if ('+value+'()!==null) {' + value + '().Execute($data);}}');
+            addBinding('commandOnEvent', '{ "command": "' + value + '", "event": "click"}');
             return value;
         }
     };
 
+    ko.bindingHandlers.commandOnEvent = {
+        preprocess: function (compvalue, name, addBinding) {
+            var value = JSON.parse(compvalue);
+            addBinding('enable', value.command + '()!==null && ' + value.command + '().CanExecute($data)===undefined &&' + value.command + '().CanExecuteCount() &&' + value.command + '().CanExecuteValue()');
+            addBinding('event', '{' + value.event + ': function(){ if (' + value.command + '()!==null) {' + value.command + '().Execute($data);}}}');
+            return compvalue;
+        }
+    };
 
     ko.bindingHandlers.execute = {
         preprocess: function (value, name, addBinding) {
-            addBinding('click', 'function(){ if (' + value + '()!==null) {' + value + '().Execute($data);}}');
+            addBinding('executeOnEvent', '{ "command": "' + value + '", "event": "click"}');
             return value;
+        }
+    };
+
+    ko.bindingHandlers.executeOnEvent = {
+        preprocess: function (compvalue, name, addBinding) {
+            var value = JSON.parse(compvalue);
+            addBinding('event', '{' + value.event + ': function(){ if (' + value.command + '()!==null) {' + value.command + '().Execute($data);}}}');
+            return compvalue;
         }
     };
 
