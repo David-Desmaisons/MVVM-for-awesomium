@@ -4,8 +4,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-/// <reference path="../../../MVVMAwesoniumPOC/Javascript/knockout.js" />
-/// <reference path="../../../MVVMAwesoniumPOC/Javascript//Ko_Extension.js" />
+/// <reference path="../../../MVVM.Awesomium/Javascript/knockout.js" />
+/// <reference path="../../../MVVM.Awesomium/Javascript//Ko_Extension.js" />
 /// <reference path="../src/Koaddon.js" />
 
 
