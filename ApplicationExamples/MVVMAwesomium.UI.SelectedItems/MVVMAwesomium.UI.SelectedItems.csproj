@@ -115,7 +115,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ViewModelExamples\MVVMAwesomium.ViewModel\MVVMAwesomium.ViewModel.csproj">
+    <ProjectReference Include="..\..\ViewModelExamples\MVVMAwesomium.ViewModel.csproj">
       <Project>{e35b9010-5429-4ffe-a788-e9c40e743e9c}</Project>
       <Name>MVVMAwesomium.ViewModel</Name>
     </ProjectReference>
@@ -129,7 +129,7 @@
       <Link>HTMLUI\js\Ko_Extension.js</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\mvvmawesoniumpocui\src\js\bower_components\knockout\dist\knockout.js">
+    <Content Include="..\MVVMAwesonium.UI\src\js\bower_components\knockout\dist\knockout.js">
       <Link>HTMLUI\js\knockout.js</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

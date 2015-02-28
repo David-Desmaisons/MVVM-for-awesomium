@@ -103,7 +103,7 @@
     <Compile Include="Test_NavigationBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ViewModelExamples\MVVMAwesomium.ViewModel\MVVMAwesomium.ViewModel.csproj">
+    <ProjectReference Include="..\ViewModelExamples\MVVMAwesomium.ViewModel.csproj">
       <Project>{e35b9010-5429-4ffe-a788-e9c40e743e9c}</Project>
       <Name>MVVMAwesomium.ViewModel</Name>
     </ProjectReference>
