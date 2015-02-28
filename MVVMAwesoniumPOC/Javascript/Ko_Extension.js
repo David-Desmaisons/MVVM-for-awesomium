@@ -227,7 +227,7 @@ function Null_reference() {
 
     ko.bindingHandlers.commandOnEvent = {
         preprocess: function (compvalue, name, addBinding) {
-            var value = JSON.parse(compvalue);
+            var value = JSON.parse(compvalue.replace(/'/g, '"'));
             addBinding('enable', value.command + '()!==null && ' + value.command + '().CanExecute($data)===undefined &&' + value.command + '().CanExecuteCount() &&' + value.command + '().CanExecuteValue()');
             addBinding('event', '{' + value.event + ': function(){ if (' + value.command + '()!==null) {' + value.command + '().Execute($data);}}}');
             return compvalue;
@@ -243,7 +243,7 @@ function Null_reference() {
 
     ko.bindingHandlers.executeOnEvent = {
         preprocess: function (compvalue, name, addBinding) {
-            var value = JSON.parse(compvalue);
+            var value = JSON.parse(compvalue.replace(/'/g, '"'));
             addBinding('event', '{' + value.event + ': function(){ if (' + value.command + '()!==null) {' + value.command + '().Execute($data);}}}');
             return compvalue;
         }
