@@ -106,27 +106,27 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\Tests\MVVMAwesoniumPOC.Test\Navigation data\css\style.css">
+    <Content Include="..\..\Tests\Navigation data\css\style.css">
       <Link>HTML\css\style.css</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\Tests\MVVMAwesoniumPOC.Test\Navigation data\index.html">
+    <Content Include="..\..\Tests\Navigation data\index.html">
       <Link>HTML\index.html</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\Tests\MVVMAwesoniumPOC.Test\Navigation data\js\animation.js">
+    <Content Include="..\..\Tests\Navigation data\js\animation.js">
       <Link>HTML\js\animation.js</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\Tests\MVVMAwesoniumPOC.Test\Navigation data\js\knockout.js">
+    <Content Include="..\..\Tests\Navigation data\js\knockout.js">
       <Link>HTML\js\knockout.js</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\Tests\MVVMAwesoniumPOC.Test\Navigation data\js\Ko_Extension.js">
+    <Content Include="..\..\Tests\Navigation data\js\Ko_Extension.js">
       <Link>HTML\js\Ko_Extension.js</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\Tests\MVVMAwesoniumPOC.Test\Navigation data\js\ref\jquery.min.js">
+    <Content Include="..\..\Tests\Navigation data\js\ref\jquery.min.js">
       <Link>HTML\js\ref\jquery.min.js</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

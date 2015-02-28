@@ -103,21 +103,21 @@
     <Compile Include="Test_NavigationBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ViewModelExamples\MVVMAwesomium.ViewModel\MVVMAwesomium.ViewModel.csproj">
+    <ProjectReference Include="..\ViewModelExamples\MVVMAwesomium.ViewModel\MVVMAwesomium.ViewModel.csproj">
       <Project>{e35b9010-5429-4ffe-a788-e9c40e743e9c}</Project>
       <Name>MVVMAwesomium.ViewModel</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\MVVM.Awesomium\MVVMAwesomium.csproj">
+    <ProjectReference Include="..\MVVM.Awesomium\MVVMAwesomium.csproj">
       <Project>{9B18B122-A2FC-4537-AB68-5E1EC9959DB8}</Project>
       <Name>MVVMAwesomium</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\MVVM.Awesomium\Javascript\knockout.js">
+    <Content Include="..\MVVM.Awesomium\Javascript\knockout.js">
       <Link>javascript\src\knockout.js</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\MVVM.Awesomium\Javascript\Ko_Extension.js">
+    <Content Include="..\MVVM.Awesomium\Javascript\Ko_Extension.js">
       <Link>javascript\src\Ko_Extension.js</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
