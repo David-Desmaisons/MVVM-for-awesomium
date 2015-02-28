@@ -3,35 +3,35 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium", "MVVMAwesoniumPOC\MVVMAwesomium.csproj", "{9B18B122-A2FC-4537-AB68-5E1EC9959DB8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium", "MVVM.Awesomium\MVVMAwesomium.csproj", "{9B18B122-A2FC-4537-AB68-5E1EC9959DB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.Test", "MVVMAwesoniumPOC.Test\MVVMAwesomium.Test.csproj", "{84916CEB-FEF3-4A42-B1A0-7B43F3D88CCB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.Test", "Tests\MVVMAwesoniumPOC.Test\MVVMAwesomium.Test.csproj", "{84916CEB-FEF3-4A42-B1A0-7B43F3D88CCB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.UI", "MVVMAwesoniumPOCUI\MVVMAwesomium.UI.csproj", "{83FD4663-5C46-4885-83DB-D65C99A1C9F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.UI", "ApplicationExamples\MVVMAwesoniumPOCUI\MVVMAwesomium.UI.csproj", "{83FD4663-5C46-4885-83DB-D65C99A1C9F0}"
 EndProject
-Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ProjectUML", "ModelingProject1\ProjectUML.modelproj", "{D216F584-18BE-4D16-9A9A-8B1F0FBAC180}"
+Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ProjectUML", "Documentation\ModelingProject1\ProjectUML.modelproj", "{D216F584-18BE-4D16-9A9A-8B1F0FBAC180}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.UI2", "MVVMAwesomium.UI2\MVVMAwesomium.UI2.csproj", "{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.UI2", "ApplicationExamples\MVVMAwesomium.UI2\MVVMAwesomium.UI2.csproj", "{61D09D0C-ED88-4EF2-B6E4-6C0209FF7D8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.ViewModel", "MVVMAwesomium.ViewModel\MVVMAwesomium.ViewModel.csproj", "{E35B9010-5429-4FFE-A788-E9C40E743E9C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.ViewModel", "ViewModelExamples\MVVMAwesomium.ViewModel\MVVMAwesomium.ViewModel.csproj", "{E35B9010-5429-4FFE-A788-E9C40E743E9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.UI.Calendar", "MVVMAwesomium.UI.Calendar\MVVMAwesomium.UI.Calendar.csproj", "{C71C2BF7-52D2-4F69-AB7A-9B29EEA8DBB2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.UI.Calendar", "ApplicationExamples\MVVMAwesomium.UI.Calendar\MVVMAwesomium.UI.Calendar.csproj", "{C71C2BF7-52D2-4F69-AB7A-9B29EEA8DBB2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Windows", "Windows", "{0F0F34BE-CD06-4C13-967D-BB0760617486}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApplicationExamples", "ApplicationExamples", "{0F0F34BE-CD06-4C13-967D-BB0760617486}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.UI.SelectedItems", "MVVMAwesomium.UI.SelectedItems\MVVMAwesomium.UI.SelectedItems.csproj", "{FEF389FD-A0B8-4BFD-9A8C-DE1203D6FAB0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.UI.SelectedItems", "ApplicationExamples\MVVMAwesomium.UI.SelectedItems\MVVMAwesomium.UI.SelectedItems.csproj", "{FEF389FD-A0B8-4BFD-9A8C-DE1203D6FAB0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "View Model", "View Model", "{6F066820-11A1-4533-A8CF-C7E43891D2BD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ViewModelExamples", "ViewModelExamples", "{6F066820-11A1-4533-A8CF-C7E43891D2BD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{B3321797-0DAA-40DF-ADD3-13AC511028EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVM.Awesomium.UI.Navigation", "MVVM.Awesomium.UI.Navigation\MVVM.Awesomium.UI.Navigation.csproj", "{129B5DE2-523B-48EA-8676-1291D9A4DE0C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVM.Awesomium.UI.Navigation", "ApplicationExamples\MVVM.Awesomium.UI.Navigation\MVVM.Awesomium.UI.Navigation.csproj", "{129B5DE2-523B-48EA-8676-1291D9A4DE0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVM.Navigation2", "MVVM.Navigation2\MVVM.Navigation2.csproj", "{94FF7C56-B2B3-4E56-8E6F-8401E3E224EB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVM.Navigation2", "ApplicationExamples\MVVM.Navigation2\MVVM.Navigation2.csproj", "{94FF7C56-B2B3-4E56-8E6F-8401E3E224EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.AnimatedNavigation", "MVVMAwesomium.AnimatedNavigation\MVVMAwesomium.AnimatedNavigation.csproj", "{890F0720-601B-4868-AD9A-9527CA9F0BAC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.AnimatedNavigation", "ApplicationExamples\MVVMAwesomium.AnimatedNavigation\MVVMAwesomium.AnimatedNavigation.csproj", "{890F0720-601B-4868-AD9A-9527CA9F0BAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Navigation_HTMLWindow", "Navigation_HTMLWindow\Navigation_HTMLWindow.csproj", "{CD1977DD-3299-46CE-8550-C11F1E9F0F7C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Navigation_HTMLWindow", "ApplicationExamples\Navigation_HTMLWindow\Navigation_HTMLWindow.csproj", "{CD1977DD-3299-46CE-8550-C11F1E9F0F7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
