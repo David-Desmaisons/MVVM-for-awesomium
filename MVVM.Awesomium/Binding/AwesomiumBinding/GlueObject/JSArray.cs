@@ -21,11 +21,6 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         private Type IndividualType { get; set; }
 
-        private Type GetIndivualType(object collection)
-        {
-            return null;
-        }
-
         public CollectionChanges GetChanger(JSValue[] value, JSValue[] status, JSValue[] index, IJSCBridgeCache bridge)
         {
             return new CollectionChanges(bridge, value, status, index, IndividualType);

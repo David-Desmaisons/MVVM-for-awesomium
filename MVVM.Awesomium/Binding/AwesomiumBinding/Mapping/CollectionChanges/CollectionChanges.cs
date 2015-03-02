@@ -33,11 +33,6 @@ namespace MVVMAwesomium.AwesomiumBinding
             }
         }
 
-        public IEnumerable<IJSCSGlue> ConvertCollection(JSValue[] collectionvalue)
-        {
-            return collectionvalue.Select( cc=>  _IJSCBridgeCache.GetCachedOrCreateBasic(cc, _TargetedType));
-        }
-
         public int Compare(IndividualCollectionChange x, IndividualCollectionChange y)
         {
             if (x.CollectionChangeType != y.CollectionChangeType)

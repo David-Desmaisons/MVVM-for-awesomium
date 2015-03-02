@@ -23,6 +23,7 @@ using MVVMAwesomium.Navigation;
 using System.Windows.Forms;
 using System.Windows.Automation;
 using System.Diagnostics;
+using System.IO;
 
 namespace MVVMAwesomium.Test
 {
@@ -153,6 +154,99 @@ namespace MVVMAwesomium.Test
         [Fact]
         public void Test_HTMLWindowRecovery_Capacity()
         {
+            Test_HTMLWindowRecovery_Capacity_Base(null);
+        }
+
+        [Fact]
+        public void Test_HTMLWindowRecovery_Capacity_Watcher()
+        {
+            IWebSessionWatcher watch = Substitute.For<IWebSessionWatcher>();
+            Test_HTMLWindowRecovery_Capacity_Base(watch);
+            watch.Received().LogCritical(Arg.Any<string>());
+        }
+
+        [Fact]
+        public void Test_HTMLWindow_Path()
+        {
+            bool fl = false;
+            EventHandler ea = null;
+            var a = new A1();
+            string pn = Path.Combine(Path.GetTempPath(), "MVMMAWe");
+
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
+                =>
+            {
+                wpfnav.SessionPath.Should().BeNull();
+                wpfnav.SessionPath = pn;
+
+                ea = (o, e) => { fl = true; wpfnav.OnFirstLoad -= ea; };
+                wpfnav.OnFirstLoad += ea;
+                wpfnav.Should().NotBeNull();
+                SetUpRoute(wpfbuild);
+                wpfnav.UseINavigable = true;
+
+                var mre = new ManualResetEvent(false);
+                WindowTest.RunOnUIThread(() => wpfnav.IsHTMLLoaded.Should().BeFalse());
+
+                WindowTest.RunOnUIThread(
+           () =>
+           {
+               wpfnav.NavigateAsync(a).ContinueWith(t => mre.Set());
+           });
+
+                mre.WaitOne();
+
+                fl.Should().BeTrue();
+            });
+
+            Directory.Exists(pn).Should().BeTrue();
+        }
+
+        [Fact]
+        public void Test_HTMLWindow_Event()
+        {
+            bool fl = false;
+            EventHandler ea = null;
+            var a = new A1();
+            string pn = Path.Combine(Path.GetTempPath(), "MVMMAWe");
+            bool fslr = false;
+            NavigationEvent nea = null;
+
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
+                =>
+            {
+                wpfnav.OnFirstLoad += (o, e) => { fslr = true; };
+                wpfnav.OnNavigate += (o, e) => { nea = e; };
+
+                ea = (o, e) => { fl = true; wpfnav.OnFirstLoad -= ea; };
+                wpfnav.OnFirstLoad += ea;
+                wpfnav.Should().NotBeNull();
+                SetUpRoute(wpfbuild);
+                wpfnav.UseINavigable = true;
+
+                var mre = new ManualResetEvent(false);
+                WindowTest.RunOnUIThread(() => wpfnav.IsHTMLLoaded.Should().BeFalse());
+
+                WindowTest.RunOnUIThread(
+           () =>
+           {
+               wpfnav.NavigateAsync(a).ContinueWith(t => mre.Set());
+           });
+
+                mre.WaitOne();
+
+                fl.Should().BeTrue();
+            });
+
+            fslr.Should().BeTrue();
+            nea.Should().NotBeNull();
+            nea.OldViewModel.Should().BeNull();
+            nea.NewViewModel.Should().Be(a);
+
+        }
+
+        private void Test_HTMLWindowRecovery_Capacity_Base(IWebSessionWatcher iWatcher)
+        {
             bool fl = false;
             EventHandler ea = null;
             var a = new A1();
@@ -160,6 +254,9 @@ namespace MVVMAwesomium.Test
             TestNavigation((wpfbuild, wpfnav, WindowTest)
                 =>
             {
+                wpfnav.WebSessionWatcher.Should().NotBeNull();
+                if (iWatcher != null)
+                    wpfnav.WebSessionWatcher = iWatcher;
                 ea = (o, e) => { fl = true; wpfnav.OnFirstLoad -= ea; };
                 wpfnav.OnFirstLoad += ea;
                 wpfnav.Should().NotBeNull();
@@ -191,34 +288,32 @@ namespace MVVMAwesomium.Test
                 var webv = (a.Navigation as IWebViewProvider).WebView;
 
                 mre = new ManualResetEvent(false);
-                Process p =  null;
-                 WindowTest.RunOnUIThread(() =>
+                Process p = null;
+                WindowTest.RunOnUIThread(() =>
                 {
                     p = webv.RenderProcess;
-                   p.Kill();
+                    p.Kill();
                     mre.Set();
                 });
 
-                 mre.WaitOne();
-                 Thread.Sleep(500);
-                 p.WaitForExit();
+                mre.WaitOne();
+                Thread.Sleep(500);
+                p.WaitForExit();
 
 
-                 Process np = null;
-                 mre = new ManualResetEvent(false);
-                 WindowTest.RunOnUIThread(() =>
-                 {
-                     np = webv.RenderProcess;
-                     mre.Set();
-                 });
-                 np.Should().NotBe(p);
+                Process np = null;
+                mre = new ManualResetEvent(false);
+                WindowTest.RunOnUIThread(() =>
+                {
+                    np = webv.RenderProcess;
+                    mre.Set();
+                });
+                np.Should().NotBe(p);
 
-                
+
 
             });
         }
-
-
 
         [Fact]
         public void Test_WPFBrowserNavigator_Navition_Simple()

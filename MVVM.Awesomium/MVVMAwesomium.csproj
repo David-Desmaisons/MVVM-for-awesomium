@@ -104,7 +104,7 @@
     <Compile Include="Infra\DictionaryExtension.cs" />
     <Compile Include="Infra\TypeExtension.cs" />
     <Compile Include="Infra\VM\ViewModelBase.cs" />
-    <Compile Include="Navigation\HTMLWindow.xaml.cs">
+    <Compile Include="HTMLWindow.xaml.cs">
       <DependentUpon>HTMLWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Navigation\INavigable.cs" />
@@ -172,7 +172,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Navigation\HTMLWindow.xaml">
+    <Page Include="HTMLWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

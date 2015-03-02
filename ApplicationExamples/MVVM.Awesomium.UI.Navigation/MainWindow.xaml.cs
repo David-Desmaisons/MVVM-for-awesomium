@@ -40,12 +40,14 @@ namespace MVVMAwesomium.UI.Navigation
 
             InitializeComponent();
 
-            var nb = new NavigationBuilder();
-            SetUpRoute(nb);
-            WPFBrowserNavigator bn = new WPFBrowserNavigator(this.WC, nb){UseINavigable = true};
-          
+            //var nb = new NavigationBuilder();
+            HTMLWindow.UseINavigable = true;
+            SetUpRoute(HTMLWindow.NavigationBuilder);
+            //SetUpRoute(nb);
+            //WPFBrowserNavigator bn = new WPFBrowserNavigator(this.WC, nb){UseINavigable = true};
+
             var datacontext = new MVVMAwesomium.ViewModel.Example.ForNavigation.Couple();
-            var my = new MVVMAwesomium.ViewModel.Example.ForNavigation.Person()         
+            var my = new MVVMAwesomium.ViewModel.Example.ForNavigation.Person()
             {
                 Name = "O Monstro",
                 LastName = "Desmaisons",
@@ -53,8 +55,8 @@ namespace MVVMAwesomium.UI.Navigation
             };
             my.Couple = datacontext;
             datacontext.One = my;
-         
-            bn.NavigateAsync(datacontext);
+
+            HTMLWindow.NavigateAsync(datacontext);
             //bn.Navigate(my);
         }
     }

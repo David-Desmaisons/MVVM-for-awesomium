@@ -5,6 +5,8 @@ using System.Text;
 using Xunit;
 using FluentAssertions;
 using MVVMAwesomium.Infra;
+using System.ComponentModel;
+using System.Windows;
 
 namespace MVVMAwesomium.Test
 {
@@ -43,6 +45,13 @@ namespace MVVMAwesomium.Test
              n.GetUnderlyingNullableType().Should().BeNull();
          }
 
+          [Fact]
+          public void Test_GetUnderlyingiliststring_null()
+          {
+              Type n = typeof(IList<string>);
+              n.GetUnderlyingNullableType().Should().BeNull();
+          }
+
          [Fact]
           public void Test_GetUnderlyingNullableType_int()
         {
@@ -55,7 +64,30 @@ namespace MVVMAwesomium.Test
              typeof(string).GetUnderlyingNullableType().Should().BeNull();
          }
 
+         [Fact]
+         public void Test_GetDescription_FallBack()
+         {
+             Visibility vi = Visibility.Hidden;
+             vi.GetDescription().Should().Be("Hidden");
+         }
 
+         enum Ex { [Description("Cute")] ex1 = 8, [Description("Cute2")] ex2 = 16 };
+
+         [Fact]
+         public void Test_GetDescription_Description()
+         {
+             Ex vi = Ex.ex1;
+             vi.GetDescription().Should().Be("Cute");
+         }
+
+
+         [Fact]
+         public void Test_GetDescription_Or()
+         {
+             Ex vi = Ex.ex1 | Ex.ex2;
+             vi.GetDescription().Should().Be("24");
+         }
+		
         
     }
 }
