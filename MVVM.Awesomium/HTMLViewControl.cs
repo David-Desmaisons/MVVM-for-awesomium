@@ -19,6 +19,7 @@ using System.Diagnostics;
 using MVVMAwesomium.Infra.VM;
 using MVVMAwesomium.Navigation;
 using Awesomium.Windows.Controls;
+using MVVMAwesomium.Infra;
 
 namespace MVVMAwesomium
 {
@@ -30,6 +31,19 @@ namespace MVVMAwesomium
         {
             get { return (Uri)this.GetValue(UriProperty); }
             set { this.SetValue(UriProperty, value); }
+        }
+
+        public static readonly DependencyProperty RelativePathProperty = DependencyProperty.Register("RelativePath", typeof(string), typeof(HTMLViewControl), new PropertyMetadata(RelativeUriCallback));
+
+        public string RelativePath
+        {
+            set { this.SetValue(RelativePathProperty, value); }
+        }
+
+        private static void RelativeUriCallback( DependencyObject d, DependencyPropertyChangedEventArgs e )
+        {
+            HTMLViewControl hmv = d as HTMLViewControl;
+            hmv.Uri = new Uri(string.Format("{0}\\{1}", Assembly.GetExecutingAssembly().GetPath(),(string)e.NewValue));
         }
 
 

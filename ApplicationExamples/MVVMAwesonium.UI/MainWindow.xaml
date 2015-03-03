@@ -34,6 +34,6 @@
             <Button Content="Button" Height="23" Command="{Binding Command}" Width="75" />
 
         </StackPanel>
-        <MVVMAwesomium:HTMLViewControl  x:Name="wcBrowser"   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <MVVMAwesomium:HTMLViewControl  x:Name="wcBrowser" RelativePath="src\index.html"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
     </Grid>
 </Window>

@@ -27,13 +27,7 @@ namespace MVVMAwesomium.UI
     {
         public MainWindow()
         {
-            //WebConfig webC = new WebConfig();
-            //webC.RemoteDebuggingPort = 8001;
-            //webC.RemoteDebuggingHost = "127.0.0.1";
-            //WebCore.Initialize(webC);
-
             InitializeComponent();
-            this.wcBrowser.Uri = new Uri(string.Format("{0}\\src\\index.html", Assembly.GetExecutingAssembly().GetPath()));
         }
 
         private Skill _FirstSkill;
@@ -54,25 +48,16 @@ namespace MVVMAwesomium.UI
             datacontext.Skills.Add(_FirstSkill);
             datacontext.Skills.Add(new Skill() { Name = "Info", Type = "C++" });
 
-            //AwesomeBinding.Bind(this.wcBrowser, datacontext, JavascriptBindingMode.TwoWay);
-
             Window w = sender as Window;
             w.DataContext = datacontext;
             _Person = datacontext;
         }
 
-        private class Test
+        protected override void OnClosed(EventArgs e)
         {
-            public bool _IsClosing_ { get; set; }
-
-            public bool _IsAnimatedClosing_ { get; set; }
-
-            public bool _IsAnimatedClosed_ { get; set; }
+            this.wcBrowser.Dispose();
+            base.OnClosed(e);
         }
-
-  //LastName:"Desmaisons",
- //   Local:{ City:'Florianopolis', Region:'SC'},
- //   Skills: [{Type:'Langage', Name:'French'},{Type:'Info', Name:'C++'}
 
     }
 }
