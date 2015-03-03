@@ -27,13 +27,13 @@ namespace MVVMAwesomium.UI
     {
         public MainWindow()
         {
-            WebConfig webC = new WebConfig();
-            webC.RemoteDebuggingPort = 8001;
-            webC.RemoteDebuggingHost = "127.0.0.1";
-            WebCore.Initialize(webC);
+            //WebConfig webC = new WebConfig();
+            //webC.RemoteDebuggingPort = 8001;
+            //webC.RemoteDebuggingHost = "127.0.0.1";
+            //WebCore.Initialize(webC);
 
             InitializeComponent();
-            this.wcBrowser.Source = new Uri(string.Format("{0}\\src\\index.html", Assembly.GetExecutingAssembly().GetPath()));
+            this.wcBrowser.Uri = new Uri(string.Format("{0}\\src\\index.html", Assembly.GetExecutingAssembly().GetPath()));
         }
 
         private Skill _FirstSkill;
@@ -54,7 +54,7 @@ namespace MVVMAwesomium.UI
             datacontext.Skills.Add(_FirstSkill);
             datacontext.Skills.Add(new Skill() { Name = "Info", Type = "C++" });
 
-            AwesomeBinding.Bind(this.wcBrowser, datacontext, JavascriptBindingMode.TwoWay);
+            //AwesomeBinding.Bind(this.wcBrowser, datacontext, JavascriptBindingMode.TwoWay);
 
             Window w = sender as Window;
             w.DataContext = datacontext;

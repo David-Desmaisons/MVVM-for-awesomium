@@ -22,7 +22,7 @@ using Awesomium.Windows.Controls;
 
 namespace MVVMAwesomium
 {
-    public partial class HTMLWindow : UserControl, INavigationSolver, IWebViewLifeCycleManager, IDisposable
+    public partial class HTMLControlBase : UserControl, IWebViewLifeCycleManager, IDisposable
     {
         private WebConfig _WebConfig =
                 new WebConfig() { RemoteDebuggingPort = 8001, RemoteDebuggingHost = "127.0.0.1" };
@@ -49,7 +49,7 @@ namespace MVVMAwesomium
         }
 
         public static readonly DependencyProperty IsDebugProperty =
-            DependencyProperty.Register("IsDebug", typeof(Boolean), typeof(HTMLWindow), new PropertyMetadata(false));
+            DependencyProperty.Register("IsDebug", typeof(Boolean), typeof(HTMLControlBase), new PropertyMetadata(false));
 
 
         public Boolean IsHTMLLoaded
@@ -59,7 +59,7 @@ namespace MVVMAwesomium
         }
 
         public static readonly DependencyProperty IsHTMLLoadedProperty =
-            DependencyProperty.Register("IsHTMLLoaded", typeof(Boolean), typeof(HTMLWindow), new PropertyMetadata(false));
+            DependencyProperty.Register("IsHTMLLoaded", typeof(Boolean), typeof(HTMLControlBase), new PropertyMetadata(false));
 
 
         public ICommand DebugWindow { get; private set; }
@@ -70,16 +70,15 @@ namespace MVVMAwesomium
         private IUrlSolver _IUrlSolver;
 
         private WPFDoubleBrowserNavigator _WPFDoubleBrowserNavigator;
-        public HTMLWindow()
-            : this(null)
+
+        public HTMLControlBase():this(null)
         {
         }
 
-        public HTMLWindow(IUrlSolver iIUrlSolver)
+        protected HTMLControlBase(IUrlSolver iIUrlSolver)
         {
-            _IUrlSolver = iIUrlSolver ?? new NavigationBuilder();
-            _INavigationBuilder = _IUrlSolver as INavigationBuilder;
-
+            _IUrlSolver = iIUrlSolver;
+  
             DebugWindow = new BasicRelayCommand(() => ShowDebugWindow());
 
             DebugBrowser = new BasicRelayCommand(() => OpenDebugBrowser());
@@ -135,12 +134,6 @@ namespace MVVMAwesomium
                 MessageBox.Show("EnableBrowserDebug should be set to true to enable debugging in a Webrowser!");
         }
 
-        private INavigationBuilder _INavigationBuilder;
-        public INavigationBuilder NavigationBuilder
-        {
-            get { return _INavigationBuilder; }
-        }
-
         public Uri Source
         {
             get { return _WPFDoubleBrowserNavigator.WebControl.Source; }
@@ -152,7 +145,7 @@ namespace MVVMAwesomium
             set { _WPFDoubleBrowserNavigator.UseINavigable = value; }
         }
 
-        public Task NavigateAsync(object iViewModel, string Id = null, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
+        protected Task NavigateAsyncBase(object iViewModel, string Id = null, JavascriptBindingMode iMode = JavascriptBindingMode.TwoWay)
         {
             return _WPFDoubleBrowserNavigator.NavigateAsync(iViewModel, Id, iMode);
         }

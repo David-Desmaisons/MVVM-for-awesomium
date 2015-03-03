@@ -102,13 +102,15 @@
     <Compile Include="Binding\IAwesomiumBindingFactory.cs" />
     <Compile Include="Exceptions\MVVMforAwesomiumException.cs" />
     <Compile Include="Exceptions\ExceptionHelper.cs" />
+    <Compile Include="Control\HTMLControlBase.xaml.cs">
+      <DependentUpon>HTMLControlBase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HTMLWindow.cs" />
+    <Compile Include="HTMLViewControl.cs" />
     <Compile Include="Infra\VM\BasicRelayCommand.cs" />
     <Compile Include="Infra\DictionaryExtension.cs" />
     <Compile Include="Infra\TypeExtension.cs" />
     <Compile Include="Infra\VM\ViewModelBase.cs" />
-    <Compile Include="HTMLWindow.xaml.cs">
-      <DependentUpon>HTMLWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Navigation\INavigable.cs" />
     <Compile Include="Navigation\INavigationBuilder.cs" />
     <Compile Include="Navigation\INavigationSolver.cs" />
@@ -174,7 +176,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="HTMLWindow.xaml">
+    <Page Include="Control\HTMLControlBase.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

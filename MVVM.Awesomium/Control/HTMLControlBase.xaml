@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:awe="http://schemas.awesomium.com/winfx" 
-             x:Class="MVVMAwesomium.HTMLWindow" 
+             x:Class="MVVMAwesomium.HTMLControlBase" 
              mc:Ignorable="d" 
              x:Name="Root"
             PreviewKeyDown="Root_PreviewKeyDown"
