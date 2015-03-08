@@ -28,18 +28,17 @@ namespace MVVMAwesomium.UI.Calendar
         public MainWindow()
         {
             InitializeComponent();
-            this.WebControl.Source = new Uri(string.Format("{0}\\HTLM\\index.html", Assembly.GetExecutingAssembly().GetPath()));
-        }
+         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            IWebView f = this.WebControl.WebSession.Views.FirstOrDefault();
-            var datacontext = new DateInformation() { Date= new DateTime(1974,2,26) };
-            
-            AwesomeBinding.Bind(f, datacontext, JavascriptBindingMode.TwoWay);
-
-            Window w = sender as Window;
-            w.DataContext = datacontext;
+            DataContext = new DateInformation() { Date = new DateTime(1974, 2, 26) };
         }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            this.WebControl.Dispose();
+        } 
     }
 }

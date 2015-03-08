@@ -33,19 +33,11 @@ namespace MVVM.Navigation2
 
         public MainWindow()
         {
-            WebConfig webC = new WebConfig();
-            webC.RemoteDebuggingPort = 8001;
-            webC.RemoteDebuggingHost = "127.0.0.1";
-            WebCore.Initialize(webC);
-
-
             InitializeComponent();
 
-
-            var nb = new NavigationBuilder();
-            SetUpRoute(nb);
-            WPFDoubleBrowserNavigator bn = new WPFDoubleBrowserNavigator(this.First, this.Second, nb) { UseINavigable = true };
-
+            HTMLWindow.UseINavigable = true;
+            SetUpRoute(HTMLWindow.NavigationBuilder);
+            
             var datacontext = new MVVMAwesomium.ViewModel.Example.ForNavigation.Couple();
             var my = new MVVMAwesomium.ViewModel.Example.ForNavigation.Person()
             {
@@ -56,7 +48,13 @@ namespace MVVM.Navigation2
             my.Couple = datacontext;
             datacontext.One = my;
 
-            bn.NavigateAsync(datacontext);
+            HTMLWindow.NavigateAsync(datacontext);
         }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            this.HTMLWindow.Dispose();
+        } 
     }
 }

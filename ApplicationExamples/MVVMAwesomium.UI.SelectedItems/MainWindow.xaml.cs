@@ -28,23 +28,20 @@ namespace MVVMAwesomium.UI.SelectedItems
         public MainWindow()
         {
             InitializeComponent();
-            this.WebControl.Source = new Uri(string.Format("{0}\\HTMLUI\\index.html", Assembly.GetExecutingAssembly().GetPath()));
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var datacontext = new SkillsViewModel();
-
             datacontext.Skills.Add(new Skill() {Name="knockout", Type="Info" });
-
             datacontext.SelectedSkills.Add(datacontext.Skills[0]);
-
-            IWebView f = this.WebControl.WebSession.Views.FirstOrDefault();
-     
-            AwesomeBinding.Bind(f, datacontext, JavascriptBindingMode.TwoWay);
-
-            Window w = sender as Window;
-            w.DataContext = datacontext;
+            DataContext = datacontext;
         }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            this.WebControl.Dispose();
+        } 
     }
 }

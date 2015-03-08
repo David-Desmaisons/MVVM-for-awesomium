@@ -71,10 +71,6 @@ namespace MVVMAwesomium
 
         private WPFDoubleBrowserNavigator _WPFDoubleBrowserNavigator;
 
-        public HTMLControlBase():this(null)
-        {
-        }
-
         protected HTMLControlBase(IUrlSolver iIUrlSolver)
         {
             _IUrlSolver = iIUrlSolver;
@@ -179,7 +175,7 @@ namespace MVVMAwesomium
 
         private static WebSession _Session = null;
 
-        public string _WebSessionPath = null;
+        private string _WebSessionPath = null;
         public string SessionPath
         {
             get { return _WebSessionPath; }

@@ -59,5 +59,11 @@ namespace MVVMAwesomium.UI.Navigation
             HTMLWindow.NavigateAsync(datacontext);
             //bn.Navigate(my);
         }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            this.HTMLWindow.Dispose();
+        } 
     }
 }

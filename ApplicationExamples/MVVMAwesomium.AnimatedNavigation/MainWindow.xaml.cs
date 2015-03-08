@@ -51,5 +51,11 @@ namespace MVVMAwesomium.AnimatedNavigation
         {
             HTMLWindow.IsDebug = !HTMLWindow.IsDebug;
         }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            this.HTMLWindow.Dispose();
+        } 
     }
 }

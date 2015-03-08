@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Awesomium_Test_Base.cs" />
+    <Compile Include="Test_HTMLViewControl.cs" />
     <Compile Include="Infra\AssemblyHelper.cs" />
     <Compile Include="Infra\ViewModelCLRTypes.cs" />
     <Compile Include="Infra\WindowTest.cs" />

@@ -28,12 +28,10 @@ namespace MVVMAwesomium.UI2
         public MainWindow()
         {
             InitializeComponent();
-            this.wcBrowser.Source = new Uri(string.Format("{0}\\HTMLUI\\index.html", Assembly.GetExecutingAssembly().GetPath()));
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            IWebView f = this.wcBrowser.WebSession.Views.FirstOrDefault();
             var datacontext = new Couple();
             datacontext.One =  new Person()
             {
@@ -43,10 +41,7 @@ namespace MVVMAwesomium.UI2
             };
             datacontext.Two = null;
 
-            AwesomeBinding.Bind(f, datacontext, JavascriptBindingMode.TwoWay);
-
-            Window w = sender as Window;
-            w.DataContext = datacontext;
+            DataContext = datacontext;
         }
     }
 }

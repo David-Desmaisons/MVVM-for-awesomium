@@ -23,7 +23,7 @@ using MVVMAwesomium.Infra;
 
 namespace MVVMAwesomium
 {
-    public partial class HTMLViewControl : HTMLControlBase, IWebViewLifeCycleManager, IDisposable, IUrlSolver
+    public partial class HTMLViewControl : HTMLControlBase, IWebViewLifeCycleManager, IDisposable
     {
         public static readonly DependencyProperty UriProperty = DependencyProperty.Register("Uri", typeof(Uri), typeof(HTMLViewControl));
 
@@ -33,26 +33,17 @@ namespace MVVMAwesomium
             set { this.SetValue(UriProperty, value); }
         }
 
-        public static readonly DependencyProperty RelativePathProperty = DependencyProperty.Register("RelativePath", typeof(string), typeof(HTMLViewControl), new PropertyMetadata(RelativeUriCallback));
-
         public string RelativePath
         {
-            set { this.SetValue(RelativePathProperty, value); }
+            set { Uri = new Uri(string.Format("{0}\\{1}", Assembly.GetExecutingAssembly().GetPath(), value)); }          
         }
-
-        private static void RelativeUriCallback( DependencyObject d, DependencyPropertyChangedEventArgs e )
-        {
-            HTMLViewControl hmv = d as HTMLViewControl;
-            hmv.Uri = new Uri(string.Format("{0}\\{1}", Assembly.GetExecutingAssembly().GetPath(),(string)e.NewValue));
-        }
-
 
         public static readonly DependencyProperty ModeProperty = DependencyProperty.Register("Mode", typeof(JavascriptBindingMode), typeof(HTMLViewControl), new PropertyMetadata(JavascriptBindingMode.TwoWay));
 
         public JavascriptBindingMode Mode
         {
             get { return (JavascriptBindingMode)this.GetValue(ModeProperty); }
-            private set { this.SetValue(ModeProperty, value); }
+            set { this.SetValue(ModeProperty, value); }
         }
 
         private UrlSolver _UrlSolver;
@@ -75,22 +66,12 @@ namespace MVVMAwesomium
 
         private class UrlSolver : IUrlSolver
         {
-            public UrlSolver()
-            {
-            }
-
-            public IUrlSolver Solver { get; set; }
+            public HTMLViewControl Solver { get; set; }
 
             Uri IUrlSolver.Solve(object iViewModel, string Id)
             {
-                return Solver.Solve(iViewModel,Id);
+                return Solver.Uri;
             }
-        }
-
-     
-        Uri IUrlSolver.Solve(object iViewModel, string Id)
-        {
-            return Uri;
         }
 
     }
