@@ -419,6 +419,32 @@ namespace MVVMAwesomium.Test
         }
 
         [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_TimeOut()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                var fact = new AwesomiumBindingFactory() { InjectionTimeOut = 10 };
+
+                int r = 20000;
+                var datacontext = new TwoList();
+                datacontext.L1.AddRange(Enumerable.Range(0, r).Select(i => new Skill()));
+
+                Exception bindingex = null;
+
+                var task = fact.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).ContinueWith(t => bindingex = t.Exception);
+                task.Wait();
+
+                bindingex.Should().BeOfType<AggregateException>();
+                var ex = (bindingex as AggregateException).InnerException;
+                ex.Should().BeOfType<MVVMforAwesomiumException>();
+            }
+        }
+
+        [Fact]
         public void Test_AwesomeBinding_Basic_TwoWay()
         {
             using (Tester())
@@ -1614,6 +1640,22 @@ namespace MVVMAwesomium.Test
                     res = GetSafe(() => Get(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
+
+                    _DataContext.Skills.Add(new Skill() { Type = "Langage", Name = "French" });
+                    Thread.Sleep(150);
+                     _DataContext.Skills.Should().HaveCount(3);
+                    res = GetSafe(() => Get(js, "Skills"));
+                    res.Should().NotBeNull();
+                    Check((JSValue[])res, _DataContext.Skills);
+      
+
+                    DoSafe(() => coll.Invoke("reverse"));
+
+                    Thread.Sleep(150);
+                    _DataContext.Skills.Should().HaveCount(3);
+                    res = GetSafe(() => Get(js, "Skills"));
+                    res.Should().NotBeNull();
+                    Check((JSValue[])res, _DataContext.Skills);
                 }
             }
         }
@@ -1854,6 +1896,13 @@ namespace MVVMAwesomium.Test
                     col = ((JSValue[])res);
 
                     datacontext.List.Should().Equal(comp);
+                    Checkstring(col, datacontext.List);
+
+                    datacontext.List.Clear();
+                    Thread.Sleep(100);
+                    res = GetSafe(() => Get(js, "List"));
+                    col = ((JSValue[])res);
+
                     Checkstring(col, datacontext.List);
 
                 }

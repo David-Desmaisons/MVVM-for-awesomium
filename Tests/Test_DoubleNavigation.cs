@@ -315,6 +315,58 @@ namespace MVVMAwesomium.Test
             });
         }
 
+
+        private void Test_HTMLWindow_WebCoreShutDown_Base(IWebSessionWatcher iWatcher)
+        {
+            var a = new A1();
+
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
+                =>
+            {
+                wpfnav.WebSessionWatcher.Should().NotBeNull();
+                if (iWatcher != null)
+                    wpfnav.WebSessionWatcher = iWatcher;
+                SetUpRoute(wpfbuild);
+                wpfnav.UseINavigable = true;
+
+                var mre = new ManualResetEvent(false);
+                WindowTest.RunOnUIThread(() => wpfnav.IsHTMLLoaded.Should().BeFalse());
+
+                WindowTest.RunOnUIThread(
+           () =>
+           {
+               wpfnav.NavigateAsync(a).ContinueWith(t => mre.Set());
+           });
+
+                mre.WaitOne();
+
+                WindowTest.RunOnUIThread(() =>
+                {
+                    wpfnav.IsHTMLLoaded.Should().BeTrue();
+                    a.Navigation.Should().NotBeNull();
+                });
+
+                WebCore.Shutdown();
+               
+                Thread.Sleep(1500);
+            });
+        }
+
+        [Fact]
+        public void Test_HTMLWindow_WebCoreShutDown()
+        {
+            Test_HTMLWindow_WebCoreShutDown_Base(null);
+        }
+
+        [Fact]
+        public void Test_HTMLWindow_WebCoreShutDown_Watcher()
+        {
+            IWebSessionWatcher watch = Substitute.For<IWebSessionWatcher>();
+            Test_HTMLWindow_WebCoreShutDown_Base(watch);
+            watch.Received().LogCritical("Critical: WebCore ShuttingDown!!");
+            watch.Received().OnSessionError(null, Arg.Any<Action>());
+        }
+
         [Fact]
         public void Test_WPFBrowserNavigator_Navition_Simple()
         {
@@ -926,7 +978,44 @@ namespace MVVMAwesomium.Test
                     wpfnav.ShowDebugWindow();
                     wpfnav.OpenDebugBrowser();     
                 });
+
+
+                WindowTest.RunOnUIThread(() =>
+                {
+                    wpfnav.Focus();
+
+                    wpfnav.RaiseEvent(
+                      new System.Windows.Input.KeyEventArgs(
+                        Keyboard.PrimaryDevice,
+                        PresentationSource.FromVisual(wpfnav),
+                        0,
+                        Key.F5) { RoutedEvent = Keyboard.PreviewKeyDownEvent }
+                    );
+                });
             },true);
+        }
+
+        [Fact]
+        public void Test_WPFBrowserNavigator_Navition_Debug_One_NoDebug()
+        {
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
+                =>
+            {
+                WindowTest.RunOnUIThread(() =>
+                {
+                    wpfnav.IsDebug.Should().BeFalse();
+                    DispatcherTimer dt = new DispatcherTimer();
+                    dt.Interval = TimeSpan.FromSeconds(10);
+                    dt.Tick += (o, e) =>
+                        {
+                            dt.Stop();
+                            System.Windows.Application.Current.Shutdown();
+                        };
+                    dt.Start();
+                    wpfnav.OpenDebugBrowser();
+                 
+                });
+            });
         }
 
 

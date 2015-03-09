@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MVVMAwesomium.Infra
 {
-    public static class EnumarableCollection
+    public static class EnumerableCollection
     {
         public static IEnumerable<T> ForEach<T>(this IEnumerable<T> @this, Action<T> ToDo)
         {

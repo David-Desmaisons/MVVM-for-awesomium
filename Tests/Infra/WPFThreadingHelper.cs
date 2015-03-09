@@ -80,6 +80,7 @@ namespace MVVMAwesomium.Test
         private void InitUIinSTA()
         {
             _wpfTester = new WPFTester();
+            var application = new Application();
             _window = _factory();
             _wpfTester.ShowWindow(_window);
             _ARE.Set();

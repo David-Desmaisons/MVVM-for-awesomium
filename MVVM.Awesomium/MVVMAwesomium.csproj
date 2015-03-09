@@ -128,7 +128,7 @@
     <Compile Include="Binding\AwesomiumBinding\Mapping\BidirectionalMapper.cs" />
     <Compile Include="Binding\AwesomiumBinding\Mapping\JavascriptObjectBuilder\LocalBuilder.cs" />
     <Compile Include="Infra\AssemblyExtension.cs" />
-    <Compile Include="Infra\EnumarableCollection.cs" />
+    <Compile Include="Infra\EnumerableCollection.cs" />
     <Compile Include="Binding\AwesomeBinding.cs" />
     <Compile Include="Binding\AwesomiumBinding\Mapping\CSharpToJavascriptMapper.cs" />
     <Compile Include="Binding\StringBinding.cs" />

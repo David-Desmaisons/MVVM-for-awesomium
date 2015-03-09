@@ -38,11 +38,11 @@ namespace MVVMAwesomium.Binding.AwesomiumBinding
 
         void _IWebView_LoadingFrameComplete(object sender, FrameEventArgs e)
         {
-            if (!e.IsMainFrame)
-                return;
-
-            _IWebView.LoadingFrameComplete -= _IWebView_LoadingFrameComplete;
-            CheckCompletion();
+            if (e.IsMainFrame)
+            { 
+                _IWebView.LoadingFrameComplete -= _IWebView_LoadingFrameComplete;
+                CheckCompletion();
+            }
         }
 
         private void _IWebView_DocumentReady(object sender, UrlEventArgs e)
