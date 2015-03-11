@@ -55,17 +55,23 @@ namespace MVVMAwesomium.Test
             {
                 WPFDoubleBrowserNavigator res = null;
                 wcontext.RunOnUIThread(() => res = new WPFDoubleBrowserNavigator(wc1, wc2, _INavigationBuilder));
-                //using (res)
-                //{
                     Test(res, wcontext);
-                //}
                     WebCore.QueueWork(() => res.Dispose());
             }
         }
 
         public class VM : ViewModelBase, INavigable
         {
+            private DateTime? _Opened = null;
             public INavigationSolver Navigation { get; set; }
+
+            public void OnOpeningAnimationEnd()
+            {
+                _Opened.HasValue.Should().BeFalse();
+                _Opened = DateTime.Now;
+            }
+
+            public DateTime? Opened { get { return _Opened; } }
         }
 
         [Fact]
@@ -81,6 +87,7 @@ namespace MVVMAwesomium.Test
                     wpfnav.UseINavigable = true;
 
                     var mre = new ManualResetEvent(false);
+                    DateTime? nav = null;
 
                     WindowTest.RunOnUIThread(
                    () =>
@@ -90,13 +97,18 @@ namespace MVVMAwesomium.Test
                           t =>
                           {
                               vm.Navigation.Should().Be(wpfnav);
+                              nav = DateTime.Now;
                               mre.Set();
                           });
                    });
 
                     mre.WaitOne();
                     mre = new ManualResetEvent(false);
-                    Thread.Sleep(500);
+                    Thread.Sleep(4500);
+
+                    vm.Opened.HasValue.Should().BeTrue();
+                    vm.Opened.Value.Subtract(nav.Value).Should().BeGreaterThan(TimeSpan.FromSeconds(2)).
+                        And.BeLessOrEqualTo(TimeSpan.FromSeconds(3));
 
                     WindowTest.RunOnUIThread(
                  () =>

@@ -21,6 +21,7 @@ namespace MVVMAwesomium.Navigation.Window
             _State = WindowLogicalState.Loading;
             _IsLiteningClose = false;
             CloseReady = new BasicRelayCommand(() => State = WindowLogicalState.Closed);
+            EndOpen = new BasicRelayCommand(() => {if (_OpenTask!=null) _OpenTask.TrySetResult(null);} );
         }
 
         private WindowLogicalState _State;
@@ -29,6 +30,27 @@ namespace MVVMAwesomium.Navigation.Window
             get { return _State; }
             set { Set(ref _State, value, "State"); }
         }
+
+
+        private bool _IsLiteningOpen;
+        public bool IsLiteningOpen
+        {
+            get { return _IsLiteningOpen; }
+            set { Set(ref _IsLiteningOpen, value, "IsLiteningOpen"); }
+        }
+
+        private TaskCompletionSource<object> _OpenTask;
+        public Task OpenAsync()
+        {
+            if (!IsListeningClose)
+                return TaskHelper.Ended();
+
+            if (_OpenTask==null)
+                _OpenTask = new TaskCompletionSource<object>();
+
+            return _OpenTask.Task;
+        }
+
 
 
         private bool _IsLiteningClose;
@@ -64,5 +86,7 @@ namespace MVVMAwesomium.Navigation.Window
         }
 
         public ICommand CloseReady { get; private set; }
+
+        public ICommand EndOpen { get; private set; }
     }
 }

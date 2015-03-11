@@ -106,20 +106,27 @@ namespace MVVMAwesomium
             _IWebViewLifeCycleManager.Display(_CurrentWebControl);
     
             _Window = iwindow;
+
+            var inav = _UseINavigable ?  Binding.Root as INavigable : null;
+
             _Window.State = WindowLogicalState.Opened;
+
+            if (_UseINavigable!=null)
+                _Window.OpenAsync().ContinueWith(t => EndAnimation(inav));
 
             _Navigating = false;      
 
-            if (_UseINavigable)
-            {
-                var inav = Binding.Root as INavigable;
-                if (inav != null)
-                    inav.Navigation = this;
-            }
+            if (inav != null)
+                inav.Navigation = this;
 
             FireNavigate(Binding.Root, oldvm);
             
             if (tcs != null) tcs.SetResult(Binding);
+        }
+
+        private void EndAnimation(INavigable inavgable)
+        {
+            WebCore.QueueWork(() => inavgable.OnOpeningAnimationEnd());
         }
 
         private void LogCritical(string iMessage)

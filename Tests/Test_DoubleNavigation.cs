@@ -84,6 +84,11 @@ namespace MVVMAwesomium.Test
         private class A : ViewModelBase, INavigable
         {
             public INavigationSolver Navigation { get; set; }
+
+
+            public void OnOpeningAnimationEnd()
+            {
+            }
         }
 
         private class A1 : A

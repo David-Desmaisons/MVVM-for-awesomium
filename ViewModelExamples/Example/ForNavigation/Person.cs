@@ -23,6 +23,9 @@ namespace MVVMAwesomium.ViewModel.Example.ForNavigation
         }
 
         public ICommand GoCouple { get; private set; }
-   
+
+        public void OnOpeningAnimationEnd()
+        {
+        }
     }
 }

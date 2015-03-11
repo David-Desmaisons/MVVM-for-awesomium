@@ -22,5 +22,10 @@ namespace MVVMAwesomium.ViewModel.Example.ForNavigation
         public ICommand GoOne { get; private set; }
 
         public ICommand GoTwo { get; private set; }
+
+
+        public void OnOpeningAnimationEnd()
+        {
+        }
     }
 }

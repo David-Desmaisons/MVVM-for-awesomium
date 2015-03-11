@@ -314,12 +314,16 @@ function Null_reference() {
             return '{when:  $root.__window__().State, do: ' + value + '}';
         },
 
+        init: function (element, valueAccessor,allBindings,viewModel,bindingContext) {
+            bindingContext.$root.__window__().IsLiteningOpen(true);
+        },
+
         update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
             var v = ko.utils.unwrapObservable(valueAccessor());
             if (v.when().name !== 'Opened')
                 return;
 
-            v.do(element);
+            v.do(element, function () { bindingContext.$root.__window__().EndOpen().Execute(); });
         }
     };
 

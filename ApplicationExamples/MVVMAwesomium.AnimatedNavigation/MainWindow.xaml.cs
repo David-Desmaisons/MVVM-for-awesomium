@@ -27,6 +27,11 @@ namespace MVVMAwesomium.AnimatedNavigation
         public ICommand DoNav { get; private set;}
 
         public INavigationSolver Navigation { get; set; }
+
+
+        public void OnOpeningAnimationEnd()
+        {
+        }
     }
     /// <summary>
     /// Interaction logic for MainWindow.xaml
