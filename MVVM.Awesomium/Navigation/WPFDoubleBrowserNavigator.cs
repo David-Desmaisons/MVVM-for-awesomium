@@ -111,7 +111,7 @@ namespace MVVMAwesomium
 
             _Window.State = WindowLogicalState.Opened;
 
-            if (_UseINavigable!=null)
+            if (inav != null)
                 _Window.OpenAsync().ContinueWith(t => EndAnimation(inav));
 
             _Navigating = false;      
