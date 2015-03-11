@@ -250,9 +250,15 @@ function Null_reference() {
     };
 
     ko.bindingHandlers.numberInput = {
-        init: function (element, valueAccessor, allBindingsAccessor) {
+        init: function (element, valueAccessor, allBindings) {
             var value = valueAccessor();
-            element.addEventListener('change', function () {
+
+            var valueUpdate = allBindings.get('valueUpdate');
+            var event = (valueUpdate === 'afterkeydown') ? 'input' : 'change';
+            console.log(event);
+            console.log(valueUpdate);
+
+            element.addEventListener(event, function () {
                 value(Number(element.value));
             }, false);
         },

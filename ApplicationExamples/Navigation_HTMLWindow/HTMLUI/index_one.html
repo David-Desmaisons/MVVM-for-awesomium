@@ -14,7 +14,7 @@
         <h2><span data-bind="text: Name"></span></h2>
         <h2><span data-bind="text: LastName"></span></h2>
 
-        <h2><input type="number" data-bind="numberInput: ChildrenNumber"></h2>
+        <h2><input type="number" data-bind="numberInput: ChildrenNumber, valueUpdate:'afterkeydown'"></h2>
         
         <h2><span data-bind="text: PersonalState().displayName"></span></h2>
     </div>
