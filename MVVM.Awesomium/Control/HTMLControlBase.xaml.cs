@@ -168,6 +168,12 @@ namespace MVVMAwesomium
             remove { _WPFDoubleBrowserNavigator.OnFirstLoad -= value; }
         }
 
+        public event EventHandler<DisplayEvent> OnDisplay
+        {
+            add { _WPFDoubleBrowserNavigator.OnDisplay += value; }
+            remove { _WPFDoubleBrowserNavigator.OnDisplay -= value; }
+        }
+
         private void Root_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.F5) e.Handled = true;

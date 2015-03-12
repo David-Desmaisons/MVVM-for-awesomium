@@ -14,6 +14,8 @@ namespace MVVMAwesomium
 
         event EventHandler<NavigationEvent> OnNavigate;
 
+        event EventHandler<DisplayEvent> OnDisplay;
+
         event EventHandler OnFirstLoad;
     }
 }

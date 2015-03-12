@@ -62,16 +62,8 @@ namespace MVVMAwesomium.Test
 
         public class VM : ViewModelBase, INavigable
         {
-            private DateTime? _Opened = null;
             public INavigationSolver Navigation { get; set; }
-
-            public void OnOpeningAnimationEnd()
-            {
-                _Opened.HasValue.Should().BeFalse();
-                _Opened = DateTime.Now;
-            }
-
-            public DateTime? Opened { get { return _Opened; } }
+  
         }
 
         [Fact]
@@ -88,6 +80,10 @@ namespace MVVMAwesomium.Test
 
                     var mre = new ManualResetEvent(false);
                     DateTime? nav = null;
+                    DateTime? Opened = null;
+                    DisplayEvent de = null;
+
+                    wpfnav.OnDisplay += (o, e) => { Opened = DateTime.Now; de = e; };
 
                     WindowTest.RunOnUIThread(
                    () =>
@@ -106,8 +102,10 @@ namespace MVVMAwesomium.Test
                     mre = new ManualResetEvent(false);
                     Thread.Sleep(4500);
 
-                    vm.Opened.HasValue.Should().BeTrue();
-                    vm.Opened.Value.Subtract(nav.Value).Should().BeGreaterThan(TimeSpan.FromSeconds(2)).
+                    de.Should().NotBeNull();
+                    de.DisplayedViewModel.Should().Be(vm);
+                    Opened.HasValue.Should().BeTrue();
+                    Opened.Value.Subtract(nav.Value).Should().BeGreaterThan(TimeSpan.FromSeconds(2)).
                         And.BeLessOrEqualTo(TimeSpan.FromSeconds(3));
 
                     WindowTest.RunOnUIThread(

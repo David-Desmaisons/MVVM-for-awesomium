@@ -43,6 +43,6 @@ namespace MVVMAwesomium
         {
             return NavigateAsyncBase(iViewModel, Id, iMode);
         }
-      
+
     }
 }

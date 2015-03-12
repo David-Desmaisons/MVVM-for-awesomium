@@ -111,6 +111,7 @@
     <Compile Include="Infra\DictionaryExtension.cs" />
     <Compile Include="Infra\TypeExtension.cs" />
     <Compile Include="Infra\VM\ViewModelBase.cs" />
+    <Compile Include="Navigation\DisplayEvent.cs" />
     <Compile Include="Navigation\INavigable.cs" />
     <Compile Include="Navigation\INavigationBuilder.cs" />
     <Compile Include="Navigation\INavigationSolver.cs" />

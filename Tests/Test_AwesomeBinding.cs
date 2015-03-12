@@ -159,7 +159,6 @@ namespace MVVMAwesomium.Test
             }
         }
 
-        [Fact]
         public void Test_AwesomeBinding_Basic_HTML_Without_Correct_js_ShouldThrow_TimeOut_Exception()
         {
 

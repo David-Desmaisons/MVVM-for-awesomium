@@ -58,7 +58,8 @@ namespace MVVMAwesomium
         {
             try
             {
-                LogBrowser(string.Format("{0}, event name: {1}, event type {2}, source {3}, line number {4}", e.Message, e.EventName, e.EventType, e.Source, e.LineNumber));
+                IWebView wv = sender as IWebView;
+                LogBrowser(string.Format("{0}, event name: {1}, event type {2}, source {3}, line number {4}, page {5}", e.Message, e.EventName, e.EventType, e.Source, e.LineNumber, wv.Source));
             }
             catch{ }
         }
@@ -86,6 +87,12 @@ namespace MVVMAwesomium
                 OnNavigate(this, new NavigationEvent(inewvm, ioldvm));
         }
 
+        private void FireLoaded(object iloadedvm)
+        {
+            if (OnDisplay != null)
+                OnDisplay(this, new DisplayEvent(iloadedvm));
+        }
+
         private void Switch(Task<IAwesomeBinding> iBinding, HTMLLogicWindow iwindow, TaskCompletionSource<object> tcs)
         {
             object oldvm = (Binding != null) ? Binding.Root : null;
@@ -105,17 +112,14 @@ namespace MVVMAwesomium
 
             _IWebViewLifeCycleManager.Display(_CurrentWebControl);
     
-            _Window = iwindow;
-
-            var inav = _UseINavigable ?  Binding.Root as INavigable : null;
+            _Window = iwindow; 
 
             _Window.State = WindowLogicalState.Opened;
 
-            if (inav != null)
-                _Window.OpenAsync().ContinueWith(t => EndAnimation(inav));
+            _Window.OpenAsync().ContinueWith(t => EndAnimation(Binding.Root));
 
-            _Navigating = false;      
-
+            _Navigating = false;
+            var inav = _UseINavigable ? Binding.Root as INavigable : null;
             if (inav != null)
                 inav.Navigation = this;
 
@@ -124,9 +128,9 @@ namespace MVVMAwesomium
             if (tcs != null) tcs.SetResult(Binding);
         }
 
-        private void EndAnimation(INavigable inavgable)
+        private void EndAnimation(object inavgable)
         {
-            WebCore.QueueWork(() => inavgable.OnOpeningAnimationEnd());
+            WebCore.QueueWork(() => FireLoaded(inavgable));
         }
 
         private void LogCritical(string iMessage)
@@ -253,13 +257,15 @@ namespace MVVMAwesomium
             set { _UseINavigable = value; }
         }
 
-        public event EventHandler<NavigationEvent> OnNavigate;
-
-        public event EventHandler OnFirstLoad;
-
         public IWebView WebView
         {
             get { return this._CurrentWebControl; }
         }
+
+        public event EventHandler<NavigationEvent> OnNavigate;
+
+        public event EventHandler<DisplayEvent> OnDisplay;
+
+        public event EventHandler OnFirstLoad;
     }
 }

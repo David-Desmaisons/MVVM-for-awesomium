@@ -8,7 +8,5 @@ namespace MVVMAwesomium
     public interface INavigable
     {
         INavigationSolver Navigation { get; set; }
-
-        void OnOpeningAnimationEnd();
     }
 }

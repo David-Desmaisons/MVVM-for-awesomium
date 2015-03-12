@@ -100,16 +100,26 @@ namespace MVVMAwesomium.Test
             {
                 var mre = new ManualResetEvent(false);
 
+                DisplayEvent de = null;
+                EventHandler<DisplayEvent> ea = null;
+                ea =(o, e) => { de = e; c.OnDisplay-=ea; };
+                c.OnDisplay += ea;
+                var dc = new Person();
+
                 w.RunOnUIThread(() =>
                 {
                     c.Mode = JavascriptBindingMode.OneWay;
                     string relp = "javascript\\navigation_1.html";
-                    c.Uri = new Uri(string.Format("{0}\\{1}", Assembly.GetAssembly(typeof(HTMLViewControl)).GetPath(), relp));
-                    w.Window.DataContext = new Person();
+                    c.Uri = new Uri(string.Format("{0}\\{1}", Assembly.GetAssembly(typeof(Test_HTMLViewControl)).GetPath(), relp));
+                    w.Window.DataContext = dc;
                     mre.Set();
                 });
 
                 mre.WaitOne();
+
+                Thread.Sleep(1500);
+                de.Should().NotBeNull();
+                de.DisplayedViewModel.Should().Be(dc);
 
 
             });
