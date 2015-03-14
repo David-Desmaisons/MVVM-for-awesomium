@@ -237,6 +237,7 @@ namespace MVVMAwesomium
                 ioldwebview.Source = new Uri("about:blank");
             }
 
+            WebCore.ShuttingDown -= WebCore_ShuttingDown;
             this.MainGrid.Children.Remove(wb);
 
             wb.Dispose();

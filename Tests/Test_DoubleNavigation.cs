@@ -38,7 +38,7 @@ namespace MVVMAwesomium.Test
         {
         }
 
-        private WindowTest BuildWindow(Func<HTMLWindow> iWebControlFac)
+        private WindowTest BuildWindow(Func<HTMLWindow> iWebControlFac,bool iManageLifeCycle)
         {
             return new WindowTest(
                 (w) =>
@@ -47,14 +47,15 @@ namespace MVVMAwesomium.Test
                     w.Content = stackPanel;
                     var iWebControl = iWebControlFac();
                     w.RegisterName(iWebControl.Name, iWebControl);
-                    w.Closed += (o, e) => { iWebControl.Dispose(); };
+                    if (iManageLifeCycle)
+                        w.Closed += (o, e) => { iWebControl.Dispose(); };
                     stackPanel.Children.Add(iWebControl);
                 }
                 );
         }
 
 
-        internal void TestNavigation(Action<INavigationBuilder, HTMLWindow, WindowTest> Test,bool iDebug=false)
+        internal void TestNavigation(Action<INavigationBuilder, HTMLWindow, WindowTest> Test,bool iDebug=false,bool iManageLifeCycle=true)
         {
             AssemblyHelper.SetEntryAssembly();
             HTMLWindow wc1 = null;
@@ -66,7 +67,7 @@ namespace MVVMAwesomium.Test
                 return wc1;
             };
 
-            using (var wcontext = BuildWindow(iWebControlFac))
+            using (var wcontext = BuildWindow(iWebControlFac, iManageLifeCycle))
             {
                     Test(wc1.NavigationBuilder, wc1, wcontext);
                     //wcontext.RunOnUIThread(() => wc1.Dispose());
@@ -76,6 +77,7 @@ namespace MVVMAwesomium.Test
         private void SetUpRoute(INavigationBuilder builder)
         {
             builder.Register<A1>("javascript\\navigation_1.html");
+            builder.Register<AA1>("javascript\\navigation_1.html");
             builder.Register<A2>("javascript\\navigation_2.html");
         }
 
@@ -93,6 +95,21 @@ namespace MVVMAwesomium.Test
                 Change = new RelayCommand(() => Navigation.NavigateAsync(new A1()));
                 GoTo1 = new RelayCommand(() => Navigation.NavigateAsync(new A2()));
             }
+
+            public ICommand GoTo1 { get; private set; }
+            public ICommand Change { get; private set; }
+        }
+
+        private class AA1 : A
+        {
+            public AA1()
+            {
+                Exception = new Exception();
+                Change = new RelayCommand(() =>{ throw Exception;});
+                GoTo1 = new RelayCommand(() => Navigation.NavigateAsync(new A2()));
+            }
+
+            public Exception Exception { get; private set; }
 
             public ICommand GoTo1 { get; private set; }
             public ICommand Change { get; private set; }
@@ -315,6 +332,57 @@ namespace MVVMAwesomium.Test
             });
         }
 
+        [Fact]
+        public void Test_HTMLWindowRecovery_UnderClosure_Capacity_Base()
+        {
+            //bool fl = false;
+            //EventHandler ea = null;
+            var a = new A1();
+            IWebSessionWatcher watch = Substitute.For<IWebSessionWatcher>();
+
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
+                =>
+            {
+                wpfnav.WebSessionWatcher.Should().NotBeNull();
+                wpfnav.WebSessionWatcher = watch;
+                //ea = (o, e) => { fl = true; wpfnav.OnFirstLoad -= ea; };
+                //wpfnav.OnFirstLoad += ea;
+                //wpfnav.Should().NotBeNull();
+                SetUpRoute(wpfbuild);
+                wpfnav.UseINavigable = true;
+
+                var mre = new ManualResetEvent(false);
+                WindowTest.RunOnUIThread(() => wpfnav.IsHTMLLoaded.Should().BeFalse());
+
+                WindowTest.RunOnUIThread(
+           () =>
+           {
+               wpfnav.NavigateAsync(a).ContinueWith(t => mre.Set());
+           });
+
+                mre.WaitOne();
+
+                WindowTest.RunOnUIThread(() =>
+                {
+                    wpfnav.IsHTMLLoaded.Should().BeTrue();
+                    //a1.Navigation.Should().Be(wpfnav);
+                    a.Navigation.Should().NotBeNull();
+                    System.Windows.Application.Current.Shutdown(); 
+                    var p = (a.Navigation as IWebViewProvider).WebView.RenderProcess;
+                    WebCore.Shutdown();
+                    //p.Kill();
+                    mre.Set();
+                });
+
+       
+                mre.WaitOne();
+
+                Thread.Sleep(1000);
+
+                watch.DidNotReceive().LogCritical("WebView crashed trying recover");
+            },false,false);
+        }
+
 
         private void Test_HTMLWindow_WebCoreShutDown_Base(IWebSessionWatcher iWatcher)
         {
@@ -365,6 +433,61 @@ namespace MVVMAwesomium.Test
             Test_HTMLWindow_WebCoreShutDown_Base(watch);
             watch.Received().LogCritical("Critical: WebCore ShuttingDown!!");
             watch.Received().OnSessionError(null, Arg.Any<Action>());
+        }
+
+
+        private Exception Test_HTMLWindow_WebCoreShutDown_Base_Exception(IWebSessionWatcher iWatcher)
+        {
+            var a = new AA1();
+            Exception res = null;
+
+            TestNavigation((wpfbuild, wpfnav, WindowTest)
+                =>
+            {
+                wpfnav.WebSessionWatcher.Should().NotBeNull();
+                if (iWatcher != null)
+                    wpfnav.WebSessionWatcher = iWatcher;
+                SetUpRoute(wpfbuild);
+                wpfnav.UseINavigable = true;
+                IAwesomeBinding bind = null;
+
+                var mre = new ManualResetEvent(false);
+                WindowTest.RunOnUIThread(() => wpfnav.IsHTMLLoaded.Should().BeFalse());
+
+                WindowTest.RunOnUIThread(
+           () =>
+           {
+               wpfnav.NavigateAsync(a).ContinueWith(t => { var tt = t as Task<IAwesomeBinding>; bind = tt.Result; mre.Set(); });
+           });
+
+                mre.WaitOne();
+
+                WindowTest.RunOnUIThread(() =>
+                {
+                    wpfnav.IsHTMLLoaded.Should().BeTrue();
+                    a.Navigation.Should().NotBeNull();
+
+                    var js = bind.JSRootObject;
+
+                    JSObject mycommand = (JSObject)js.Invoke("Change");
+                    mycommand.Invoke("Execute");
+                });
+
+                Thread.Sleep(1500);
+
+                res = a.Exception;
+            });
+
+            return res;
+        }
+
+        [Fact]
+        public void Test_HTMLWindow_WebCoreShutDown_Watcher_Exception()
+        {
+            IWebSessionWatcher watch = Substitute.For<IWebSessionWatcher>();
+            var exp  = Test_HTMLWindow_WebCoreShutDown_Base_Exception(watch);
+            watch.Received().LogCritical("Critical: WebCore ShuttingDown!!");
+            watch.Received().OnSessionError(exp, Arg.Any<Action>());
         }
 
         [Fact]

@@ -93,7 +93,7 @@ namespace MVVMAwesomium
                 OnDisplay(this, new DisplayEvent(iloadedvm));
         }
 
-        private void Switch(Task<IAwesomeBinding> iBinding, HTMLLogicWindow iwindow, TaskCompletionSource<object> tcs)
+        private void Switch(Task<IAwesomeBinding> iBinding, HTMLLogicWindow iwindow, TaskCompletionSource<IAwesomeBinding> tcs)
         {
             object oldvm = (Binding != null) ? Binding.Root : null;
             Binding = iBinding.Result;
@@ -149,6 +149,9 @@ namespace MVVMAwesomium
 
         private void Crashed(object sender, CrashedEventArgs e)
         {
+            if ((WebCore.IsShuttingDown) || (!WebCore.IsInitialized))
+                return;
+
             var dest = _CurrentWebControl.Source;
             var vm = Binding.Root;
 
@@ -188,7 +191,7 @@ namespace MVVMAwesomium
             _NextWebControl = _IWebViewLifeCycleManager.Create();
             _NextWebControl.ConsoleMessage += ConsoleMessage;
 
-            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+            TaskCompletionSource<IAwesomeBinding> tcs = new TaskCompletionSource<IAwesomeBinding>();
 
             UrlEventHandler sourceupdate = null;
             sourceupdate = (o, e) =>
