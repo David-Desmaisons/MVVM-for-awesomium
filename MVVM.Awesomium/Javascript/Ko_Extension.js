@@ -218,34 +218,76 @@ function Null_reference() {
         };
     };
 
+    function addClass(element,className) {
+        element.className += ' '+className;
+    }
+
+    function removeClass(element, className) {
+        var reg = new RegExp('(?:^|\s)' + className + '(?!\S)');
+        element.className.replace(RegExp, '');
+    }
+
+    function toogle(element,tooglevalue,className) {
+        if (!className)
+            return;
+
+        if (tooglevalue)
+            addClass(element, className);
+        else
+            removeClass(element, className);
+    }
+
     ko.bindingHandlers.command = {
         preprocess: function (value, name, addBinding) {
-            addBinding('commandOnEvent', '{ "command": "' + value + '", "event": "click"}');
-            return value;
+            var can = value + '()!==null && ' + value + '().CanExecute($data)===undefined &&' + value + '().CanExecuteCount() &&' + value + '().CanExecuteValue()',
+                act = 'function(cb){ if (' + can + ') { if (!!cb) {cb();} ' + value + '().Execute($data);}}';
+            return '{ can : '+ can + ', act : ' + act + ' }';
+        },
+
+        init: function (element, valueAccessor, allBindings) {
+            var option = allBindings.get('commandoption') || {},
+               eventname = option.event || 'click', cb = option.callback,
+               value = valueAccessor();
+
+            console.log(eventname);
+
+            element.addEventListener(eventname,function () { value.act(cb) },false);
+        },
+
+
+        update: function (element, valueAccessor, allBindings) {
+            var enable = valueAccessor().can;
+
+            if (element._currentenable === undefined)
+                element._currentenable = enable;
+            else if (element._currentenable === enable)
+                return;
+
+            element._currentenable = enable;
+
+            var option = allBindings.get('commandoption') || {}, cssOn = option.cssOn, ccsOff = option.ccsOff;
+
+            ko.bindingHandlers.enable.update(element, function () { return enable; }, allBindings);
+
+            toogle(element, enable, cssOn);
+            toogle(element, !enable, ccsOff);
         }
+
+
     };
 
-    ko.bindingHandlers.commandOnEvent = {
-        preprocess: function (compvalue, name, addBinding) {
-            var value = JSON.parse(compvalue.replace(/'/g, '"'));
-            addBinding('enable', value.command + '()!==null && ' + value.command + '().CanExecute($data)===undefined &&' + value.command + '().CanExecuteCount() &&' + value.command + '().CanExecuteValue()');
-            addBinding('event', '{' + value.event + ': function(){ if (' + value.command + '()!==null) {' + value.command + '().Execute($data);}}}');
-            return compvalue;
-        }
-    };
 
     ko.bindingHandlers.execute = {
         preprocess: function (value, name, addBinding) {
-            addBinding('executeOnEvent', '{ "command": "' + value + '", "event": "click"}');
-            return value;
-        }
-    };
+            return 'function(cb){ if (' + value + '()!==null) { if (!!cb) {cb();} ' + value + '().Execute($data);}}';
+        },
 
-    ko.bindingHandlers.executeOnEvent = {
-        preprocess: function (compvalue, name, addBinding) {
-            var value = JSON.parse(compvalue.replace(/'/g, '"'));
-            addBinding('event', '{' + value.event + ': function(){ if (' + value.command + '()!==null) {' + value.command + '().Execute($data);}}}');
-            return compvalue;
+        init: function (element, valueAccessor, allBindings) {
+            var option = allBindings.get('executeoption') || {},
+                eventname = option.event || 'click', cb = option.callback,
+                value = valueAccessor();
+
+            element.addEventListener(eventname, function () { value(cb) }, false);
         }
     };
 
@@ -255,8 +297,6 @@ function Null_reference() {
 
             var valueUpdate = allBindings.get('valueUpdate');
             var event = (valueUpdate === 'afterkeydown') ? 'input' : 'change';
-            console.log(event);
-            console.log(valueUpdate);
 
             element.addEventListener(event, function () {
                 value(Number(element.value));
@@ -299,7 +339,7 @@ function Null_reference() {
 
     ko.bindingHandlers.onclose = {
         preprocess: function (value) {
-            return '{when: $root.__window__().State, do: ' + value + '}';
+            return '{when: $root.__window__().State, act: ' + value + '}';
         },
 
         init: function (element, valueAccessor,allBindings,viewModel,bindingContext) {
@@ -311,13 +351,13 @@ function Null_reference() {
             if (v.when().name !== 'Closing')
                 return;
 
-            v.do(function () { bindingContext.$root.__window__().CloseReady().Execute(); }, element);
+            v.act(function () { bindingContext.$root.__window__().CloseReady().Execute(); }, element);
         }
     };
 
     ko.bindingHandlers.onopened= {
         preprocess: function (value) {
-            return '{when:  $root.__window__().State, do: ' + value + '}';
+            return '{when:  $root.__window__().State, act: ' + value + '}';
         },
 
         init: function (element, valueAccessor,allBindings,viewModel,bindingContext) {
@@ -329,7 +369,7 @@ function Null_reference() {
             if (v.when().name !== 'Opened')
                 return;
 
-            v.do(element, function () { bindingContext.$root.__window__().EndOpen().Execute(); });
+            v.act(element, function () { bindingContext.$root.__window__().EndOpen().Execute(); });
         }
     };
 
