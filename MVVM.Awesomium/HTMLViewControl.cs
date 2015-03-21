@@ -20,6 +20,7 @@ using MVVMAwesomium.Infra.VM;
 using MVVMAwesomium.Navigation;
 using Awesomium.Windows.Controls;
 using MVVMAwesomium.Infra;
+using MVVMAwesomium.Exceptions;
 
 namespace MVVMAwesomium
 {
@@ -33,10 +34,17 @@ namespace MVVMAwesomium
             set { this.SetValue(UriProperty, value); }
         }
 
-        public string RelativePath
+        public string RelativeSource
         {
-            set { Uri = new Uri(string.Format("{0}\\{1}", Assembly.GetExecutingAssembly().GetPath(), value)); }          
+            set 
+            {
+                string path = string.Format("{0}\\{1}", Assembly.GetExecutingAssembly().GetPath(), value);
+                if (!File.Exists(path))
+                    throw ExceptionHelper.Get(string.Format("Path not found {0}",path));
+                Uri = new Uri(path); 
+            }          
         }
+
 
         public static readonly DependencyProperty ModeProperty = DependencyProperty.Register("Mode", typeof(JavascriptBindingMode), typeof(HTMLViewControl), new PropertyMetadata(JavascriptBindingMode.TwoWay));
 

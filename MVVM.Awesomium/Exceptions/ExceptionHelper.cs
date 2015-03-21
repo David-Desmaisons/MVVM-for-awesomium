@@ -36,11 +36,6 @@ namespace MVVMAwesomium.Exceptions
            return Get("Critical error! Javascript timeOut! Try set IWebSession Synchroneous TimeOut to 0.");
         }
 
-
-        
-
- 
-
         static public ArgumentException GetArgument(string iMessage)
         {
             return new MVVMforAwesomiumArgumentException(iMessage);

@@ -82,7 +82,7 @@ namespace MVVMAwesomium.Test
                     c.Uri.Should().BeNull();
 
                     string relp = "javascript\\navigation_1.html";
-                    c.RelativePath = relp;
+                    c.RelativeSource = relp;
                     c.Uri.AbsolutePath.Replace("/", "\\").Should().Be(string.Format("{0}\\{1}", Assembly.GetAssembly(typeof(HTMLViewControl)).GetPath(), relp));
                     mre.Set();
                 });
