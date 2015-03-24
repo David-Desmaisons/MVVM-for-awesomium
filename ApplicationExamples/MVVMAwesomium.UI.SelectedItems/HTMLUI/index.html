@@ -12,8 +12,8 @@
         </script>-->
         <!--, template: { name: 'skill-template'}-->
 
-        <select  multiple="multiple"data-bind="options:Skills,  
-                                                        optionsText: function(item) { return item.Type() + ' ' + item.Name()},selectedOptions:SelectedSkills"></select>
+        <select  multiple="multiple"data-bind="options:Skills(),  
+                                                        optionsText: function(item) { return item.Type() + ' ' + item.Name()},selectedOptions:SelectedSkills()"></select>
 
         <button data-bind="command: AddSkill">Add Skill</button>
 

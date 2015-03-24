@@ -10,7 +10,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <MVVMAwesomium:HTMLViewControl  x:Name="WebControl" RelativePath="HTLM\index.html"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <MVVMAwesomium:HTMLViewControl  x:Name="WebControl" RelativeSource="HTLM\index.html"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         <DatePicker SelectedDate="{Binding Path=Date}" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
     </Grid>

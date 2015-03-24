@@ -9,6 +9,7 @@ using System.Threading;
 using System.Reflection;
 using MVVMAwesomium.Infra;
 using MVVMAwesomium.ViewModel.Example;
+using MVVMAwesomium.Exceptions;
 
 namespace MVVMAwesomium.Test
 {
@@ -82,8 +83,9 @@ namespace MVVMAwesomium.Test
                     c.Uri.Should().BeNull();
 
                     string relp = "javascript\\navigation_1.html";
-                    c.RelativeSource = relp;
-                    c.Uri.AbsolutePath.Replace("/", "\\").Should().Be(string.Format("{0}\\{1}", Assembly.GetAssembly(typeof(HTMLViewControl)).GetPath(), relp));
+                    Action act = () => c.RelativeSource = relp;
+                    act.ShouldThrow<MVVMforAwesomiumException>();
+                    //c.Uri.AbsolutePath.Replace("/", "\\").Should().Be(string.Format("{0}\\{1}", Assembly.GetAssembly(typeof(HTMLViewControl)).GetPath(), relp));
                     mre.Set();
                 });
 

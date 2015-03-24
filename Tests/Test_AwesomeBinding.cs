@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using MVVMAwesomium.ViewModel.Infra;
 using MVVMAwesomium.Exceptions;
+using MVVMAwesomium.Test.ViewModel.Test;
 
 namespace MVVMAwesomium.Test
 {
@@ -115,13 +116,13 @@ namespace MVVMAwesomium.Test
                     res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
                     ((string)res4).Should().Be("Florianopolis");
 
-                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])UnWrapCollection(js,"Skills"))[0]).Invoke("Name")));
                     ((string)res5).Should().Be("Langage");
 
                     _DataContext.Skills[0].Name = "Ling";
                     Thread.Sleep(200);
 
-                    res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    res5 = GetSafe(() => (((JSObject)((JSValue[])UnWrapCollection(js,"Skills"))[0]).Invoke("Name")));
                     ((string)res5).Should().Be("Langage");
 
                     this.DoSafe(() => js.Invoke("Name", "resName"));
@@ -233,13 +234,13 @@ namespace MVVMAwesomium.Test
                     res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
                     ((string)res4).Should().Be("Paris");
 
-                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])UnWrapCollection(js,"Skills"))[0]).Invoke("Name")));
                     ((string)res5).Should().Be("Langage");
 
                     _DataContext.Skills[0].Name = "Ling";
                     Thread.Sleep(200);
 
-                    res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    res5 = GetSafe(() => (((JSObject)((JSValue[])UnWrapCollection(js,"Skills"))[0]).Invoke("Name")));
                     ((string)res5).Should().Be("Ling");
 
 
@@ -334,6 +335,20 @@ namespace MVVMAwesomium.Test
         private JSValue Get(JSObject root, string pn)
         {
             return root.Invoke(pn);
+        }
+
+        private bool _Init = false;
+        private JSObject _Window;
+
+        private JSValue UnWrapCollection(JSObject root, string pn)
+        {
+            if (!_Init)
+            {
+                _Init=true;
+                _WebView.ExecuteJavascript("window.Extract=function(fn){return fn();}");
+                _Window = _WebView.ExecuteJavascriptWithResult("window");
+            }
+            return _Window.Invoke("Extract",root.Invoke(pn));
         }
 
         [Fact]
@@ -477,13 +492,13 @@ namespace MVVMAwesomium.Test
                     res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
                     ((string)res4).Should().Be("Paris");
 
-                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])UnWrapCollection(js,"Skills"))[0]).Invoke("Name")));
                     ((string)res5).Should().Be("Langage");
 
                     _DataContext.Skills[0].Name = "Ling";
                     Thread.Sleep(50);
 
-                    res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    res5 = GetSafe(() => (((JSObject)((JSValue[])UnWrapCollection(js,"Skills"))[0]).Invoke("Name")));
                     ((string)res5).Should().Be("Ling");
 
                     //Teste Two Way
@@ -600,7 +615,7 @@ namespace MVVMAwesomium.Test
                     dres = GetSafe(() => ((JSObject)res)["displayName"]);
                     ((string)dres).Should().Be("Single");
 
-                    var othervalue = GetSafe(() => Get(js, "States"));
+                    var othervalue = GetSafe(() => UnWrapCollection(js, "States"));
                     JSValue[] coll = (JSValue[])othervalue;
                     JSValue di = coll[2];
                     var name = GetSafe(() => ((JSObject)di)["displayName"]);
@@ -1251,7 +1266,7 @@ namespace MVVMAwesomium.Test
 
                     Thread.Sleep(100);
 
-                    JSValue res = GetSafe(() => Get(js, "Skills"));
+                    JSValue res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     ((JSValue[])res).Should().HaveCount(3);
                 }
@@ -1296,7 +1311,7 @@ namespace MVVMAwesomium.Test
                 {
                     var js = mb.JSRootObject;
 
-                    JSValue res = GetSafe(() => Get(js, "Skills"));
+                    JSValue res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     var col = ((JSValue[])res);
                     col.Length.Should().Be(2);
@@ -1306,40 +1321,40 @@ namespace MVVMAwesomium.Test
                     _DataContext.Skills.Add(new Skill() { Name = "C++", Type = "Info" });
 
                     Thread.Sleep(100);
-                    res = GetSafe(() => Get(js, "Skills"));
+                    res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
 
 
                     _DataContext.Skills.Insert(0, new Skill() { Name = "C#", Type = "Info" });
                     Thread.Sleep(100);
-                    res = GetSafe(() => Get(js, "Skills"));
+                    res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
 
                     _DataContext.Skills.RemoveAt(1);
                     Thread.Sleep(100);
-                    res = GetSafe(() => Get(js, "Skills"));
+                    res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
 
                     _DataContext.Skills[0] = new Skill() { Name = "HTML", Type = "Info" };
                     Thread.Sleep(100);
-                    res = GetSafe(() => Get(js, "Skills"));
+                    res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
 
                     _DataContext.Skills[0] = new Skill() { Name = "HTML5", Type = "Info" };
                     _DataContext.Skills.Insert(0, new Skill() { Name = "HTML5", Type = "Info" });
                     Thread.Sleep(100);
-                    res = GetSafe(() => Get(js, "Skills"));
+                    res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
 
 
                     _DataContext.Skills.Clear();
                     Thread.Sleep(100);
-                    res = GetSafe(() => Get(js, "Skills"));
+                    res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
 
@@ -1362,7 +1377,7 @@ namespace MVVMAwesomium.Test
                 {
                     var js = mb.JSRootObject;
 
-                    JSValue res = GetSafe(() => Get(js, "Skills"));
+                    JSValue res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     var col = ((JSValue[])res);
                     col.Length.Should().Be(2);
@@ -1372,7 +1387,7 @@ namespace MVVMAwesomium.Test
                     _DataContext.Skills.Add(new Skill() { Name = "C++", Type = "Info" });
 
                     Thread.Sleep(150);
-                    res = GetSafe(() => Get(js, "Skills"));
+                    res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
 
@@ -1393,7 +1408,7 @@ namespace MVVMAwesomium.Test
 
                     while (notok)
                     {
-                        res = GetSafe(() => Get(js, "Skills"));
+                        res = GetSafe(() => UnWrapCollection(js, "Skills"));
                         res.Should().NotBeNull();
                         notok = ((JSValue[])res).Length != tcount;
                     }
@@ -1456,7 +1471,7 @@ namespace MVVMAwesomium.Test
 
                     var js = mb.JSRootObject;
 
-                    JSValue res = GetSafe(() => Get(js, "L1"));
+                    JSValue res = GetSafe(() => UnWrapCollection(js, "L1"));
                     res.Should().NotBeNull();
                     var col = ((JSValue[])res);
                     col.Length.Should().Be(r);
@@ -1486,17 +1501,17 @@ namespace MVVMAwesomium.Test
                 {
                     var js = mb.JSRootObject;
 
-                    JSValue res1 = GetSafe(() => Get(js, "L1"));
+                    JSValue res1 = GetSafe(() => UnWrapCollection(js, "L1"));
                     res1.Should().NotBeNull();
                     var col1 = ((JSValue[])res1);
                     col1.Length.Should().Be(r);
 
-                    JSValue res2 = GetSafe(() => Get(js, "L2"));
+                    JSValue res2 = GetSafe(() => UnWrapCollection(js, "L2"));
                     res2.Should().NotBeNull();
                     var col2 = ((JSValue[])res2);
                     col2.Length.Should().Be(0);
 
-                    JSObject l2c = (JSObject)GetSafe(() => js["L2"]);
+                    JSObject l2c = (JSObject)GetSafe(() => js.Invoke("L2"));
                     l2c.Should().NotBeNull();
 
                     string javascript = "window.app = function(value,coll){var args = []; args.push(0);args.push(0);for (var i = 0; i < value.length; i++) { args.push(value[i]);} coll.splice.apply(coll, args);};";
@@ -1597,20 +1612,20 @@ namespace MVVMAwesomium.Test
                     var root = (mb as AwesomeBinding).JSBrideRootObject as JSGenericObject;
                     var js = mb.JSRootObject;
 
-                    JSValue res = GetSafe(() => Get(js, "Skills"));
+                    JSValue res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     var col = ((JSValue[])res);
                     col.Length.Should().Be(2);
 
                     Check(col, _DataContext.Skills);
 
-                    JSObject coll = GetSafe(() => ((JSObject)js)["Skills"]);
+                    JSObject coll = GetSafe(() => ((JSObject)js).Invoke("Skills"));
                     DoSafe(() => coll.Invoke("push", (root.Attributes["Skills"] as JSArray).Items[0].GetJSSessionValue()));
 
                     Thread.Sleep(5000);
                     _DataContext.Skills.Should().HaveCount(3);
                     _DataContext.Skills[2].Should().Be(_DataContext.Skills[0]);
-                    res = GetSafe(() => Get(js, "Skills"));
+                    res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
 
@@ -1618,7 +1633,7 @@ namespace MVVMAwesomium.Test
 
                     Thread.Sleep(100);
                     _DataContext.Skills.Should().HaveCount(2);
-                    res = GetSafe(() => Get(js, "Skills"));
+                    res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
 
@@ -1626,7 +1641,7 @@ namespace MVVMAwesomium.Test
 
                     Thread.Sleep(100);
                     _DataContext.Skills.Should().HaveCount(1);
-                    res = GetSafe(() => Get(js, "Skills"));
+                    res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
 
@@ -1636,14 +1651,14 @@ namespace MVVMAwesomium.Test
 
                     Thread.Sleep(150);
                     _DataContext.Skills.Should().HaveCount(2);
-                    res = GetSafe(() => Get(js, "Skills"));
+                    res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
 
                     _DataContext.Skills.Add(new Skill() { Type = "Langage", Name = "French" });
                     Thread.Sleep(150);
                      _DataContext.Skills.Should().HaveCount(3);
-                    res = GetSafe(() => Get(js, "Skills"));
+                     res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
       
@@ -1652,7 +1667,7 @@ namespace MVVMAwesomium.Test
 
                     Thread.Sleep(150);
                     _DataContext.Skills.Should().HaveCount(3);
-                    res = GetSafe(() => Get(js, "Skills"));
+                    res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     Check((JSValue[])res, _DataContext.Skills);
                 }
@@ -1673,14 +1688,14 @@ namespace MVVMAwesomium.Test
                     var root = (mb as AwesomeBinding).JSBrideRootObject as JSGenericObject;
                     var js = mb.JSRootObject;
 
-                    JSValue res = GetSafe(() => Get(js, "Skills"));
+                    JSValue res = GetSafe(() => UnWrapCollection(js, "Skills"));
                     res.Should().NotBeNull();
                     var col = ((JSValue[])res);
                     col.Length.Should().Be(2);
 
                     Check(col, _DataContext.Skills);
 
-                    JSObject coll = GetSafe(() => ((JSObject)js)["Skills"]);
+                    JSObject coll = GetSafe(() => ((JSObject)js).Invoke("Skills"));
                     DoSafe(() => coll.Invoke("push", new JSValue("Whatever")));
 
                     Thread.Sleep(150);
@@ -1731,6 +1746,17 @@ namespace MVVMAwesomium.Test
             coll.ForEach((c, i) =>
             {
                 (GetSafe(() => (string)c)).Should().Be(iskill[i]);
+
+            });
+
+        }
+
+        private void Checkstring(JSValue[] coll, IList<int> iskill)
+        {
+            coll.Length.Should().Be(iskill.Count);
+            coll.ForEach((c, i) =>
+            {
+                (GetSafe(() => (int)c)).Should().Be(iskill[i]);
 
             });
 
@@ -1852,7 +1878,7 @@ namespace MVVMAwesomium.Test
                 {
                     var js = mb.JSRootObject;
 
-                    JSValue res = GetSafe(() => Get(js, "List"));
+                    JSValue res = GetSafe(() => UnWrapCollection(js, "List"));
                     res.Should().NotBeNull();
                     var col = ((JSValue[])res);
                     col.Length.Should().Be(0);
@@ -1862,7 +1888,7 @@ namespace MVVMAwesomium.Test
                     datacontext.List.Add("titi");
 
                     Thread.Sleep(100);
-                    res = GetSafe(() => Get(js, "List"));
+                    res = GetSafe(() => UnWrapCollection(js, "List"));
                     col = ((JSValue[])res);
 
                     Checkstring(col, datacontext.List);
@@ -1871,13 +1897,13 @@ namespace MVVMAwesomium.Test
                     datacontext.List.Add("toto");
 
                     Thread.Sleep(100);
-                    res = GetSafe(() => Get(js, "List"));
+                    res = GetSafe(() => UnWrapCollection(js, "List"));
                     col = ((JSValue[])res);
 
                     Checkstring(col, datacontext.List);
 
                     Thread.Sleep(100);
-                    res = GetSafe(() => Get(js, "List"));
+                    res = GetSafe(() => UnWrapCollection(js, "List"));
                     col = ((JSValue[])res);
 
                     Checkstring(col, datacontext.List);
@@ -1885,13 +1911,13 @@ namespace MVVMAwesomium.Test
                     var comp = new List<string>(datacontext.List);
                     comp.Add("newvalue");
 
-                    res = GetSafe(() => js["List"]);
+                    res = GetSafe(() => js.Invoke("List"));
                     DoSafe(() =>
                     ((JSObject)res).Invoke("push", new JSValue("newvalue")));
 
                     Thread.Sleep(350);
 
-                    res = GetSafe(() => Get(js, "List"));
+                    res = GetSafe(() => UnWrapCollection(js, "List"));
                     col = ((JSValue[])res);
 
                     datacontext.List.Should().Equal(comp);
@@ -1899,11 +1925,47 @@ namespace MVVMAwesomium.Test
 
                     datacontext.List.Clear();
                     Thread.Sleep(100);
-                    res = GetSafe(() => Get(js, "List"));
+                    res = GetSafe(() => UnWrapCollection(js, "List"));
                     col = ((JSValue[])res);
 
                     Checkstring(col, datacontext.List);
 
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_Collection_should_be_observable_attribute()
+        {
+            using (Tester())
+            {
+
+                bool isValidSynchronizationContext = (_SynchronizationContext != null) && (_SynchronizationContext.GetType() != typeof(SynchronizationContext));
+                isValidSynchronizationContext.Should().BeTrue();
+
+                var datacontext = new ChangingCollectionViewModel();
+
+                using (var mb = AwesomeBinding.Bind(_WebView, datacontext, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSValue res = GetSafe(() => UnWrapCollection(js, "Items"));
+                    res.Should().NotBeNull();
+                    var col = ((JSValue[])res);
+                    col.Length.Should().NotBe(0);
+
+                    Checkstring(col, datacontext.Items);
+
+                    DoSafe(()=> datacontext.Replace.Execute(null));
+
+                    datacontext.Items.Should().BeEmpty();
+
+                    Thread.Sleep(300);
+                    res = GetSafe(() => UnWrapCollection(js, "Items"));
+                    col = ((JSValue[])res);
+                    col.Length.Should().Be(0);
+
+                    Checkstring(col, datacontext.Items);
                 }
             }
         }
@@ -1925,16 +1987,16 @@ namespace MVVMAwesomium.Test
                 {
                     var js = mb.JSRootObject;
 
-                    JSValue res = GetSafe(() => Get(js, "List"));
+                    JSValue res = GetSafe(() => UnWrapCollection(js, "List"));
                     res.Should().NotBeNull();
                     var col = ((JSValue[])res);
                     col.Length.Should().Be(1);
 
-                    res = GetSafe(() => js["List"]);
+                    res = GetSafe(() => js.Invoke("List"));
                     DoSafe(() =>
                     ((JSObject)res).Invoke("push", new JSValue("newvalue")));
 
-                    res = GetSafe(() => Get(js, "List"));
+                    res = GetSafe(() => UnWrapCollection(js, "List"));
                     res.Should().NotBeNull();
                     col = ((JSValue[])res);
                     col.Length.Should().Be(2);
@@ -1962,7 +2024,7 @@ namespace MVVMAwesomium.Test
                 {
                     var js = mb.JSRootObject;
 
-                    JSValue res = GetSafe(() => Get(js, "List"));
+                    JSValue res = GetSafe(() => UnWrapCollection(js, "List"));
                     res.Should().NotBeNull();
                     var col = ((JSValue[])res);
                     col.Length.Should().Be(0);
@@ -1972,7 +2034,7 @@ namespace MVVMAwesomium.Test
                     datacontext.List.Add(3);
 
                     Thread.Sleep(150);
-                    res = GetSafe(() => Get(js, "List"));
+                    res = GetSafe(() => UnWrapCollection(js, "List"));
                     col = ((JSValue[])res);
 
                     Checkdecimal(col, datacontext.List);
@@ -1981,13 +2043,13 @@ namespace MVVMAwesomium.Test
                     datacontext.List.Add(126);
 
                     Thread.Sleep(150);
-                    res = GetSafe(() => Get(js, "List"));
+                    res = GetSafe(() => UnWrapCollection(js, "List"));
                     col = ((JSValue[])res);
 
                     Checkdecimal(col, datacontext.List);
 
                     Thread.Sleep(100);
-                    res = GetSafe(() => Get(js, "List"));
+                    res = GetSafe(() => UnWrapCollection(js, "List"));
                     col = ((JSValue[])res);
 
                     Checkdecimal(col, datacontext.List);
@@ -1995,13 +2057,13 @@ namespace MVVMAwesomium.Test
                     var comp = new List<decimal>(datacontext.List);
                     comp.Add(0.55m);
 
-                    res = GetSafe(() => js["List"]);
+                    res = GetSafe(() => js.Invoke("List"));
                     DoSafe(() =>
                     ((JSObject)res).Invoke("push", new JSValue(0.55)));
 
                     Thread.Sleep(350);
 
-                    res = GetSafe(() => Get(js, "List"));
+                    res = GetSafe(() => UnWrapCollection(js, "List"));
                     col = ((JSValue[])res);
 
                     comp.Should().Equal(datacontext.List);
@@ -2047,13 +2109,13 @@ namespace MVVMAwesomium.Test
                     res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
                     ((string)res4).Should().Be("Paris");
 
-                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])UnWrapCollection(js,"Skills"))[0]).Invoke("Name")));
                     ((string)res5).Should().Be("Langage");
 
                     _DataContext.Skills[0].Name = "Ling";
                     Thread.Sleep(50);
 
-                    res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    res5 = GetSafe(() => (((JSObject)((JSValue[])UnWrapCollection(js,"Skills"))[0]).Invoke("Name")));
                     ((string)res5).Should().Be("Ling");
 
                     //Teste Two Way
@@ -2095,7 +2157,7 @@ namespace MVVMAwesomium.Test
                     ((string)res4).Should().Be("Florianopolis");
 
 
-                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])UnWrapCollection(js,"Skills"))[0]).Invoke("Name")));
                     ((string)res5).Should().Be("Langage");
                 }
             }
@@ -2125,7 +2187,7 @@ namespace MVVMAwesomium.Test
                     JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
                     ((string)res4).Should().Be("Florianopolis");
 
-                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])this.UnWrapCollection(js, "Skills"))[0]).Invoke("Name")));
                     ((string)res5).Should().Be("Langage");
                 }
             }
@@ -2155,7 +2217,7 @@ namespace MVVMAwesomium.Test
                     JSValue res4 = GetSafe(() => ((JSObject)js.Invoke("Local")).Invoke("City"));
                     ((string)res4).Should().Be("Florianopolis");
 
-                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])js.Invoke("Skills"))[0]).Invoke("Name")));
+                    JSValue res5 = GetSafe(() => (((JSObject)((JSValue[])UnWrapCollection(js,"Skills"))[0]).Invoke("Name")));
                     ((string)res5).Should().Be("Langage");
                 }
             }

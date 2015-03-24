@@ -26,7 +26,7 @@
 	</head>
 <body>
     <input type="text" data-bind="value: Name, valueUpdate:'afterkeydown'" placeholder="First name">
-    <ul data-bind="foreach: Skills">
+    <ul data-bind="foreach: Skills()">
         <li><span data-bind="text:Type"></span>:<span data-bind="text:Name"></span><button data-bind="execute: $root.RemoveSkill, executeoption: { callback : function(){alert('removing');} }">Remove skill</button></li>
     </ul>
     <div>
@@ -47,7 +47,7 @@
     </div>
     <div>
         <!--<td>-->
-        <!-- ko foreach: States -->
+        <!-- ko foreach: States() -->
         <label>
             <input type="radio" data-bind="checkedValue:$data, checked: $root.PersonalState" /><span data-bind="text:$data.displayName"></span>
         </label>
@@ -57,7 +57,7 @@
 
     <div>
         <!--<td>-->
-        <!-- ko foreach: Sexes -->
+        <!-- ko foreach: Sexes() -->
         <label>
             <input type="radio" data-bind="checkedValue:$data, checked: $root.Sex" />
             <img height="50" width="50" data-bind="enumimage:$data">

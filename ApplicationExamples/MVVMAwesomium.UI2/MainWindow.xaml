@@ -17,7 +17,7 @@
         </Grid.ColumnDefinitions>
 
 
-        <MVVMAwesomium:HTMLViewControl  x:Name="WebControl" RelativePath="HTMLUI\index.html"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3"/>
+        <MVVMAwesomium:HTMLViewControl  x:Name="WebControl" RelativeSource="HTMLUI\index.html"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="3"/>
 
         <TextBox Margin="10,0"  Text="{Binding Path=One.Name,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Grid.Column="1" HorizontalAlignment="Stretch" Height="23"   TextWrapping="Wrap" VerticalAlignment="Center" />
         <TextBox Margin="10,0"  Text="{Binding Path=One.LastName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Grid.Column="2"  Grid.Row="0" HorizontalAlignment="Stretch" Height="23"   TextWrapping="Wrap" VerticalAlignment="Center" />

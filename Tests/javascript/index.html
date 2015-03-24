@@ -8,7 +8,7 @@
         <h2>MySelf</h2>
     </div>
     <input type="text" data-bind="value: Name, valueUpdate:'afterkeydown'" placeholder="First name">
-    <ul data-bind="foreach: Skills">
+    <ul data-bind="foreach: Skills()">
         <li><span data-bind="text:Type"></span>:<span data-bind="text:Name"></span></li>
     </ul>
     <div>

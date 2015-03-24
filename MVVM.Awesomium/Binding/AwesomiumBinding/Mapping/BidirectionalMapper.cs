@@ -125,9 +125,10 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         public void RegisterCollectionMapping(JSObject iFather, string att, int index, JSObject iChild)
         {
-            JSGenericObject jsof = GetFromJavascript(iFather) as JSGenericObject;
-            JSArray jsos = jsof.Attributes[att] as JSArray;
-            Update(jsos.Items[index] as IJSObservableBridge, iChild);
+            var father = GetFromJavascript(iFather);
+            var jsos = (att==null)? father : (father as JSGenericObject).Attributes[att];
+
+            Update((jsos as JSArray).Items[index] as IJSObservableBridge, iChild);
         }
 
         #endregion
@@ -153,7 +154,12 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         private Task InjectInHTLMSession(IJSCSGlue iroot, bool isroot = false)
         {
-            if ((iroot == null) || (iroot.Type != JSCSGlueType.Object) && ((iroot.Type != JSCSGlueType.Command)))
+            //if ((iroot == null) || (iroot.Type != JSCSGlueType.Object) && ((iroot.Type != JSCSGlueType.Command)))
+            //{
+            //    return TaskHelper.Ended();
+            //}
+
+            if ((iroot == null) || (iroot.Type == JSCSGlueType.Basic))
             {
                 return TaskHelper.Ended();
             }

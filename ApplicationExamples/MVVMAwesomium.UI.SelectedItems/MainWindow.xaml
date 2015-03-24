@@ -14,7 +14,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <MVVMAwesomium:HTMLViewControl IsDebug="True"  x:Name="WebControl" RelativePath="HTMLUI\index.html"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="2"/>
+        <MVVMAwesomium:HTMLViewControl IsDebug="True"  x:Name="WebControl" RelativeSource="HTMLUI\index.html"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="2"/>
 
 
          <ListBox ItemsSource="{Binding Skills}" Grid.Column="1" HorizontalAlignment="Stretch" Margin="50,10" VerticalAlignment="Stretch" Grid.Row="0">

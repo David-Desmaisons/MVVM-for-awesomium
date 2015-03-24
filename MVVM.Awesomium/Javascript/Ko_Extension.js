@@ -46,9 +46,9 @@ function Null_reference() {
              observable.silent = observable;
      }
 
-     function createCollectionSubsription(observable, tracker, res, att) {
+     function createCollectionSubsription(observable, tracker) {
          if (tracker.TrackCollectionChanges) {
-             var collectionlistener = CollectionListener(res[att], tracker);
+             var collectionlistener = CollectionListener(observable, tracker);
              observable.listener = collectionlistener;
              observable.subscriber = observable.subscribe(collectionlistener, null, 'arrayChange');
              observable.silent = function (fn) {
@@ -106,6 +106,26 @@ function Null_reference() {
             or._MappedId = MapToObservable._MappedId;
         }
 
+        if (Array.isArray(or)) {
+            var arrayres = ko.observableArray();
+            MapToObservable.Cache[or._MappedId] = arrayres;
+            if ((Mapper.Register) && (context === null))
+                Mapper.Register(arrayres);
+
+            for (var i = 0; i < or.length; ++i) {
+                arrayres.push(MapToObservable(or[i], {
+                    object: arrayres,
+                    attribute: null,
+                    index: i
+                }, Mapper, Listener));
+            }
+
+            createCollectionSubsription(arrayres, Listener);
+            if ((context === null) && (Mapper.End)) Mapper.End(arrayres);
+
+            return arrayres;
+        }
+
         var res = {};
         MapToObservable.Cache[or._MappedId] = res;
         if (Mapper.Register){
@@ -138,10 +158,11 @@ function Null_reference() {
                                 index: i
                             }, Mapper, Listener));
                         }
-
-                        res[att] = ko.observableArray(nar);
-                        if (Mapper.Register) Mapper.Register(res[att], res, att);
-                        createCollectionSubsription(res[att], Listener, res, att);
+                        var collection = ko.observableArray(nar)
+                        res[att] = ko.observable(collection);
+                        if (Mapper.Register) Mapper.Register(collection, res, att);
+                        createCollectionSubsription(collection, Listener);
+                        createSubsription(res[att], Listener, res, att);
                     }
                 } else {
                     res[att] = ko.observable(value);
@@ -248,8 +269,6 @@ function Null_reference() {
             var option = allBindings.get('commandoption') || {},
                eventname = option.event || 'click', cb = option.callback,
                value = valueAccessor();
-
-            console.log(eventname);
 
             element.addEventListener(eventname,function () { value.act(cb) },false);
         },
