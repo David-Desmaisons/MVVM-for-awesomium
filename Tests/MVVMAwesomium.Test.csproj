@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Awesomium_Test_Base.cs" />
+    <Compile Include="MVVM.Component.Relay.Test\RelaySimpleCommandTest.cs" />
     <Compile Include="Test_HTMLViewControl.cs" />
     <Compile Include="Infra\AssemblyHelper.cs" />
     <Compile Include="Infra\ViewModelCLRTypes.cs" />
@@ -105,6 +106,10 @@
     <Compile Include="ViewModel.Test\ChangingCollectionViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MVVM.Component\MVVM.Component.csproj">
+      <Project>{26203c44-279d-4bfe-b17a-f6ada8d240ed}</Project>
+      <Name>MVVM.Component</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ViewModelExamples\MVVMAwesomium.ViewModel.csproj">
       <Project>{e35b9010-5429-4ffe-a788-e9c40e743e9c}</Project>
       <Name>MVVMAwesomium.ViewModel</Name>

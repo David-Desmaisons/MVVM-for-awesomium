@@ -84,10 +84,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Content Include="..\MVVM.Awesomium\Javascript\Ko_Extension.min.js.map">
+    <None Include="..\..\MVVM.Awesomium\Javascript\Ko_Extension.min.js.map">
       <Link>View\scripts\Ko_Extension.min.js.map</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -98,32 +97,29 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\MVVM.Awesomium\Javascript\knockout.js">
+    <Content Include="..\..\MVVM.Awesomium\Javascript\knockout.js">
       <Link>View\scripts\knockout.js</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\MVVM.Awesomium\Javascript\Ko_Extension.js">
+    <Content Include="..\..\MVVM.Awesomium\Javascript\Ko_Extension.js">
       <Link>View\scripts\Ko_Extension.js</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\MVVM.Awesomium\Javascript\Ko_Extension.min.js">
+    <Content Include="..\..\MVVM.Awesomium\Javascript\Ko_Extension.min.js">
       <Link>View\scripts\Ko_Extension.min.js</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="View\index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MVVM.Awesomium\MVVMAwesomium.csproj">
+    <ProjectReference Include="..\..\MVVM.Awesomium\MVVMAwesomium.csproj">
       <Project>{9B18B122-A2FC-4537-AB68-5E1EC9959DB8}</Project>
       <Name>MVVMAwesomium</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tests\MVVMAwesomium.Test.csproj">
+    <ProjectReference Include="..\..\Tests\MVVMAwesomium.Test.csproj">
       <Project>{84916ceb-fef3-4a42-b1a0-7b43f3d88ccb}</Project>
       <Name>MVVMAwesomium.Test</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ViewModelExamples\MVVMAwesomium.ViewModel.csproj">
+    <ProjectReference Include="..\..\ViewModelExamples\MVVMAwesomium.ViewModel.csproj">
       <Project>{e35b9010-5429-4ffe-a788-e9c40e743e9c}</Project>
       <Name>MVVMAwesomium.ViewModel</Name>
     </ProjectReference>
