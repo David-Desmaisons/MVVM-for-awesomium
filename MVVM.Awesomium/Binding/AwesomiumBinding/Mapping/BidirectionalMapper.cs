@@ -154,11 +154,6 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         private Task InjectInHTLMSession(IJSCSGlue iroot, bool isroot = false)
         {
-            //if ((iroot == null) || (iroot.Type != JSCSGlueType.Object) && ((iroot.Type != JSCSGlueType.Command)))
-            //{
-            //    return TaskHelper.Ended();
-            //}
-
             if ((iroot == null) || (iroot.Type == JSCSGlueType.Basic))
             {
                 return TaskHelper.Ended();

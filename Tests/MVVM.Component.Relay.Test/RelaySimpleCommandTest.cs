@@ -5,6 +5,7 @@ using System.Text;
 using NSubstitute;
 using Xunit;
 using FluentAssertions;
+using System.Threading.Tasks;
 
 namespace MVVMAwesomium.Test
 {
@@ -42,10 +43,26 @@ namespace MVVMAwesomium.Test
             function.Invoke(arg).Returns(122);
             var target = new MVVM.Component.RelayResultCommand<object,int>(function);
       
-            var res = target.Execute(arg);
+            var res = target.Execute(arg).Result;
 
             function.Received(1).Invoke(arg);
             res.Should().Be(122);
+        }
+
+        [Fact]
+        public void RelayResultCommandShouldCallFunctionGenericWithTask()
+        {
+            var function = Substitute.For<Func<object, Task<int>>>();
+            var tcs = new TaskCompletionSource<int>();
+            tcs.SetResult(35);
+            var arg = new object();
+            function.Invoke(arg).Returns(tcs.Task);
+            var target = new MVVM.Component.RelayResultCommand<object, int>(function);
+
+            var res = target.Execute(arg).Result;
+
+            function.Received(1).Invoke(arg);
+            res.Should().Be(35);
         }
 
         [Fact]
@@ -56,7 +73,7 @@ namespace MVVMAwesomium.Test
             var target = new MVVM.Component.RelayResultCommand<int>(function);
             var arg = new object();
 
-            var res = target.Execute(arg);
+            var res = target.Execute(arg).Result;
 
             function.Received(1).Invoke();
             res.Should().Be(12);

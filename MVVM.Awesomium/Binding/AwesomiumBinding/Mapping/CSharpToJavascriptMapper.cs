@@ -9,6 +9,7 @@ using System.Collections;
 using MVVMAwesomium.Infra;
 using System.Windows.Input;
 using System.Diagnostics;
+using MVVM.Component;
 
 namespace MVVMAwesomium.AwesomiumBinding
 {
@@ -38,6 +39,9 @@ namespace MVVMAwesomium.AwesomiumBinding
 
             if (ifrom is ICommand)
                 return new JSCommand(_IJSOBuilder, ifrom as ICommand);
+
+            if (ifrom is ISimpleCommand)
+                return new JSSimpleCommand(_IJSOBuilder, ifrom as ISimpleCommand);
 
            
             JSValue value;

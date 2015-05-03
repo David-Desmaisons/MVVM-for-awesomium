@@ -57,7 +57,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             _MappedJSValue = ijsobject;
             JSObject mapped = ((JSObject)_MappedJSValue);
-            mapped.Bind("Execute", false, (o, e) => ExcecuteCommand(e, mapper));
+            mapped.Bind("Execute", false, (o, e) => ExecuteCommand(e, mapper));
             mapped.Bind("CanExecute", false, (o, e) => CanExecuteCommand(e, mapper));
         }
 
@@ -69,13 +69,10 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         private object GetArguments(IJSCBridgeCache mapper, JavascriptMethodEventArgs e)
         {
-            if (e.Arguments.Length == 0)
-                return null;
-            else
-                return Convert(mapper, e.Arguments[0]);
+            return (e.Arguments.Length == 0) ? null : Convert(mapper, e.Arguments[0]);
         }
 
-        private void ExcecuteCommand(JavascriptMethodEventArgs e, IJSCBridgeCache mapper)
+        private void ExecuteCommand(JavascriptMethodEventArgs e, IJSCBridgeCache mapper)
         {
             _Command.Execute(GetArguments(mapper,e));
         }

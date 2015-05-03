@@ -10,6 +10,7 @@ namespace MVVMAwesomium.AwesomiumBinding
         Object,
         Basic,
         Array,
-        Command
+        Command,
+        SimpleCommand
     }
 }

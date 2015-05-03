@@ -85,6 +85,7 @@
     <Compile Include="Binding\AwesomiumBinding\GlueObject\IJSCSGlueListenableVisitor.cs" />
     <Compile Include="Binding\AwesomiumBinding\GlueObject\JSCBridgeListenableVisitor.cs" />
     <Compile Include="Binding\AwesomiumBinding\GlueObject\JSCommand.cs" />
+    <Compile Include="Binding\AwesomiumBinding\GlueObject\JSSimpleCommand.cs" />
     <Compile Include="Binding\AwesomiumBinding\Helper\AwesomiumHelper.cs" />
     <Compile Include="Binding\AwesomiumBinding\GlueObject\IJSObservableBridge.cs" />
     <Compile Include="Binding\AwesomiumBinding\GlueObject\JSBasicObject.cs" />
@@ -181,7 +182,12 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\MVVM.Component\MVVM.Component.csproj">
+      <Project>{26203c44-279d-4bfe-b17a-f6ada8d240ed}</Project>
+      <Name>MVVM.Component</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -8,6 +8,6 @@ namespace MVVM.Component
 {
     public interface IResultCommand
     {
-        object Execute(object iargument);
+        Task<object> Execute(object iargument);
     }
 }

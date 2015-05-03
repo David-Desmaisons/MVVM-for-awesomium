@@ -22,6 +22,7 @@ using System.Diagnostics;
 using MVVMAwesomium.ViewModel.Infra;
 using MVVMAwesomium.Exceptions;
 using MVVMAwesomium.Test.ViewModel.Test;
+using MVVM.Component;
 
 namespace MVVMAwesomium.Test
 {
@@ -973,6 +974,8 @@ namespace MVVMAwesomium.Test
             }
         }
 
+
+      
         [Fact]
         public void Test_AwesomeBinding_Basic_TwoWay_Command_CanExecute_False()
         {
@@ -1014,6 +1017,7 @@ namespace MVVMAwesomium.Test
                 }
             }
         }
+
         [Fact]
         public void Test_AwesomeBinding_Basic_TwoWay_Command_Uptate_From_Null()
         {
@@ -1040,6 +1044,72 @@ namespace MVVMAwesomium.Test
             }
         }
 
+        #region SimpleCommand
+
+        private class ViewModelSimpleCommandTest : ViewModelBase
+        {
+            private ISimpleCommand _ICommand;
+            public ISimpleCommand SimpleCommand { get { return _ICommand; } set { Set(ref _ICommand, value, "SimpleCommand"); } }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_SimpleCommand_Without_Parameter()
+        {
+            using (Tester())
+            {
+                var command = Substitute.For<ISimpleCommand>();
+                var test = new ViewModelSimpleCommandTest() { SimpleCommand = command };
+
+                using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("SimpleCommand"));
+                    JSValue res = GetSafe(() => mycommand.Invoke("Execute"));
+                    Thread.Sleep(100);
+                    command.Received().Execute(null);
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_SimpleCommand_With_Parameter()
+        {
+            using (Tester())
+            {
+                var command = Substitute.For<ISimpleCommand>();
+                var test = new ViewModelSimpleCommandTest() { SimpleCommand = command };
+
+                using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("SimpleCommand"));
+                    JSValue res = GetSafe(() => mycommand.Invoke("Execute", js));
+                    Thread.Sleep(100);
+                    command.Received().Execute(test);
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_SimpleCommand_Name()
+        {
+            using (Tester())
+            {
+                var command = Substitute.For<ISimpleCommand>();
+                var test = new ViewModelSimpleCommandTest() { SimpleCommand = command };
+
+                using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    mb.ToString().Should().Be(@"{""SimpleCommand"":{}}");
+                }
+            }
+        }
+
+        #endregion
 
         private void CheckIntValue(JSObject js, string pn, int value)
         {
