@@ -149,7 +149,7 @@ namespace MVVMAwesomium
 
         private void Crashed(object sender, CrashedEventArgs e)
         {
-            if ((WebCore.IsShuttingDown) || (!WebCore.IsInitialized))
+            if ((WebCore.IsShuttingDown) || (!WebCore.IsInitialized) || (Application.Current==null))
                 return;
 
             var dest = _CurrentWebControl.Source;

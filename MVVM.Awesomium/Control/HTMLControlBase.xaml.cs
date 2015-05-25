@@ -215,6 +215,11 @@ namespace MVVMAwesomium
 
         private void WebCore_ShuttingDown(object sender, CoreShutdownEventArgs e)
         {
+            //It is possible that webcore is shutting because the window is closing
+            //In this case I don't have to raise a session error
+            if (Application.Current == null)
+                return;
+
             _IWebSessionWatcher.LogCritical("Critical: WebCore ShuttingDown!!");
 
             Trace.WriteLine(string.Format("MVVM for awesomium: WebCoreShutting Down exception: {0}", e.Exception));
