@@ -218,7 +218,10 @@ namespace MVVMAwesomium
             //It is possible that webcore is shutting because the window is closing
             //In this case I don't have to raise a session error
             if (Application.Current == null)
+            {
+                e.Cancel = true;
                 return;
+            }
 
             _IWebSessionWatcher.LogCritical("Critical: WebCore ShuttingDown!!");
 
