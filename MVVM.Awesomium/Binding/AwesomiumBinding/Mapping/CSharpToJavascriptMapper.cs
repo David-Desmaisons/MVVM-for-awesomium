@@ -43,7 +43,9 @@ namespace MVVMAwesomium.AwesomiumBinding
             if (ifrom is ISimpleCommand)
                 return new JSSimpleCommand(_IJSOBuilder, ifrom as ISimpleCommand);
 
-           
+            if (ifrom is IResultCommand)
+                return new JSResultCommand(_IJSOBuilder, ifrom as IResultCommand);
+
             JSValue value;
             if (_Basic.Solve(ifrom, out value))
             {

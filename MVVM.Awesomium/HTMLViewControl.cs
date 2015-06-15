@@ -31,7 +31,7 @@ namespace MVVMAwesomium
         public Uri Uri
         {
             get { return (Uri)this.GetValue(UriProperty); }
-            set { this.SetValue(UriProperty, value); }
+            internal set { this.SetValue(UriProperty, value); }
         }
 
         public string RelativeSource

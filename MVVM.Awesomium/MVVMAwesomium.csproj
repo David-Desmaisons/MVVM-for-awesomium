@@ -86,6 +86,7 @@
     <Compile Include="Binding\AwesomiumBinding\GlueObject\JSCBridgeListenableVisitor.cs" />
     <Compile Include="Binding\AwesomiumBinding\GlueObject\JSCommand.cs" />
     <Compile Include="Binding\AwesomiumBinding\GlueObject\JSSimpleCommand.cs" />
+    <Compile Include="Binding\AwesomiumBinding\GlueObject\JSResultCommand.cs" />
     <Compile Include="Binding\AwesomiumBinding\Helper\AwesomiumHelper.cs" />
     <Compile Include="Binding\AwesomiumBinding\GlueObject\IJSObservableBridge.cs" />
     <Compile Include="Binding\AwesomiumBinding\GlueObject\JSBasicObject.cs" />
@@ -171,6 +172,7 @@
       <DependentUpon>Ko_Extension.js</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Javascript\promise.min.js" />
     <Content Include="Navigation\javascript\ko-view.js" />
     <EmbeddedResource Include="Navigation\javascript\ko-view.min.js">
       <DependentUpon>ko-view.js</DependentUpon>
