@@ -37,7 +37,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVM.Component", "MVVM.Comp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.UI.CollectionTest", "ApplicationExamples\MVVMAwesomium.UI.CollectionTest\MVVMAwesomium.UI.CollectionTest.csproj", "{F3106EE2-0049-46EC-AF10-E346295F0B24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASyncPromiseUIDemo", "ASyncPromiseUIDemo\ASyncPromiseUIDemo.csproj", "{E63BD567-AEFC-4859-9F17-ED646D0D7044}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASyncPromiseUIDemo", "ApplicationExamples\ASyncPromiseUIDemo\ASyncPromiseUIDemo.csproj", "{E63BD567-AEFC-4859-9F17-ED646D0D7044}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
