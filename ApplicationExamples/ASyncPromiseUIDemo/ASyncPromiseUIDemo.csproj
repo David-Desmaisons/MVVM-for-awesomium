@@ -84,6 +84,18 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Content Include="..\..\MVVM.Awesomium\Javascript\knockout.js">
+      <Link>HTMLUI\js\knockout.js</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\MVVM.Awesomium\Javascript\Ko_Extension.js">
+      <Link>HTMLUI\js\Ko_Extension.js</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\MVVM.Awesomium\Javascript\promise.min.js">
+      <Link>HTMLUI\js\promise.min.js</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="HTMLUI\js\Init.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -97,18 +109,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\applicationexamples\mvvmawesonium.ui\src\js\bower_components\knockout\dist\knockout.js">
-      <Link>HTMLUI\js\knockout.js</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\mvvm.awesomium\javascript\Ko_Extension.js">
-      <Link>HTMLUI\js\Ko_Extension.js</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\MVVM.Awesomium\Javascript\promise.min.js">
-      <Link>HTMLUI\js\promise.min.js</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="HTMLUI\index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
