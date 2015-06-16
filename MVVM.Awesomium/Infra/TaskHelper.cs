@@ -31,7 +31,6 @@ namespace MVVMAwesomium.Infra
         {
             return @this.WaitWith(other, ithen, TaskScheduler.FromCurrentSynchronizationContext());
         }
-
         
     }
 }

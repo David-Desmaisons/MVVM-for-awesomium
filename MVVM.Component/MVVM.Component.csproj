@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infra\TaskHelper.cs" />
     <Compile Include="IResultCommand.cs" />
     <Compile Include="ISimpleCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

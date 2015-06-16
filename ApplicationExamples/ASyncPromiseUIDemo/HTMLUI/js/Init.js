@@ -6,7 +6,9 @@
                 function (res) {
                     alert(res.LastName());
                 }
-            );
+            ).catch(function(reason) {
+                console.log(reason);
+            });
         };
     };
 })()

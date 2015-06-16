@@ -12,7 +12,7 @@ function Null_reference() {
 
 function executeAsPromise(vm,fnname,argument) {
     return new Promise(function (fullfill, reject) {
-        var res = { fullfill: function (res) {fullfill(res); }, reject: function(err){reject(new Error(reject));}};
+        var res = { fullfill: function (res) {fullfill(res); }, reject: function(err){reject(new Error(err));}};
         vm[fnname]().Execute( argument, res);
     });
 }
