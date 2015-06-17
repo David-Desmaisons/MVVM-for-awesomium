@@ -45,31 +45,21 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             WebCore.QueueWork(()=>
                 {
-                    AggregateException exception = resulttask.Exception;
-                    object res = null;
-                    if (exception == null)
-                    {
-                        try
-                        {
-                            res = resulttask.Result;
-                        }
-                        catch(AggregateException ex)
-                        {
-                            exception = ex;
-                        }
-                    }
-
                     JSObject promise = e.Arguments[1];
-                    if (exception != null)
+
+                    if (!resulttask.IsFaulted)
                     {
-                        promise.Invoke("reject", exception.Flatten().InnerException.Message);
+                        bridge.RegisterInSession(resulttask.Result, (bridgevalue) =>
+                        {
+                            promise.Invoke("fullfill", bridgevalue.GetJSSessionValue());
+                        });
                     }
                     else
                     {
-                        bridge.RegisterInSession(res, (bridgevalue) =>
-                            {
-                                promise.Invoke("fullfill", bridgevalue.GetJSSessionValue());
-                            });
+                        string error = (resulttask.IsCanceled) ? "Cancelled" : 
+                            ( (resulttask.Exception==null) ? "Faulted" : resulttask.Exception.Flatten().InnerException.Message);
+
+                        promise.Invoke("reject", error);
                     }
                 });
         }

@@ -42,6 +42,9 @@ namespace MVVMAwesomium
                 if (!File.Exists(path))
                     throw ExceptionHelper.Get(string.Format("Path not found {0}",path));
                 Uri = new Uri(path); 
+
+                if (DataContext!=null)
+                    this.NavigateAsyncBase(DataContext, null, Mode);
             }          
         }
 
@@ -69,7 +72,8 @@ namespace MVVMAwesomium
 
         private void HTMLViewControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            this.NavigateAsyncBase(DataContext, null, Mode);
+            if (Uri!=null)
+                this.NavigateAsyncBase(DataContext, null, Mode);
         }
 
         private class UrlSolver : IUrlSolver
