@@ -85,7 +85,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Awesomium_Test_Base.cs" />
-    <Compile Include="MVVM.Component.Relay.Test\RelaySimpleCommandTest.cs" />
+    <Compile Include="MVVM.Component\TaskHelperTest.cs" />
+    <Compile Include="MVVM.Component\RelaySimpleCommandTest.cs" />
     <Compile Include="Test_HTMLViewControl.cs" />
     <Compile Include="Infra\AssemblyHelper.cs" />
     <Compile Include="Infra\ViewModelCLRTypes.cs" />

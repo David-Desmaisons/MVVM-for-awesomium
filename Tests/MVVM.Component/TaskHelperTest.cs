@@ -50,6 +50,22 @@ namespace MVVMAwesomium.Test
         }
 
         [Fact]
+        public void RelayResultCommandShouldHandleExceptionFunctionGeneric()
+        {
+            var exception = new Exception();
+            var function = Substitute.For<Func<object, int>>();
+            var arg = new object();
+            function.When(f => f.Invoke(arg)).Do(_ => { throw exception; });
+            var target = new MVVM.Component.RelayResultCommand<object, int>(function);
+
+            var res = target.Execute(arg);
+
+            function.Received(1).Invoke(arg);
+            res.IsFaulted.Should().BeTrue();
+            res.Exception.Flatten().InnerException.Should().Be(exception);
+        }
+
+        [Fact]
         public void RelayResultCommandShouldCallFunctionGenericWithTask()
         {
             var function = Substitute.For<Func<object, Task<int>>>();

@@ -34,11 +34,7 @@ namespace MVVM.Component
 
         public Task<object> Execute(object iargument)
         {
-            //return _ResultBuilder(iargument as Tin)
-            //    .ContinueWith<object>(t=>t.Result,TaskContinuationOptions.ExecuteSynchronously,TaskContinuationOptions.OnlyOnRanToCompletion,TaskScheduler.Current);
-
             return _ResultBuilder(iargument as Tin).Convert();
-
         }
     }
 
