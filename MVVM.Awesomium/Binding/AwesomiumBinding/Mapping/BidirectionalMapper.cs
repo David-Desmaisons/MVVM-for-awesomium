@@ -246,8 +246,6 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             IJSCSGlue newbridgedchild = _JSObjectBuilder.Map(nv);
             RegisterAndDo(newbridgedchild, () => {_UnrootedEntities.Add(newbridgedchild);Continue(newbridgedchild);});
-
-            //return newbridgedchild;
         }
 
        
