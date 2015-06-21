@@ -1420,14 +1420,14 @@ namespace MVVMAwesomium.Test
 
                     JSValue resdummy = GetSafe(() => mycommand.Invoke("Execute", new JSValue(25),cb));
 
-                    Thread.Sleep(700);
+                    Thread.Sleep(200);
                     function.Received(1).Invoke(25);
 
-                    var res = (JSValue)GetSafe(()=>_WebView.ExecuteJavascriptWithResult("res"));
+                    var res = (JSValue)GetSafe(() => _WebView.ExecuteJavascriptWithResult("window.res"));
                     int intres = (int)res;
                     intres.Should().Be(255);
 
-                    var error = (JSValue)GetSafe(() => _WebView.ExecuteJavascriptWithResult("err"));
+                    var error = (JSValue)GetSafe(() => _WebView.ExecuteJavascriptWithResult("window.err"));
                     error.Should().Be(JSValue.Undefined);
                 }
             }
@@ -1437,8 +1437,9 @@ namespace MVVMAwesomium.Test
           [Fact]
           public void Test_AwesomeBinding_Basic_TwoWay_ResultCommand_Received_javascript_variable_should_fault_Onexception()
           {
+              string errormessage = "original error message";
               var function = NSubstitute.Substitute.For<Func<int, int>>();
-              function.When(f=>f.Invoke(Arg.Any<int>())).Do(_=>{throw new Exception("error");});
+              function.When(f => f.Invoke(Arg.Any<int>())).Do(_ => { throw new Exception(errormessage); });
               //function.Invoke(Arg.Any<int>()).Returns(255);
 
               var dc = new FakeFactory<int, int>(function);
@@ -1453,15 +1454,15 @@ namespace MVVMAwesomium.Test
 
                       JSValue resdummy = GetSafe(() => mycommand.Invoke("Execute", new JSValue(25), cb));
 
-                      Thread.Sleep(700);
+                      Thread.Sleep(200);
                       function.Received(1).Invoke(25);
 
-                      var res = (JSValue)GetSafe(() => _WebView.ExecuteJavascriptWithResult("res"));
+                      var res = (JSValue)GetSafe(() => _WebView.ExecuteJavascriptWithResult("window.res"));
                       res.Should().Be(JSValue.Undefined);
 
-                      var error = (JSValue)GetSafe(() => _WebView.ExecuteJavascriptWithResult("err"));
-                      error.Should().NotBe(JSValue.Undefined);
-                      error.Should().NotBe(JSValue.Null);
+                      var error = (JSValue)GetSafe(() => _WebView.ExecuteJavascriptWithResult("window.err"));
+                      error.Should().NotBeNull();
+                      ((string)error).Should().Be(errormessage);
 
                   }
               }
