@@ -12,6 +12,8 @@ namespace MVVMAwesomium.AwesomiumBinding
 
         void CacheLocal(object key, IJSCSGlue value);
 
+        void RegisterInSession(object key, Action<IJSCSGlue> Continue);
+
         IJSCSGlue GetCached(object key);
 
         IJSCSGlue GetCached(JSObject key);

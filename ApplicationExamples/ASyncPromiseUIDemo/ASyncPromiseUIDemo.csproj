@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F3106EE2-0049-46EC-AF10-E346295F0B24}</ProjectGuid>
+    <ProjectGuid>{E63BD567-AEFC-4859-9F17-ED646D0D7044}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MVVMAwesomium.UI.CollectionTest</RootNamespace>
-    <AssemblyName>MVVMAwesomium.UI.CollectionTest</AssemblyName>
+    <RootNamespace>ASyncPromiseUIDemo</RootNamespace>
+    <AssemblyName>ASyncPromiseUIDemo</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -84,8 +84,19 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Content Include="..\MVVM.Awesomium\Javascript\Ko_Extension.min.js.map">
-      <Link>View\scripts\Ko_Extension.min.js.map</Link>
+    <Content Include="..\..\MVVM.Awesomium\Javascript\knockout.js">
+      <Link>HTMLUI\js\knockout.js</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\MVVM.Awesomium\Javascript\Ko_Extension.js">
+      <Link>HTMLUI\js\Ko_Extension.js</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\MVVM.Awesomium\Javascript\promise.min.js">
+      <Link>HTMLUI\js\promise.min.js</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HTMLUI\js\Init.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Properties\Settings.settings">
@@ -98,32 +109,20 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\MVVM.Awesomium\Javascript\knockout.js">
-      <Link>View\scripts\knockout.js</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\MVVM.Awesomium\Javascript\Ko_Extension.js">
-      <Link>View\scripts\Ko_Extension.js</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\MVVM.Awesomium\Javascript\Ko_Extension.min.js">
-      <Link>View\scripts\Ko_Extension.min.js</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="View\index.html">
+    <Content Include="HTMLUI\index.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MVVM.Awesomium\MVVMAwesomium.csproj">
-      <Project>{9B18B122-A2FC-4537-AB68-5E1EC9959DB8}</Project>
+    <ProjectReference Include="..\..\MVVM.Awesomium\MVVMAwesomium.csproj">
+      <Project>{9b18b122-a2fc-4537-ab68-5e1ec9959db8}</Project>
       <Name>MVVMAwesomium</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Tests\MVVMAwesomium.Test.csproj">
-      <Project>{84916ceb-fef3-4a42-b1a0-7b43f3d88ccb}</Project>
-      <Name>MVVMAwesomium.Test</Name>
+    <ProjectReference Include="..\..\MVVM.Component\MVVM.Component.csproj">
+      <Project>{26203c44-279d-4bfe-b17a-f6ada8d240ed}</Project>
+      <Name>MVVM.Component</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ViewModelExamples\MVVMAwesomium.ViewModel.csproj">
+    <ProjectReference Include="..\..\ViewModelExamples\MVVMAwesomium.ViewModel.csproj">
       <Project>{e35b9010-5429-4ffe-a788-e9c40e743e9c}</Project>
       <Name>MVVMAwesomium.ViewModel</Name>
     </ProjectReference>

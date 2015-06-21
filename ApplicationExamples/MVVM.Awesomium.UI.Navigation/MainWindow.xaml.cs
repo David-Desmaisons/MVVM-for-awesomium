@@ -40,11 +40,8 @@ namespace MVVMAwesomium.UI.Navigation
 
             InitializeComponent();
 
-            //var nb = new NavigationBuilder();
             HTMLWindow.UseINavigable = true;
             SetUpRoute(HTMLWindow.NavigationBuilder);
-            //SetUpRoute(nb);
-            //WPFBrowserNavigator bn = new WPFBrowserNavigator(this.WC, nb){UseINavigable = true};
 
             var datacontext = new MVVMAwesomium.ViewModel.Example.ForNavigation.Couple();
             var my = new MVVMAwesomium.ViewModel.Example.ForNavigation.Person()
@@ -57,7 +54,6 @@ namespace MVVMAwesomium.UI.Navigation
             datacontext.One = my;
 
             HTMLWindow.NavigateAsync(datacontext);
-            //bn.Navigate(my);
         }
 
         protected override void OnClosed(EventArgs e)

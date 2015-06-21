@@ -22,6 +22,7 @@ using System.Diagnostics;
 using MVVMAwesomium.ViewModel.Infra;
 using MVVMAwesomium.Exceptions;
 using MVVMAwesomium.Test.ViewModel.Test;
+using MVVM.Component;
 
 namespace MVVMAwesomium.Test
 {
@@ -973,6 +974,8 @@ namespace MVVMAwesomium.Test
             }
         }
 
+
+      
         [Fact]
         public void Test_AwesomeBinding_Basic_TwoWay_Command_CanExecute_False()
         {
@@ -1014,6 +1017,7 @@ namespace MVVMAwesomium.Test
                 }
             }
         }
+
         [Fact]
         public void Test_AwesomeBinding_Basic_TwoWay_Command_Uptate_From_Null()
         {
@@ -1040,6 +1044,72 @@ namespace MVVMAwesomium.Test
             }
         }
 
+        #region SimpleCommand
+
+        private class ViewModelSimpleCommandTest : ViewModelBase
+        {
+            private ISimpleCommand _ICommand;
+            public ISimpleCommand SimpleCommand { get { return _ICommand; } set { Set(ref _ICommand, value, "SimpleCommand"); } }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_SimpleCommand_Without_Parameter()
+        {
+            using (Tester())
+            {
+                var command = Substitute.For<ISimpleCommand>();
+                var test = new ViewModelSimpleCommandTest() { SimpleCommand = command };
+
+                using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("SimpleCommand"));
+                    JSValue res = GetSafe(() => mycommand.Invoke("Execute"));
+                    Thread.Sleep(100);
+                    command.Received().Execute(null);
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_SimpleCommand_With_Parameter()
+        {
+            using (Tester())
+            {
+                var command = Substitute.For<ISimpleCommand>();
+                var test = new ViewModelSimpleCommandTest() { SimpleCommand = command };
+
+                using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("SimpleCommand"));
+                    JSValue res = GetSafe(() => mycommand.Invoke("Execute", js));
+                    Thread.Sleep(100);
+                    command.Received().Execute(test);
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_SimpleCommand_Name()
+        {
+            using (Tester())
+            {
+                var command = Substitute.For<ISimpleCommand>();
+                var test = new ViewModelSimpleCommandTest() { SimpleCommand = command };
+
+                using (var mb = AwesomeBinding.Bind(_WebView, test, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    mb.ToString().Should().Be(@"{""SimpleCommand"":{}}");
+                }
+            }
+        }
+
+        #endregion
 
         private void CheckIntValue(JSObject js, string pn, int value)
         {
@@ -1297,6 +1367,106 @@ namespace MVVMAwesomium.Test
                 }
             }
         }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_ResultCommand_Should_have_ToString()
+        {
+            var function = NSubstitute.Substitute.For<Func<int, int>>();
+            var dc = new FakeFactory<int, int>(function);
+            using (Tester(@"javascript\index_promise.html"))
+            {
+                using (var mb = AwesomeBinding.Bind(_WebView, dc, JavascriptBindingMode.TwoWay).Result)
+                {
+                    mb.ToString().Should().NotBeNull();
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_ResultCommand_Received_javascript_variable_and_not_crash_withoutcallback()
+        {
+            var function = NSubstitute.Substitute.For<Func<int, int>>();
+            var dc = new FakeFactory<int, int>(function);
+            using (Tester(@"javascript\index_promise.html"))
+            {
+                using (var mb = AwesomeBinding.Bind(_WebView, dc, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("CreateObject"));
+                    JSValue res = GetSafe(() => mycommand.Invoke("Execute", new JSValue(25)));
+
+                    Thread.Sleep(700);
+                    function.Received(1).Invoke(25);
+                }
+            }
+        }
+
+          [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_ResultCommand_Received_javascript_variable()
+        {
+            var function = NSubstitute.Substitute.For<Func<int,int>>();
+            function.Invoke(Arg.Any<int>()).Returns(255);
+                  
+            var dc = new FakeFactory<int,int>(function);
+            using (Tester(@"javascript\index_promise.html"))
+            {
+                using (var mb = AwesomeBinding.Bind(_WebView, dc, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("CreateObject"));
+                    var cb = (JSObject)GetSafe(()=>_WebView.ExecuteJavascriptWithResult("(function(){return { fullfill: function (res) {window.res=res; }, reject: function(err){window.err=err;}}; })();"));
+
+                    JSValue resdummy = GetSafe(() => mycommand.Invoke("Execute", new JSValue(25),cb));
+
+                    Thread.Sleep(200);
+                    function.Received(1).Invoke(25);
+
+                    var res = (JSValue)GetSafe(() => _WebView.ExecuteJavascriptWithResult("window.res"));
+                    int intres = (int)res;
+                    intres.Should().Be(255);
+
+                    var error = (JSValue)GetSafe(() => _WebView.ExecuteJavascriptWithResult("window.err"));
+                    error.Should().Be(JSValue.Undefined);
+                }
+            }
+        }
+
+
+          [Fact]
+          public void Test_AwesomeBinding_Basic_TwoWay_ResultCommand_Received_javascript_variable_should_fault_Onexception()
+          {
+              string errormessage = "original error message";
+              var function = NSubstitute.Substitute.For<Func<int, int>>();
+              function.When(f => f.Invoke(Arg.Any<int>())).Do(_ => { throw new Exception(errormessage); });
+              //function.Invoke(Arg.Any<int>()).Returns(255);
+
+              var dc = new FakeFactory<int, int>(function);
+              using (Tester(@"javascript\index_promise.html"))
+              {
+                  using (var mb = AwesomeBinding.Bind(_WebView, dc, JavascriptBindingMode.TwoWay).Result)
+                  {
+                      var js = mb.JSRootObject;
+
+                      JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("CreateObject"));
+                      var cb = (JSObject)GetSafe(() => _WebView.ExecuteJavascriptWithResult("(function(){return { fullfill: function (res) {window.res=res; }, reject: function(err){window.err=err;}}; })();"));
+
+                      JSValue resdummy = GetSafe(() => mycommand.Invoke("Execute", new JSValue(25), cb));
+
+                      Thread.Sleep(200);
+                      function.Received(1).Invoke(25);
+
+                      var res = (JSValue)GetSafe(() => _WebView.ExecuteJavascriptWithResult("window.res"));
+                      res.Should().Be(JSValue.Undefined);
+
+                      var error = (JSValue)GetSafe(() => _WebView.ExecuteJavascriptWithResult("window.err"));
+                      error.Should().NotBeNull();
+                      ((string)error).Should().Be(errormessage);
+
+                  }
+              }
+          }
 
         [Fact]
         public void Test_AwesomeBinding_Basic_TwoWay_Collection()

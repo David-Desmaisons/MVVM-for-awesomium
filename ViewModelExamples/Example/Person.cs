@@ -8,6 +8,7 @@ using System.Windows.Input;
 
 using MVVMAwesomium.ViewModel.Infra;
 using MVVMAwesomium.Infra;
+using MVVM.Component;
 
 namespace MVVMAwesomium.ViewModel.Example
 {
@@ -112,5 +113,7 @@ namespace MVVMAwesomium.ViewModel.Example
         public ICommand ChangeSkill { get; private set; }
 
         public ICommand TestCommand { get; set; }
+
+        public ISimpleCommand AddOneYear { get; set; }
     }
 }
