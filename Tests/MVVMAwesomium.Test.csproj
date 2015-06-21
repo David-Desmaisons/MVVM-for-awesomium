@@ -129,10 +129,22 @@
       <Link>javascript\src\Ko_Extension.js</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\MVVM.Awesomium\Javascript\promise.min.js">
+      <Link>javascript\src\promise.min.js</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="javascript\almost_empty.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="javascript\src\Ko_register.js" />
+    <Content Include="javascript\index_promise.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="javascript\src\Ko_register_promise.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="javascript\src\Ko_register.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="javascript\simple.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

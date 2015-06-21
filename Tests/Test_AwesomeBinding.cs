@@ -1369,6 +1369,105 @@ namespace MVVMAwesomium.Test
         }
 
         [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_ResultCommand_Should_have_ToString()
+        {
+            var function = NSubstitute.Substitute.For<Func<int, int>>();
+            var dc = new FakeFactory<int, int>(function);
+            using (Tester(@"javascript\index_promise.html"))
+            {
+                using (var mb = AwesomeBinding.Bind(_WebView, dc, JavascriptBindingMode.TwoWay).Result)
+                {
+                    mb.ToString().Should().NotBeNull();
+                }
+            }
+        }
+
+        [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_ResultCommand_Received_javascript_variable_and_not_crash_withoutcallback()
+        {
+            var function = NSubstitute.Substitute.For<Func<int, int>>();
+            var dc = new FakeFactory<int, int>(function);
+            using (Tester(@"javascript\index_promise.html"))
+            {
+                using (var mb = AwesomeBinding.Bind(_WebView, dc, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("CreateObject"));
+                    JSValue res = GetSafe(() => mycommand.Invoke("Execute", new JSValue(25)));
+
+                    Thread.Sleep(700);
+                    function.Received(1).Invoke(25);
+                }
+            }
+        }
+
+          [Fact]
+        public void Test_AwesomeBinding_Basic_TwoWay_ResultCommand_Received_javascript_variable()
+        {
+            var function = NSubstitute.Substitute.For<Func<int,int>>();
+            function.Invoke(Arg.Any<int>()).Returns(255);
+                  
+            var dc = new FakeFactory<int,int>(function);
+            using (Tester(@"javascript\index_promise.html"))
+            {
+                using (var mb = AwesomeBinding.Bind(_WebView, dc, JavascriptBindingMode.TwoWay).Result)
+                {
+                    var js = mb.JSRootObject;
+
+                    JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("CreateObject"));
+                    var cb = (JSObject)GetSafe(()=>_WebView.ExecuteJavascriptWithResult("(function(){return { fullfill: function (res) {window.res=res; }, reject: function(err){window.err=err;}}; })();"));
+
+                    JSValue resdummy = GetSafe(() => mycommand.Invoke("Execute", new JSValue(25),cb));
+
+                    Thread.Sleep(700);
+                    function.Received(1).Invoke(25);
+
+                    var res = (JSValue)GetSafe(()=>_WebView.ExecuteJavascriptWithResult("res"));
+                    int intres = (int)res;
+                    intres.Should().Be(255);
+
+                    var error = (JSValue)GetSafe(() => _WebView.ExecuteJavascriptWithResult("err"));
+                    error.Should().Be(JSValue.Undefined);
+                }
+            }
+        }
+
+
+          [Fact]
+          public void Test_AwesomeBinding_Basic_TwoWay_ResultCommand_Received_javascript_variable_should_fault_Onexception()
+          {
+              var function = NSubstitute.Substitute.For<Func<int, int>>();
+              function.When(f=>f.Invoke(Arg.Any<int>())).Do(_=>{throw new Exception("error");});
+              //function.Invoke(Arg.Any<int>()).Returns(255);
+
+              var dc = new FakeFactory<int, int>(function);
+              using (Tester(@"javascript\index_promise.html"))
+              {
+                  using (var mb = AwesomeBinding.Bind(_WebView, dc, JavascriptBindingMode.TwoWay).Result)
+                  {
+                      var js = mb.JSRootObject;
+
+                      JSObject mycommand = (JSObject)GetSafe(() => js.Invoke("CreateObject"));
+                      var cb = (JSObject)GetSafe(() => _WebView.ExecuteJavascriptWithResult("(function(){return { fullfill: function (res) {window.res=res; }, reject: function(err){window.err=err;}}; })();"));
+
+                      JSValue resdummy = GetSafe(() => mycommand.Invoke("Execute", new JSValue(25), cb));
+
+                      Thread.Sleep(700);
+                      function.Received(1).Invoke(25);
+
+                      var res = (JSValue)GetSafe(() => _WebView.ExecuteJavascriptWithResult("res"));
+                      res.Should().Be(JSValue.Undefined);
+
+                      var error = (JSValue)GetSafe(() => _WebView.ExecuteJavascriptWithResult("err"));
+                      error.Should().NotBe(JSValue.Undefined);
+                      error.Should().NotBe(JSValue.Null);
+
+                  }
+              }
+          }
+
+        [Fact]
         public void Test_AwesomeBinding_Basic_TwoWay_Collection()
         {
             using (Tester())

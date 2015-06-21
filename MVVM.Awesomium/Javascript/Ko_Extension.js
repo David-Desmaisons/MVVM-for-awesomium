@@ -19,6 +19,30 @@ function executeAsPromise(vm,fnname,argument) {
 
 (function () {
 
+   
+
+    ko.bindingHandlers.executeResult = {
+        preprocess: function (value, name, addBinding) {
+
+            var getpromisebegin = 'function(argv){ return new Promise(function (fullfill, reject) { var res = { fullfill: function (res) { fullfill(res); }, reject: function (err) { reject(new Error(err)); } };';
+            var getpromiseend = '().Execute(argv, res);}); }';
+
+            var res = getpromisebegin + value + getpromiseend;
+            return res;
+        },
+
+        init: function (element, valueAccessor, allBindings) {
+            var promiseresult = allBindings.get('promiseoption'),
+                then = typeof promiseresult == 'function' ? promiseresult : promiseresult.then,
+                error = promiseresult.error || function () { },
+                arg = promiseresult.arg,
+                eventname = promiseresult.event || 'click'
+            value = valueAccessor();
+
+            element.addEventListener(eventname, function () { value(ko.utils.unwrapObservable(allBindings.get('promiseoption').arg)).then(then).catch(error); }, false);
+        }
+    };
+
     function PropertyListener(object, propertyname, listener) {
         return function (newvalue) {
             listener.TrackChanges(object, propertyname, newvalue);

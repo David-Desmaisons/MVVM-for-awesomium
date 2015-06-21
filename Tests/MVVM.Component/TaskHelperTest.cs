@@ -86,7 +86,7 @@ namespace MVVMAwesomium.Test
         {
             var function = Substitute.For<Func<int>>();
             function.Invoke().Returns(12);
-            var target = new MVVM.Component.RelayResultCommand<int>(function);
+            var target = MVVM.Component.RelayResultCommand.Create(function);
             var arg = new object();
 
             var res = target.Execute(arg).Result;

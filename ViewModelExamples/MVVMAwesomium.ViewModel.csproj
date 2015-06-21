@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Example\Couple.cs" />
     <Compile Include="Example\DateInformation.cs" />
+    <Compile Include="Example\FakeFactory.cs" />
     <Compile Include="Example\Factory.cs" />
     <Compile Include="Example\ForNavigation\Couple.cs" />
     <Compile Include="Example\ForNavigation\Person.cs" />

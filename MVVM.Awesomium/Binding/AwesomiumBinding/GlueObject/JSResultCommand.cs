@@ -45,7 +45,10 @@ namespace MVVMAwesomium.AwesomiumBinding
         {
             WebCore.QueueWork(()=>
                 {
-                    JSObject promise = e.Arguments[1];
+                    if ( e.Arguments.Length<2)
+                        return;
+
+                    JSObject promise =  e.Arguments[1];
 
                     if (!resulttask.IsFaulted)
                     {

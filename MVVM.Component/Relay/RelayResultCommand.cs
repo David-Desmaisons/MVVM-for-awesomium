@@ -7,7 +7,7 @@ using MVVM.Component.Infra;
 
 namespace MVVM.Component
 {
-    public class RelayResultCommand<Tin, TResult> : IResultCommand where Tin : class
+    public class RelayResultCommand<Tin, TResult> : IResultCommand
     {
         private Func<Tin, Task<TResult>> _ResultBuilder;
         public RelayResultCommand(Func<Tin, TResult> iFunction)
@@ -34,7 +34,7 @@ namespace MVVM.Component
 
         public Task<object> Execute(object iargument)
         {
-            return _ResultBuilder(iargument as Tin).Convert();
+            return _ResultBuilder((Tin)iargument).Convert();
         }
     }
 
@@ -51,6 +51,19 @@ namespace MVVM.Component
             var tcs = new TaskCompletionSource<object>();
             tcs.SetResult(_Function());
             return tcs.Task;
+        }
+    }
+
+    public static class RelayResultCommand
+    {
+        public static IResultCommand Create<Tin, TResult>(Func<Tin, TResult> iFunction)
+        {
+            return new RelayResultCommand<Tin, TResult>(iFunction);
+        }
+
+        public static IResultCommand Create<TResult>(Func<TResult> iFunction)
+        {
+            return new RelayResultCommand<TResult>(iFunction);
         }
     }
 }
