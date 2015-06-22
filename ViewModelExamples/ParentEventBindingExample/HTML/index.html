@@ -14,7 +14,7 @@
             <ul data-bind="foreach: Items()">
                 <li class="item">
                     <input data-bind="value: Name" />
-                    <input class="input-mini" data-bind="value: Price" />
+                    <input class="input-mini" data-bind="numberInput: Price" />
                     <a href="#" title="insert row" data-click-parent="insert">+</a>
                     <a href="#" title="remove row" data-click-parent="remove">x</a>
                 </li>

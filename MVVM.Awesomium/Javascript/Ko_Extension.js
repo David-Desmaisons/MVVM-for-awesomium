@@ -233,7 +233,6 @@ function executeAsPromise(vm,fnname,argument) {
 
 
         return function replacer(key, value) {
-
             if (first) {
                 first = false;
                 visit(value);
@@ -381,7 +380,13 @@ function executeAsPromise(vm,fnname,argument) {
             var event = (valueUpdate === 'afterkeydown') ? 'input' : 'change';
 
             element.addEventListener(event, function () {
-                value(Number(element.value));
+                var numb = Number(element.value);
+                if (isNaN(numb)) {
+                    element.value = 0;
+                    numb = 0;
+                }
+                
+                value(numb);
             }, false);
         },
 
