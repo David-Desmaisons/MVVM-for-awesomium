@@ -19,30 +19,6 @@ function executeAsPromise(vm,fnname,argument) {
 
 (function () {
 
-   
-
-    ko.bindingHandlers.executeResult = {
-        preprocess: function (value, name, addBinding) {
-
-            var getpromisebegin = 'function(argv){ return new Promise(function (fullfill, reject) { var res = { fullfill: function (res) { fullfill(res); }, reject: function (err) { reject(new Error(err)); } };';
-            var getpromiseend = '().Execute(argv, res);}); }';
-
-            var res = getpromisebegin + value + getpromiseend;
-            return res;
-        },
-
-        init: function (element, valueAccessor, allBindings) {
-            var promiseresult = allBindings.get('promiseoption'),
-                then = typeof promiseresult == 'function' ? promiseresult : promiseresult.then,
-                error = promiseresult.error || function () { },
-                arg = promiseresult.arg,
-                eventname = promiseresult.event || 'click'
-            value = valueAccessor();
-
-            element.addEventListener(eventname, function () { value(ko.utils.unwrapObservable(allBindings.get('promiseoption').arg)).then(then).catch(error); }, false);
-        }
-    };
-
     function PropertyListener(object, propertyname, listener) {
         return function (newvalue) {
             listener.TrackChanges(object, propertyname, newvalue);
@@ -291,22 +267,32 @@ function executeAsPromise(vm,fnname,argument) {
 
     ko.bindingHandlers.command = {
         preprocess: function (value, name, addBinding) {
-            var can = value + '()!==null && ' + value + '().CanExecute($data)===undefined &&' + value + '().CanExecuteCount() &&' + value + '().CanExecuteValue()',
-                act = 'function(cb){ if (' + can + ') { if (!!cb) {cb();} ' + value + '().Execute($data);}}';
-            return '{ can : '+ can + ', act : ' + act + ' }';
+            addBinding('canCommand', value + '()!==null && ' + value + '().CanExecute($data)===undefined &&' + value + '().CanExecuteCount() &&' + value + '().CanExecuteValue()');
+            return value;
         },
 
-        init: function (element, valueAccessor, allBindings) {
+        init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
             var option = allBindings.get('commandoption') || {},
                eventname = option.event || 'click', cb = option.callback,
-               value = valueAccessor();
+               value = valueAccessor(),
+                eventhandler = function handler(callback) {
+                    var myHandler = value();
+                    if (myHandler === null)
+                        return;
 
-            element.addEventListener(eventname,function () { value.act(cb) },false);
-        },
+                    if (!!callback)
+                        callback();
 
+                    myHandler.Execute(bindingContext.$data);
+                };
 
-        update: function (element, valueAccessor, allBindings) {
-            var enable = valueAccessor().can;
+            element.addEventListener(eventname, function () { eventhandler(cb) }, false);
+        }
+    };
+
+    ko.bindingHandlers.canCommand = {
+       update: function (element, valueAccessor, allBindings) {
+            var enable = valueAccessor();
 
             if (element._currentenable === undefined)
                 element._currentenable = enable;
@@ -322,22 +308,68 @@ function executeAsPromise(vm,fnname,argument) {
             toogle(element, enable, cssOn);
             toogle(element, !enable, ccsOff);
         }
-
-
     };
 
 
     ko.bindingHandlers.execute = {
-        preprocess: function (value, name, addBinding) {
-            return 'function(cb){ if (' + value + '()!==null) { if (!!cb) {cb();} ' + value + '().Execute($data);}}';
-        },
-
-        init: function (element, valueAccessor, allBindings) {
+        init: function (element, valueAccessor, allBindings,viewModel, bindingContext) {
             var option = allBindings.get('executeoption') || {},
                 eventname = option.event || 'click', cb = option.callback,
-                value = valueAccessor();
+                value = valueAccessor(),
+                eventhandler = function handler(callback) {
+                    var myHandler = value();
+                    if (myHandler === null)
+                        return;
 
-            element.addEventListener(eventname, function () { value(cb) }, false);
+                    if (!!callback)
+                        callback();
+
+                    myHandler.Execute(bindingContext.$data);
+                };
+
+            element.addEventListener(eventname, function () { eventhandler(cb) }, false);
+        }
+    };
+
+    ko.bindingHandlers.parentCommand = {
+        preprocess: function (value, name, addBinding) {
+            return value;
+        },
+
+        init: function (element, valueAccessor, allBindings,viewModel,bindinContext) {
+            var value = valueAccessor();
+            var transformed = {};
+            ko.utils.objectForEach(value, function (event, keyvalue) {
+                var newlogic = {};
+                transformed[event] = newlogic;
+                ko.utils.objectForEach(keyvalue, function (logicname, logichandler) {
+                    newlogic[logicname] = function (el) { logichandler().Execute(el); };
+                });
+            });
+
+            console.log(transformed);
+
+            ko.bindingHandlers.delegatedParentHandler.init(element, function () { return transformed; }, allBindings, viewModel, bindinContext);
+        }
+    };
+
+    ko.bindingHandlers.executeResult = {
+
+        init: function (element, valueAccessor, allBindings) {
+            var promiseresult = allBindings.get('promiseoption'),
+                then = typeof promiseresult == 'function' ? promiseresult : promiseresult.then,
+                error = promiseresult.error || function () { },
+                arg = promiseresult.arg,
+                eventname = promiseresult.event || 'click',
+                value = valueAccessor(),
+                handlerevent = function handler(argv) {
+                    return new Promise(function (fullfill, reject) { 
+                        var res = { fullfill: function (res) { fullfill(res); }, reject: function (err) { reject(new Error(err)); } };
+                        value().Execute(argv, res);
+                    });
+                };
+
+            element.addEventListener(eventname, function () { handlerevent(ko.utils.unwrapObservable(allBindings.get('promiseoption').arg)).then(then).catch(error); }, false);
         }
     };
 

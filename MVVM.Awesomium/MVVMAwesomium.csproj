@@ -156,6 +156,9 @@
       <DependentUpon>Ko_Extension.min.js</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Javascript\knockout-delegatedEvents.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Navigation\javascript\ko-view.min.js.map">
       <DependentUpon>ko-view.min.js</DependentUpon>
     </None>

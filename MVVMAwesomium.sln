@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVMAwesomium.UI.Collection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASyncPromiseUIDemo", "ApplicationExamples\ASyncPromiseUIDemo\ASyncPromiseUIDemo.csproj", "{E63BD567-AEFC-4859-9F17-ED646D0D7044}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParentEventBindingExample", "ViewModelExamples\ParentEventBindingExample\ParentEventBindingExample.csproj", "{E24112F1-092C-4BDC-AAE3-59B8931DF642}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -220,6 +222,16 @@ Global
 		{E63BD567-AEFC-4859-9F17-ED646D0D7044}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{E63BD567-AEFC-4859-9F17-ED646D0D7044}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{E63BD567-AEFC-4859-9F17-ED646D0D7044}.Release|x86.ActiveCfg = Release|Any CPU
+		{E24112F1-092C-4BDC-AAE3-59B8931DF642}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E24112F1-092C-4BDC-AAE3-59B8931DF642}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E24112F1-092C-4BDC-AAE3-59B8931DF642}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E24112F1-092C-4BDC-AAE3-59B8931DF642}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E24112F1-092C-4BDC-AAE3-59B8931DF642}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E24112F1-092C-4BDC-AAE3-59B8931DF642}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E24112F1-092C-4BDC-AAE3-59B8931DF642}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E24112F1-092C-4BDC-AAE3-59B8931DF642}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E24112F1-092C-4BDC-AAE3-59B8931DF642}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E24112F1-092C-4BDC-AAE3-59B8931DF642}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -237,6 +249,7 @@ Global
 		{CD1977DD-3299-46CE-8550-C11F1E9F0F7C} = {0F0F34BE-CD06-4C13-967D-BB0760617486}
 		{F3106EE2-0049-46EC-AF10-E346295F0B24} = {0F0F34BE-CD06-4C13-967D-BB0760617486}
 		{E63BD567-AEFC-4859-9F17-ED646D0D7044} = {0F0F34BE-CD06-4C13-967D-BB0760617486}
+		{E24112F1-092C-4BDC-AAE3-59B8931DF642} = {0F0F34BE-CD06-4C13-967D-BB0760617486}
 	EndGlobalSection
 	GlobalSection(CodealikeProperties) = postSolution
 		SolutionGuid = 21ee2d50-c4fe-49f3-a899-1dc535d57fcf
