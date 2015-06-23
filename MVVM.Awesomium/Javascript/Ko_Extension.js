@@ -265,11 +265,6 @@ function executeAsPromise(vm,fnname,argument) {
     }
 
     ko.bindingHandlers.command = {
-        preprocess: function (value, name, addBinding) {
-            addBinding('canCommand', value + '()!==null && ' + value + '().CanExecute($data)===undefined &&' + value + '().CanExecuteCount() &&' + value + '().CanExecuteValue()');
-            return value;
-        },
-
         init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
             var option = allBindings.get('commandoption') || {},
                eventname = option.event || 'click', cb = option.callback,
@@ -285,31 +280,35 @@ function executeAsPromise(vm,fnname,argument) {
                     myHandler.Execute(bindingContext.$data);
                 };
 
+            //create compute to create a dependency on observable values 
+            ko.computed({
+                read: function () {
+                    var myHandler = value(), key="enablevalue";
+                    var enable = (myHandler !== null) && (myHandler.CanExecute(bindingContext.$data) === undefined) &&
+                              (myHandler.CanExecuteCount()) && (myHandler.CanExecuteValue());
+
+                   var currentenable = ko.utils.domData.get(element, key);
+
+                   if (currentenable === enable)
+                        return;
+
+                    ko.utils.domData.set(element, key, enable);
+
+                    var cssOn = option.cssOn, ccsOff = option.ccsOff;
+
+                    ko.bindingHandlers.enable.update(element, function () { return enable; }, allBindings);
+
+                    toogle(element, enable, cssOn);
+                    toogle(element, !enable, ccsOff);
+                },
+                disposeWhenNodeIsRemoved: element
+            });
+
             element.addEventListener(eventname, function () { eventhandler(cb) }, false);
         }
     };
 
-    ko.bindingHandlers.canCommand = {
-       update: function (element, valueAccessor, allBindings) {
-            var enable = valueAccessor();
-
-            if (element._currentenable === undefined)
-                element._currentenable = enable;
-            else if (element._currentenable === enable)
-                return;
-
-            element._currentenable = enable;
-
-            var option = allBindings.get('commandoption') || {}, cssOn = option.cssOn, ccsOff = option.ccsOff;
-
-            ko.bindingHandlers.enable.update(element, function () { return enable; }, allBindings);
-
-            toogle(element, enable, cssOn);
-            toogle(element, !enable, ccsOff);
-        }
-    };
-
-
+  
     ko.bindingHandlers.execute = {
         init: function (element, valueAccessor, allBindings,viewModel, bindingContext) {
             var option = allBindings.get('executeoption') || {},
