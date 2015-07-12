@@ -10,6 +10,8 @@ All changes between View and ViewModel are propagate back and forth by MVVM for 
 C# commands are mapped to javascript method and can be bind to click event using knockout.  
 This library can be used without having to write any javascript on your own as it will take care of all the mapping and plumbing for you!
 
+Please check [MVVM.CEF.Glue](https://github.com/David-Desmaisons/MVVM.CEF.Glue) port of this project to [CEFGLue](http://xilium.bitbucket.org/cefglue/).
+
 
 Usage - Example
 --------------
