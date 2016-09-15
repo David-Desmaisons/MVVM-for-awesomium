@@ -1,6 +1,12 @@
 MVVM for awesomium
 ==================
 
+Important
+---------
+
+This project will be continued as part of [Neutronium](https://github.com/David-Desmaisons/Neutronium) which has the same purpose as MVVM-for-Awesomium but broader scope :mutiple embedded browsers supported including awesomium and CEF, multiple javascript framework supported such as Knockout and vue.
+Migration to Neutronium is easy as API are compatible.
+
 Description
 --------------
 This framework act as a glue between a C# ViewModel and a awesomium IWebView.
